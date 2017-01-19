@@ -18,6 +18,7 @@ import subprocess
 
 from distutils.command.build_ext import build_ext
 from distutils import sysconfig
+from distutils.version import StrictVersion
 from setuptools import Extension, setup, find_packages
 
 # monkey patch import hook. Even though flake8 says it's not used, it is.
@@ -709,7 +710,7 @@ class pil_build_ext(build_ext):
             m = re.match(r'#define\s+ZLIB_VERSION\s+"([^"]*)"', line)
             if not m:
                 continue
-            if m.group(1) < "1.2.3":
+            if StrictVersion(m.group(1)) < StrictVersion("1.2.3"):
                 return m.group(1)
 
     # https://hg.python.org/users/barry/rev/7e8deab93d5a
