@@ -443,13 +443,17 @@ def _write_multiple_frames(im, fp, palette):
             if im_frames:
                 # delta frame
                 previous = im_frames[-1]
-                if _get_palette_bytes(im_frame) == \
-                   _get_palette_bytes(previous['im']):
-                    delta = ImageChops.subtract_modulo(im_frame,
-                                                       previous['im'])
+                if disposal == 2:
+                    deltaIm = Image.new("P", im_frame.size,
+                                        encoderinfo.get("background"))
                 else:
-                    delta = ImageChops.subtract_modulo(
-                        im_frame.convert('RGB'), previous['im'].convert('RGB'))
+                    deltaIm = previous['im']
+                if _get_palette_bytes(im_frame) == _get_palette_bytes(deltaIm):
+                    delta = ImageChops.subtract_modulo(im_frame,
+                                                       deltaIm)
+                else:
+                    delta = ImageChops.subtract_modulo(im_frame.convert('RGB'),
+                                                       deltaIm.convert('RGB'))
                 bbox = delta.getbbox()
                 if not bbox:
                     # This frame is identical to the previous frame
