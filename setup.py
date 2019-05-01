@@ -443,6 +443,9 @@ class pil_build_ext(build_ext):
             if PLATFORM_MINGW:
                 _add_directory(include_dirs,
                                "C:\\msys64\\mingw32\\include\\libimagequant")
+                _add_directory(include_dirs,
+                               "C:\\msys64\\mingw32\\include\\freetype2")
+                _add_directory(library_dirs, "C:\\msys64\\mingw32\\bin")
 
             # on Windows, look for the OpenJPEG libraries in the location that
             # the official installer puts them
@@ -551,10 +554,13 @@ class pil_build_ext(build_ext):
 
         if feature.want('freetype'):
             _dbg('Looking for freetype')
+            print("torch freetype want")
             if _find_library_file(self, "freetype"):
+                print("freetype lib file found")
                 # look for freetype2 include files
                 freetype_version = 0
                 for subdir in self.compiler.include_dirs:
+                    print(subdir)
                     _dbg('Checking for include file %s in %s',
                          ("ft2build.h", subdir))
                     if os.path.isfile(os.path.join(subdir, "ft2build.h")):
@@ -573,6 +579,9 @@ class pil_build_ext(build_ext):
                     feature.freetype = "freetype"
                     if subdir:
                         _add_directory(self.compiler.include_dirs, subdir, 0)
+        print(feature.freetype)
+        print("end freetype")
+        print(os.getcwd())
 
         if feature.want('lcms'):
             _dbg('Looking for lcms')
