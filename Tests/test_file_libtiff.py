@@ -362,9 +362,13 @@ class TestFileLibTiff(LibTiffTestCase):
     def test_12bit_rawmode(self):
         """ Are we generating the same interpretation
         of the image as Imagemagick is? """
+        print("a")
         TiffImagePlugin.READ_LIBTIFF = True
+        print("b")
         im = Image.open('Tests/images/12bit.cropped.tif')
+        print("c")
         im.load()
+        print("d")
         TiffImagePlugin.READ_LIBTIFF = False
         # to make the target --
         # convert 12bit.cropped.tif -depth 16 tmp.tif
