@@ -301,7 +301,7 @@ class pil_build_ext(build_ext):
                                         JPEG2K_ROOT="libopenjp2",
                                         TIFF_ROOT=("libtiff-5", "libtiff-4"),
                                         ZLIB_ROOT="zlib",
-                                        FREETYPE_ROOT="freetype2",
+                                        FREETYPE_ROOT=("libfreetype", "libfreetype-6", "freetype", "freetype2"),
                                         LCMS_ROOT="lcms2",
                                         IMAGEQUANT_ROOT="libimagequant"
                                         ).items():

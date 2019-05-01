@@ -155,9 +155,6 @@ setraqm(void)
     }
 #else
     p_raqm.raqm = LoadLibrary("libraqm");
-    if (!p_raqm.raqm) {
-       p_raqm.raqm = LoadLibrary("libraqm-0.dll");
-    }
 #endif
 
     if (!p_raqm.raqm) {

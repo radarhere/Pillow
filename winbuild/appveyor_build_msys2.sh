@@ -21,4 +21,4 @@ cp /c/msys64/mingw32/bin/libfreetype-6.dll /c/pillow/winbuild/libfreetype.dll
 cp /c/msys64/mingw32/bin/libfreetype-6.dll /c/pillow/winbuild/libfreetype-6.dll
 /mingw32/$EXECUTABLE -c "from PIL import _imaging;import os, shutil;shutil.copy('C:/msys64/mingw32/bin/libfreetype-6.dll', os.path.join(os.path.dirname(_imaging.__file__), 'freetype.dll'));"
 /mingw32/$EXECUTABLE -c "from PIL import _imaging;import os, shutil;shutil.copy('C:/msys64/mingw32/bin/libfreetype-6.dll', os.path.join(os.path.dirname(_imaging.__file__), 'libfreetype.dll'));"
-/mingw32/$EXECUTABLE -c "from PIL import _imaging;import os, shutil;shutil.copy('C:/msys64/mingw32/bin/libfreetype-6.dll', os.path.join(os.path.dirname(_imaging.__file__), 'libfreetype-6.dll'));"
+/mingw32/$EXECUTABLE -c "from PIL import _imaging;import os, shutil;print(['torch',_imaging.__file__]);print(os.listdir(os.path.dirname(_imaging.__file__)));shutil.copy('C:/msys64/mingw32/bin/libfreetype-6.dll', os.path.join(os.path.dirname(_imaging.__file__), 'libfreetype-6.dll'));"
