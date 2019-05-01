@@ -442,6 +442,10 @@ class pil_build_ext(build_ext):
         # on Windows, look for the OpenJPEG libraries in the location that
         # the official installer puts them
         if sys.platform == "win32":
+            if PLATFORM_MINGW:
+                _add_directory(include_dirs,
+                               "C:\\msys64\\mingw32\\include\\libimagequant")
+
             program_files = os.environ.get('ProgramFiles', '')
             best_version = (0, 0)
             best_path = None
@@ -623,7 +627,7 @@ class pil_build_ext(build_ext):
         if feature.jpeg2000:
             libs.append(feature.jpeg2000)
             defs.append(("HAVE_OPENJPEG", None))
-            if sys.platform == "win32":
+            if sys.platform == "win32" and not PLATFORM_MINGW:
                 defs.append(("OPJ_STATIC", None))
         if feature.zlib:
             libs.append(feature.zlib)
