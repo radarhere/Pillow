@@ -6,7 +6,7 @@ pacman -S --noconfirm mingw32/mingw-w64-i686-python3-pip \
 	   mingw32/mingw-w64-i686-python2-pip \
 	   mingw32/mingw-w64-i686-python2-setuptools \
 	   mingw-w64-i686-libjpeg-turbo \
-	   mingw-w64-i686-libwebp
+	   mingw-w64-i686-openjpeg2
 
 C:/msys64/mingw32/bin/python3 -m pip install --upgrade pip
 
