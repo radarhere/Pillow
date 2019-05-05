@@ -19,8 +19,6 @@ def check_module(feature):
         __import__(module)
         return True
     except ImportError:
-        if feature == "freetype2":
-            raise
         return False
 
 
@@ -68,6 +66,8 @@ def check_feature(feature):
         imported_module = __import__(module, fromlist=['PIL'])
         return getattr(imported_module, flag)
     except ImportError:
+        if feature == "raqm":
+            raise
         return None
 
 
