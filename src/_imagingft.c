@@ -21,6 +21,9 @@
 #define PY_SSIZE_T_CLEAN
 #include "Python.h"
 #include "Imaging.h"
+#include <execinfo.h>
+#include <stdio.h>
+#include <stdlib.h>
 
 #include <ft2build.h>
 #include FT_FREETYPE_H
@@ -132,6 +135,25 @@ static p_raqm_func p_raqm;
 /* round a 26.6 pixel coordinate to the nearest larger integer */
 #define PIXEL(x) ((((x)+63) & -64)>>6)
 
+void
+print_trace (void)
+{
+  void *array[10];
+  size_t size;
+  char **strings;
+  size_t i;
+
+  size = backtrace (array, 10);
+  strings = backtrace_symbols (array, size);
+
+  printf ("Obtained %zd stack frames.\n", size);
+
+  for (i = 0; i < size; i++)
+     printf ("%s\n", strings[i]);
+
+  free (strings);
+}
+
 static PyObject*
 geterror(int code)
 {
@@ -139,6 +161,7 @@ geterror(int code)
 
     for (i = 0; ft_errors[i].message; i++)
         if (ft_errors[i].code == code) {
+            print_trace();
             PyErr_SetString(PyExc_IOError, ft_errors[i].message);
             return NULL;
         }
@@ -362,12 +385,14 @@ static size_t
 text_layout_raqm(PyObject* string, FontObject* self, const char* dir, PyObject *features,
                  const char* lang, GlyphInfo **glyph_info, int mask)
 {
+    printf(self->face == NULL ? "text_layout_raqm: face null\n" : "text_layout_raqm: face not null\n");
     size_t i = 0, count = 0, start = 0;
     raqm_t *rq;
     raqm_glyph_t *glyphs = NULL;
     raqm_glyph_t_01 *glyphs_01 = NULL;
     raqm_direction_t direction;
 
+    printf("text_layout_raqm: Start\n");
     rq = (*p_raqm.create)();
     if (rq == NULL) {
         PyErr_SetString(PyExc_ValueError, "raqm_create() failed.");
@@ -376,11 +401,13 @@ text_layout_raqm(PyObject* string, FontObject* self, const char* dir, PyObject *
 
 #if (PY_VERSION_HEX < 0x03030000) || (defined(PYPY_VERSION_NUM))
     if (PyUnicode_Check(string)) {
+        printf("text_layout_raqm: Version Check 1\n");
         Py_UNICODE *text = PyUnicode_AS_UNICODE(string);
         Py_ssize_t size = PyUnicode_GET_SIZE(string);
         if (! size) {
             /* return 0 and clean up, no glyphs==no size,
                and raqm fails with empty strings */
+            printf("text_layout_raqm: Missing failed 1\n");
             goto failed;
         }
         if (!(*p_raqm.set_text)(rq, (const uint32_t *)(text), size)) {
@@ -396,9 +423,11 @@ text_layout_raqm(PyObject* string, FontObject* self, const char* dir, PyObject *
     }
 #if PY_VERSION_HEX < 0x03000000
     else if (PyString_Check(string)) {
+        printf("text_layout_raqm: Version Check 2\n");
         char *text = PyString_AS_STRING(string);
         int size = PyString_GET_SIZE(string);
         if (! size) {
+            printf("text_layout_raqm: Missing failed 2\n");
             goto failed;
         }
         if (!(*p_raqm.set_text_utf8)(rq, text, size)) {
@@ -415,11 +444,13 @@ text_layout_raqm(PyObject* string, FontObject* self, const char* dir, PyObject *
 #endif
 #else
     if (PyUnicode_Check(string)) {
+        printf("text_layout_raqm: Version Check 3\n");
         Py_UCS4 *text = PyUnicode_AsUCS4Copy(string);
         Py_ssize_t size = PyUnicode_GET_LENGTH(string);
         if (!text || !size) {
             /* return 0 and clean up, no glyphs==no size,
                and raqm fails with empty strings */
+            printf("text_layout_raqm: Missing failed 3\n");
             goto failed;
         }
         int set_text = (*p_raqm.set_text)(rq, (const uint32_t *)(text), size);
@@ -441,6 +472,7 @@ text_layout_raqm(PyObject* string, FontObject* self, const char* dir, PyObject *
         goto failed;
     }
 
+    printf("text_layout_raqm: Direction\n");
     direction = RAQM_DIRECTION_DEFAULT;
     if (dir) {
         if (strcmp(dir, "rtl") == 0)
@@ -464,10 +496,12 @@ text_layout_raqm(PyObject* string, FontObject* self, const char* dir, PyObject *
         goto failed;
     }
 
+    printf("text_layout_raqm: Features\n");
     if (features != Py_None) {
         int j, len;
         PyObject *seq = PySequence_Fast(features, "expected a sequence");
         if (!seq) {
+            printf("text_layout_raqm: Missing failed 4\n");
             goto failed;
         }
 
@@ -489,8 +523,10 @@ text_layout_raqm(PyObject* string, FontObject* self, const char* dir, PyObject *
 
             if (PyUnicode_Check(item)) {
                 bytes = PyUnicode_AsUTF8String(item);
-                if (bytes == NULL)
+                if (bytes == NULL) {
+                    printf("text_layout_raqm: Missing failed 5\n");
                     goto failed;
+                }
                 feature = PyBytes_AS_STRING(bytes);
                 size = PyBytes_GET_SIZE(bytes);
             }
@@ -506,6 +542,7 @@ text_layout_raqm(PyObject* string, FontObject* self, const char* dir, PyObject *
             }
         }
     }
+    printf("text_layout_raqm: Features End\n");
 
     if (!(*p_raqm.set_freetype_face)(rq, self->face)) {
         PyErr_SetString(PyExc_RuntimeError, "raqm_set_freetype_face() failed.");
@@ -559,6 +596,7 @@ text_layout_raqm(PyObject* string, FontObject* self, const char* dir, PyObject *
             (*glyph_info)[i].cluster = glyphs[i].cluster;
         }
     }
+    printf("text_layout_raqm: End\n");
 
 failed:
     (*p_raqm.destroy)(rq);
@@ -577,6 +615,7 @@ text_layout_fallback(PyObject* string, FontObject* self, const char* dir, PyObje
     FT_UInt last_index = 0;
     int i;
 
+    printf("text_layout_fallback: Start\n");
     if (features != Py_None || dir != NULL || lang != NULL) {
       PyErr_SetString(PyExc_KeyError, "setting text direction, language or font features is not supported without libraqm");
     }
@@ -589,6 +628,7 @@ text_layout_fallback(PyObject* string, FontObject* self, const char* dir, PyObje
         return 0;
     }
 
+    printf("text_layout_fallback: font_getchar\n");
     count = 0;
     while (font_getchar(string, count, &ch)) {
        count++;
@@ -597,6 +637,7 @@ text_layout_fallback(PyObject* string, FontObject* self, const char* dir, PyObje
         return 0;
     }
 
+    printf("text_layout_fallback: PyMem_New\n");
     (*glyph_info) = PyMem_New(GlyphInfo, count);
     if ((*glyph_info) == NULL) {
         PyErr_SetString(PyExc_MemoryError, "PyMem_New() failed");
@@ -607,8 +648,11 @@ text_layout_fallback(PyObject* string, FontObject* self, const char* dir, PyObje
     if (mask) {
         load_flags |= FT_LOAD_TARGET_MONO;
     }
+    printf("text_layout_fallback: Loop\n");
     for (i = 0; font_getchar(string, i, &ch); i++) {
+        printf("text_layout_fallback: i %d\n", (int)i);
         (*glyph_info)[i].index = FT_Get_Char_Index(self->face, ch);
+        printf("text_layout_fallback: Load glyph\n");
         error = FT_Load_Glyph(self->face, (*glyph_info)[i].index, load_flags);
         if (error) {
             geterror(error);
@@ -618,6 +662,7 @@ text_layout_fallback(PyObject* string, FontObject* self, const char* dir, PyObje
         (*glyph_info)[i].x_offset=0;
         (*glyph_info)[i].y_offset=0;
         if (kerning && last_index && (*glyph_info)[i].index) {
+            printf("text_layout_fallback: Kerning\n");
             FT_Vector delta;
             if (FT_Get_Kerning(self->face, last_index, (*glyph_info)[i].index,
                            ft_kerning_default,&delta) == 0)
@@ -630,6 +675,7 @@ text_layout_fallback(PyObject* string, FontObject* self, const char* dir, PyObje
         last_index = (*glyph_info)[i].index;
         (*glyph_info)[i].cluster = ch;
     }
+    printf("text_layout_fallback: End\n");
     return count;
 }
 
@@ -640,8 +686,10 @@ text_layout(PyObject* string, FontObject* self, const char* dir, PyObject *featu
     size_t count;
 
     if (p_raqm.raqm && self->layout_engine == LAYOUT_RAQM) {
+        printf("text_layout: raqm\n");
         count = text_layout_raqm(string, self, dir, features, lang, glyph_info,  mask);
     } else {
+        printf("text_layout: fallback\n");
         count = text_layout_fallback(string, self, dir, features, lang, glyph_info, mask);
     }
     return count;
@@ -685,10 +733,12 @@ font_getsize(FontObject* self, PyObject* args)
         /* Note: bitmap fonts within ttf fonts do not work, see #891/pr#960
          *   Yifu Yu<root@jackyyf.com>, 2014-10-15
          */
+        printf("font_getsize text_layout char %d load glyph\n", (int)i);
         error = FT_Load_Glyph(face, index, FT_LOAD_DEFAULT|FT_LOAD_NO_BITMAP);
         if (error)
             return geterror(error);
 
+        printf("font_getsize text_layout glyph loaded\n");
         if (i == 0) {
             if (horizontal_dir) {
                 if (face->glyph->metrics.horiBearingX < 0) {

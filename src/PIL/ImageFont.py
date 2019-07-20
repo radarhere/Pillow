@@ -393,6 +393,13 @@ class FreeTypeFont(object):
                  :py:mod:`PIL.Image.core` interface module, and the text offset, the
                  gap between the starting coordinate and the first marking
         """
+        print("Python", sys.version)
+        print("Freetype", core.freetype2_version)
+        print("getmask2: self.font", self.font)
+        print("getmask2: self.font.family", self.font.family)
+        print("getmask2: direction", direction)
+        print("getmask2: features", features)
+        print("getmask2: language", language)
         size, offset = self.font.getsize(text, direction, features, language)
         im = fill("L", size, 0)
         self.font.render(text, im.id, mode == "1", direction, features, language)
