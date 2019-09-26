@@ -254,26 +254,16 @@ endlocal
     return script % compiler
 
 
-def build_lcms2(compiler):
-    if compiler["env_version"] == "v7.1":
-        return build_lcms_71(compiler)
-    return build_lcms_70(compiler)
-
-
-def build_lcms_70(compiler):
-    """Link error here on x64"""
-    if compiler["platform"] == "x64":
-        return ""
-
-    """Build LCMS on VC2008. This version is only 32bit/Win32"""
+def build_lcms2(compiler, bit):
     return (
         r"""
 rem Build lcms2
 setlocal
+""" + vc_setup(compiler, bit) + r"""
 rd /S /Q %%LCMS%%\Lib
 rd /S /Q %%LCMS%%\Projects\VC%(vc_version)s\Release
-%%MSBUILD%% %%LCMS%%\Projects\VC%(vc_version)s\lcms2.sln /t:Clean /p:Configuration="Release" /p:Platform=Win32 /m
-%%MSBUILD%% %%LCMS%%\Projects\VC%(vc_version)s\lcms2.sln /t:lcms2_static /p:Configuration="Release" /p:Platform=Win32 /p:PlatformToolset=v90 /m
+%%MSBUILD%% %%LCMS%%\Projects\VC%(vc_version)s\lcms2.sln /t:Clean /m
+%%MSBUILD%% %%LCMS%%\Projects\VC%(vc_version)s\lcms2.sln /t:lcms2_static /m
 xcopy /Y /E /Q %%LCMS%%\include %%INCLIB%%
 copy /Y /B %%LCMS%%\Lib\MS\*.lib %%INCLIB%%
 endlocal
@@ -332,10 +322,10 @@ def add_compiler(compiler, bit):
 
     # script.append(extract_openjpeg(compiler))
 
-    script.append(msbuild_freetype(compiler, bit))
-    script.append(build_lcms2(compiler))
-    script.append(nmake_openjpeg(compiler, bit))
-    script.append(build_ghostscript(compiler, bit))
+    #script.append(msbuild_freetype(compiler, bit))
+    script.append(build_lcms2(compiler, bit))
+    #script.append(nmake_openjpeg(compiler, bit))
+    #script.append(build_ghostscript(compiler, bit))
     script.append(end_compiler())
 
 
