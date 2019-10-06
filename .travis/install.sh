@@ -15,10 +15,8 @@ pip install -U pytest-cov
 pip install pyroma
 pip install test-image-results
 pip install numpy
-if [[ $TRAVIS_PYTHON_VERSION == 3.* ]]; then
-    sudo apt-get -qq install pyqt5-dev-tools
-    pip install pyqt5;
-fi
+#sudo apt-get -qq install pyqt5-dev-tools
+pip install pyqt5;
 
 # docs only on Python 2.7
 if [ "$TRAVIS_PYTHON_VERSION" == "2.7" ]; then pip install -r requirements.txt ; fi
