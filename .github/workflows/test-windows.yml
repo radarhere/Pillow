@@ -92,12 +92,18 @@ jobs:
 
     - name: Build dependencies / zlib
       run: |
+        ls %GITHUB_WORKSPACE%\winbuild\depends
+        echo on
+        REM a
         set INCLUDE=C:\Program Files (x86)\Microsoft SDKs\Windows\V7.1A\Include
         set INCLIB=%GITHUB_WORKSPACE%\winbuild\depends\msvcr10-x32
         set BUILD=%GITHUB_WORKSPACE%\winbuild\build
+        REM b
         cd /D %BUILD%\zlib-1.2.11
+        REM c
         call "C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\vcvarsall.bat" ${{ matrix.platform-vcvars }} 8.1
-        echo on
+        REM d
+        REM e
         nmake -nologo -f win32\Makefile.msc clean
         nmake -nologo -f win32\Makefile.msc zlib.lib
         copy /Y /B z*.h %INCLIB%
