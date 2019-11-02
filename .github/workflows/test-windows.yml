@@ -45,12 +45,6 @@ jobs:
         python-version: ${{ matrix.python-version }}
         architecture: ${{ matrix.architecture }}
 
-    - name: pip install wheel pytest pytest-cov codecov
-      run: |
-        "%pythonLocation%\python.exe" -m pip install wheel pytest pytest-cov
-        pip install codecov
-      shell: cmd
-
     - name: Fetch dependencies
       run: |
         curl -fsSL -o nasm.zip https://www.nasm.us/pub/nasm/releasebuilds/2.14.02/win64/nasm-2.14.02-win64.zip
@@ -92,10 +86,18 @@ jobs:
 
     - name: Build dependencies / zlib
       run: |
-        ls "C:\Program Files (x86)"
-        ls %GITHUB_WORKSPACE%\winbuild\depends
         echo on
         REM a
+        ls "C:\Program Files (x86)\Microsoft Visual Studio\2019"
+        REM a
+        ls "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise"
+        REM a
+        ls "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\VC"
+        REM a
+        ls "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\VC\Auxiliary"
+        REM a13
+        ls %GITHUB_WORKSPACE%\winbuild\depends
+        REM a2
         set INCLUDE=C:\Program Files (x86)\Microsoft SDKs\Windows\V7.1A\Include
         set INCLIB=%GITHUB_WORKSPACE%\winbuild\depends\msvcr10-x32
         set BUILD=%GITHUB_WORKSPACE%\winbuild\build
