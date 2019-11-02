@@ -92,6 +92,7 @@ jobs:
 
     - name: Build dependencies / zlib
       run: |
+        ls "C:\Program Files (x86)"
         ls %GITHUB_WORKSPACE%\winbuild\depends
         echo on
         REM a
