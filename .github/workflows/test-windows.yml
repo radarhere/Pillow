@@ -90,25 +90,6 @@ jobs:
         copy /Y /B *.exe %INCLIB%
       shell: cmd
 
-    - name: Build dependencies / libjpeg-turbo
-      run: |
-        set INCLUDE=C:\Program Files (x86)\Microsoft SDKs\Windows\V7.1A\Include
-        set INCLIB=%GITHUB_WORKSPACE%\winbuild\depends\msvcr10-x32
-        set BUILD=%GITHUB_WORKSPACE%\winbuild\build
-        cd /D %BUILD%\libjpeg-turbo-2.0.3
-        call "C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\vcvarsall.bat" ${{ matrix.platform-vcvars }} 8.1
-        echo on
-        set CMAKE=cmake.exe -DCMAKE_VERBOSE_MAKEFILE=ON -DCMAKE_RULE_MESSAGES:BOOL=OFF
-        set CMAKE=%CMAKE% -DENABLE_SHARED:BOOL=OFF -DWITH_JPEG8:BOOL=TRUE -DWITH_CRT_DLL:BOOL=TRUE -DCMAKE_BUILD_TYPE=Release
-        %CMAKE% -G "NMake Makefiles" .
-        nmake -nologo -f Makefile clean
-        nmake -nologo -f Makefile jpeg-static cjpeg-static djpeg-static
-        copy /Y /B j*.h %INCLIB%
-        copy /Y /B jpeg-static.lib %INCLIB%\libjpeg.lib
-        copy /Y /B cjpeg-static.exe %INCLIB%\cjpeg.exe
-        copy /Y /B djpeg-static.exe %INCLIB%\djpeg.exe
-      shell: cmd
-
     - name: Build dependencies / zlib
       run: |
         set INCLUDE=C:\Program Files (x86)\Microsoft SDKs\Windows\V7.1A\Include
