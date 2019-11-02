@@ -98,6 +98,8 @@ jobs:
         REM a13
         ls %GITHUB_WORKSPACE%\winbuild\depends
         REM a2
+        dir /S "C:\Program Files (x86)" vcvarsall.bat
+        REM atorch
         set INCLUDE=C:\Program Files (x86)\Microsoft SDKs\Windows\V7.1A\Include
         set INCLIB=%GITHUB_WORKSPACE%\winbuild\depends\msvcr10-x32
         set BUILD=%GITHUB_WORKSPACE%\winbuild\build
