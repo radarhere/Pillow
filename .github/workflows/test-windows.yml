@@ -90,15 +90,16 @@ jobs:
         REM a
         ls "C:\Program Files (x86)\Microsoft Visual Studio\2019"
         REM a
-        ls "C:\Program Files (x86)\Microsoft Visual Studio\2019\VC"
+        ls "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\VC"
         REM a
-        ls "C:\Program Files (x86)\Microsoft Visual Studio\2019\VC\Auxiliary"
+        ls "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\VC\Auxiliary"
         REM a
-        ls "C:\Program Files (x86)\Microsoft Visual Studio\2019\VC\Auxiliary\Build"
+        ls "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\VC\Auxiliary\Build"
         REM a13
         ls %GITHUB_WORKSPACE%\winbuild\depends
         REM a2
-        dir /S "C:\Program Files (x86)" vcvarsall.bat
+        cd "C:\Program Files (x86)"
+        dir /S vcvarsall.bat
         REM atorch
         set INCLUDE=C:\Program Files (x86)\Microsoft SDKs\Windows\V7.1A\Include
         set INCLIB=%GITHUB_WORKSPACE%\winbuild\depends\msvcr10-x32
@@ -106,7 +107,7 @@ jobs:
         REM b
         cd /D %BUILD%\zlib-1.2.11
         REM c
-        call "C:\Program Files (x86)\Microsoft Visual Studio\2019\VC\Auxiliary\Build\vcvarsall.bat" ${{ matrix.platform-vcvars }} 8.1
+        call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\VC\Auxiliary\Build\vcvarsall.bat" ${{ matrix.platform-vcvars }} 8.1
         REM d
         REM e
         nmake -nologo -f win32\Makefile.msc clean
