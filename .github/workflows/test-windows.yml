@@ -90,11 +90,11 @@ jobs:
         REM a
         ls "C:\Program Files (x86)\Microsoft Visual Studio\2019"
         REM a
-        ls "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise"
+        ls "C:\Program Files (x86)\Microsoft Visual Studio\2019\VC"
         REM a
-        ls "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\VC"
+        ls "C:\Program Files (x86)\Microsoft Visual Studio\2019\VC\Auxiliary"
         REM a
-        ls "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\VC\Auxiliary"
+        ls "C:\Program Files (x86)\Microsoft Visual Studio\2019\VC\Auxiliary\Build"
         REM a13
         ls %GITHUB_WORKSPACE%\winbuild\depends
         REM a2
@@ -104,7 +104,7 @@ jobs:
         REM b
         cd /D %BUILD%\zlib-1.2.11
         REM c
-        call "C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\vcvarsall.bat" ${{ matrix.platform-vcvars }} 8.1
+        call "C:\Program Files (x86)\Microsoft Visual Studio\2019\VC\Auxiliary\Build\vcvarsall.bat" ${{ matrix.platform-vcvars }} 8.1
         REM d
         REM e
         nmake -nologo -f win32\Makefile.msc clean
