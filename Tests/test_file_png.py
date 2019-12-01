@@ -834,6 +834,7 @@ class TestFilePng(PillowTestCase):
         def open():
             im = Image.open("Tests/images/apng/chunk_multi_actl.png")
             im.load()
+
         self.assert_warning(UserWarning, open)
         self.assertFalse(im.is_animated)
 
@@ -858,12 +859,14 @@ class TestFilePng(PillowTestCase):
             self.assertFalse(im.is_animated)
             with self.assertRaises(OSError):
                 im.load()
+
         self.assert_warning(UserWarning, open)
 
         def open():
             im = Image.open("Tests/images/apng/syntax_num_frames_zero_default.png")
             self.assertFalse(im.is_animated)
             im.load()
+
         self.assert_warning(UserWarning, open)
 
         # we can handle this case gracefully
@@ -884,13 +887,18 @@ class TestFilePng(PillowTestCase):
             im = Image.open("Tests/images/apng/syntax_num_frames_invalid.png")
             self.assertFalse(im.is_animated)
             im.load()
+
         self.assert_warning(UserWarning, open)
 
     def test_apng_sequence_errors(self):
         test_files = [
-            "sequence_start.png", "sequence_gap.png", "sequence_repeat.png",
-            "sequence_repeat_chunk.png", "sequence_reorder.png",
-            "sequence_reorder_chunk.png", "sequence_fdat_fctl.png",
+            "sequence_start.png",
+            "sequence_gap.png",
+            "sequence_repeat.png",
+            "sequence_repeat_chunk.png",
+            "sequence_reorder.png",
+            "sequence_reorder_chunk.png",
+            "sequence_fdat_fctl.png",
         ]
         for f in test_files:
             with self.assertRaises(SyntaxError):
@@ -916,7 +924,8 @@ class TestFilePng(PillowTestCase):
         for im in ImageSequence.Iterator(im):
             frames.append(im.copy())
         frames[0].save(
-            test_file, save_all=True, default_image=True, append_images=frames[1:])
+            test_file, save_all=True, default_image=True, append_images=frames[1:]
+        )
 
         with Image.open(test_file) as im:
             im.load()
@@ -939,8 +948,13 @@ class TestFilePng(PillowTestCase):
             if i != 0 or not default_image:
                 durations.append(im.info.get("duration", 0))
         frames[0].save(
-            test_file, save_all=True, default_image=default_image,
-            append_images=frames[1:], duration=durations, loop=loop)
+            test_file,
+            save_all=True,
+            default_image=default_image,
+            append_images=frames[1:],
+            duration=durations,
+            loop=loop,
+        )
         with Image.open(test_file) as im:
             im.load()
             self.assertEqual(im.info.get("loop"), loop)
@@ -955,8 +969,7 @@ class TestFilePng(PillowTestCase):
 
         # test removal of duplicated frames
         frame = Image.new("RGBA", (128, 64), (255, 0, 0, 255))
-        frame.save(
-            test_file, save_all=True, append_images=[frame], duration=[500, 250])
+        frame.save(test_file, save_all=True, append_images=[frame], duration=[500, 250])
         with Image.open(test_file) as im:
             im.load()
             self.assertEqual(im.n_frames, 1)
@@ -971,9 +984,12 @@ class TestFilePng(PillowTestCase):
 
         # test APNG_DISPOSE_OP_NONE
         red.save(
-            test_file, save_all=True, append_images=[green, transparent],
+            test_file,
+            save_all=True,
+            append_images=[green, transparent],
             disposal=PngImagePlugin.APNG_DISPOSE_OP_NONE,
-            blend=PngImagePlugin.APNG_BLEND_OP_OVER)
+            blend=PngImagePlugin.APNG_BLEND_OP_OVER,
+        )
         with Image.open(test_file) as im:
             im.seek(2)
             self.assertEqual(im.getpixel((0, 0)), (0, 255, 0, 255))
@@ -986,9 +1002,12 @@ class TestFilePng(PillowTestCase):
             PngImagePlugin.APNG_DISPOSE_OP_NONE,
         ]
         red.save(
-            test_file, save_all=True, append_images=[red, transparent],
+            test_file,
+            save_all=True,
+            append_images=[red, transparent],
             disposal=disposal,
-            blend=PngImagePlugin.APNG_BLEND_OP_OVER)
+            blend=PngImagePlugin.APNG_BLEND_OP_OVER,
+        )
         with Image.open(test_file) as im:
             im.seek(2)
             self.assertEqual(im.getpixel((0, 0)), (0, 0, 0, 0))
@@ -999,9 +1018,12 @@ class TestFilePng(PillowTestCase):
             PngImagePlugin.APNG_DISPOSE_OP_BACKGROUND,
         ]
         red.save(
-            test_file, save_all=True, append_images=[green],
+            test_file,
+            save_all=True,
+            append_images=[green],
             disposal=disposal,
-            blend=PngImagePlugin.APNG_BLEND_OP_OVER)
+            blend=PngImagePlugin.APNG_BLEND_OP_OVER,
+        )
         with Image.open(test_file) as im:
             im.seek(1)
             self.assertEqual(im.getpixel((0, 0)), (0, 255, 0, 255))
@@ -1014,9 +1036,13 @@ class TestFilePng(PillowTestCase):
             PngImagePlugin.APNG_DISPOSE_OP_NONE,
         ]
         red.save(
-            test_file, save_all=True, append_images=[green, red, transparent],
-            default_image=True, disposal=disposal,
-            blend=PngImagePlugin.APNG_BLEND_OP_OVER)
+            test_file,
+            save_all=True,
+            append_images=[green, red, transparent],
+            default_image=True,
+            disposal=disposal,
+            blend=PngImagePlugin.APNG_BLEND_OP_OVER,
+        )
         with Image.open(test_file) as im:
             im.seek(3)
             self.assertEqual(im.getpixel((0, 0)), (0, 255, 0, 255))
@@ -1027,9 +1053,12 @@ class TestFilePng(PillowTestCase):
             PngImagePlugin.APNG_DISPOSE_OP_PREVIOUS,
         ]
         red.save(
-            test_file, save_all=True, append_images=[green],
+            test_file,
+            save_all=True,
+            append_images=[green],
             disposal=disposal,
-            blend=PngImagePlugin.APNG_BLEND_OP_OVER)
+            blend=PngImagePlugin.APNG_BLEND_OP_OVER,
+        )
         with Image.open(test_file) as im:
             im.seek(1)
             self.assertEqual(im.getpixel((0, 0)), (0, 255, 0, 255))
@@ -1048,9 +1077,13 @@ class TestFilePng(PillowTestCase):
             PngImagePlugin.APNG_BLEND_OP_SOURCE,
         ]
         red.save(
-            test_file, save_all=True, append_images=[red, green],
-            default_image=True, disposal=PngImagePlugin.APNG_DISPOSE_OP_NONE,
-            blend=blend)
+            test_file,
+            save_all=True,
+            append_images=[red, green],
+            default_image=True,
+            disposal=PngImagePlugin.APNG_DISPOSE_OP_NONE,
+            blend=blend,
+        )
         with Image.open(test_file) as im:
             im.seek(2)
             self.assertEqual(im.getpixel((0, 0)), (0, 255, 0, 255))
@@ -1062,9 +1095,13 @@ class TestFilePng(PillowTestCase):
             PngImagePlugin.APNG_BLEND_OP_SOURCE,
         ]
         red.save(
-            test_file, save_all=True, append_images=[red, transparent],
-            default_image=True, disposal=PngImagePlugin.APNG_DISPOSE_OP_NONE,
-            blend=blend)
+            test_file,
+            save_all=True,
+            append_images=[red, transparent],
+            default_image=True,
+            disposal=PngImagePlugin.APNG_DISPOSE_OP_NONE,
+            blend=blend,
+        )
         with Image.open(test_file) as im:
             im.seek(2)
             self.assertEqual(im.getpixel((0, 0)), (0, 0, 0, 0))
@@ -1072,10 +1109,13 @@ class TestFilePng(PillowTestCase):
 
         # test APNG_BLEND_OP_OVER
         red.save(
-            test_file, save_all=True, append_images=[green, transparent],
+            test_file,
+            save_all=True,
+            append_images=[green, transparent],
             default_image=True,
             disposal=PngImagePlugin.APNG_DISPOSE_OP_NONE,
-            blend=PngImagePlugin.APNG_BLEND_OP_OVER)
+            blend=PngImagePlugin.APNG_BLEND_OP_OVER,
+        )
         with Image.open(test_file) as im:
             im.seek(1)
             self.assertEqual(im.getpixel((0, 0)), (0, 255, 0, 255))
