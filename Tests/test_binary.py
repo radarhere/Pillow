@@ -1,4 +1,4 @@
-from PIL import _binary
+from PIL import _binary, Image
 
 from .helper import PillowTestCase
 
@@ -21,3 +21,7 @@ class TestBinary(PillowTestCase):
 
         self.assertEqual(_binary.o16be(65535), b"\xff\xff")
         self.assertEqual(_binary.o32be(65535), b"\x00\x00\xff\xff")
+
+    def test_mandrill(self):
+        im = Image.open('Tests/images/mandrill.tif')
+        im.load()
