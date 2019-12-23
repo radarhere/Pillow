@@ -60,10 +60,7 @@ jobs:
         sudo apt-get -qq install python3.7 python3.7-tk tk-dev
         python3.7 -m pip install setuptools
         python3.7 -m pip install https://github.com/readthedocs/sphinx_rtd_theme/archive/a49a812.zip
-        export PATH="/usr/lib/python3.7/bin:$PATH"
-        ls /usr/lib/python3.7
-        find /usr/lib/python3.7 -iname bin
-        find / -iname bin
+        export PATH="/home/runner/.local/bin:$PATH"
         make doccheck
 
     - name: After success
