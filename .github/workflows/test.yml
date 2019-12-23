@@ -54,28 +54,16 @@ jobs:
     - name: Build system information
       run: python .github/workflows/system-info.py
 
-    - name: Install Linux dependencies
-      if: startsWith(matrix.os, 'ubuntu')
-      run: |
-        .travis/install.sh
-
-    - name: Build
-      run: |
-        .travis/build.sh
-
-    - name: Upload errors
-      uses: actions/upload-artifact@v1
-      if: failure()
-      with:
-        name: errors
-        path: Tests/errors
-
     - name: Docs
       if: matrix.python-version == 3.6
       run: |
         sudo apt-get -qq install python3.7 python3.7-tk tk-dev
         python3.7 -m pip install setuptools
         python3.7 -m pip install https://github.com/readthedocs/sphinx_rtd_theme/archive/a49a812.zip
+        export PATH="/usr/lib/python3.7/bin:$PATH"
+        ls /usr/lib/python3.7
+        find /usr/lib/python3.7 -iname bin
+        find / -iname bin
         make doccheck
 
     - name: After success

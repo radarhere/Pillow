@@ -42,9 +42,9 @@ clean:
 	-rm -rf $(BUILDDIR)/*
 
 html:
+	python3.7 --version
+	python3.7 -c 'import tkinter;print(tkinter)'
 	$(SPHINXBUILD) --version
-	python3 --version
-	python3 -c 'import tkinter;print(tkinter)'
 	$(SPHINXBUILD) -b html -W --keep-going $(ALLSPHINXOPTS) $(BUILDDIR)/html
 	@echo
 	@echo "Build finished. The HTML pages are in $(BUILDDIR)/html."
