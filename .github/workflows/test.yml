@@ -86,7 +86,7 @@ jobs:
     - name: Docs
       if: matrix.python-version == 3.7
       run: |
-        pip install sphinx-rtd-theme
+        pip install https://github.com/readthedocs/sphinx_rtd_theme/archive/a49a812.zip
         make doccheck
 
     - name: After success
