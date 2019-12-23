@@ -82,6 +82,7 @@ jobs:
     - name: Docs
       if: matrix.python-version == 3.6
       run: |
+        sudo apt-get -qq install python3 python3-tk tk-dev
         python3 -m pip install https://github.com/readthedocs/sphinx_rtd_theme/archive/a49a812.zip
         make doccheck
 
