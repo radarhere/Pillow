@@ -59,18 +59,9 @@ jobs:
       run: |
         .travis/install.sh
 
-    - name: Install macOS dependencies
-      if: startsWith(matrix.os, 'macOS')
-      run: |
-        .github/workflows/macos-install.sh
-
     - name: Build
       run: |
         .travis/build.sh
-
-    - name: Test
-      run: |
-        .travis/test.sh
 
     - name: Upload errors
       uses: actions/upload-artifact@v1
@@ -82,8 +73,9 @@ jobs:
     - name: Docs
       if: matrix.python-version == 3.6
       run: |
-        sudo apt-get -qq install python3 python3-tk tk-dev
-        python3 -m pip install https://github.com/readthedocs/sphinx_rtd_theme/archive/a49a812.zip
+        sudo apt-get -qq install python3.7 python3.7-tk tk-dev
+        python3.7 -m pip install setuptools
+        python3.7 -m pip install https://github.com/readthedocs/sphinx_rtd_theme/archive/a49a812.zip
         make doccheck
 
     - name: After success
