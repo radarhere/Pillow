@@ -13,7 +13,7 @@ jobs:
           "macOS-latest",
         ]
         python-version: [
-          "3.6",
+          "3.7",
         ]
         include:
         - python-version: "3.5"
@@ -55,9 +55,9 @@ jobs:
       run: python .github/workflows/system-info.py
 
     - name: Docs
-      if: matrix.python-version == 3.6
+      if: matrix.python-version == 3.7
       run: |
-        sudo apt-get -qq install python3.7 python3.7-tk tk-dev
+        sudo apt-get -qq install python3.7-tk tk-dev
         python3.7 -m pip install setuptools
         python3.7 -m pip install https://github.com/readthedocs/sphinx_rtd_theme/archive/a49a812.zip
         export PATH="/home/runner/.local/bin:$PATH"
