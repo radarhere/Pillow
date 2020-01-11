@@ -504,6 +504,8 @@ class Image:
         self.im = None
         self.mode = ""
         self._size = (0, 0)
+        self.has_fp = False
+        self._exclusive_fp = None
         self.palette = None
         self.info = {}
         self.category = NORMAL
@@ -538,14 +540,16 @@ class Image:
         new.info = self.info.copy()
         return new
 
+    def _close__fp(self):
+        pass
+
     # Context manager support
     def __enter__(self):
         return self
 
     def __exit__(self, *args):
-        if hasattr(self, "fp") and getattr(self, "_exclusive_fp", False):
-            if hasattr(self, "_close__fp"):
-                self._close__fp()
+        if self.has_fp and self._exclusive_fp:
+            self._close__fp()
             if self.fp:
                 self.fp.close()
         self.fp = None
@@ -563,8 +567,7 @@ class Image:
         :ref:`file-handling` for more information.
         """
         try:
-            if hasattr(self, "_close__fp"):
-                self._close__fp()
+            self._close__fp()
             self.fp.close()
             self.fp = None
         except Exception as msg:

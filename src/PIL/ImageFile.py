@@ -90,6 +90,7 @@ class ImageFile(Image.Image):
         self.decoderconfig = ()
         self.decodermaxblock = MAXBLOCK
 
+        self.has_fp = True
         if isPath(fp):
             # filename
             self.fp = open(fp, "rb")
@@ -99,8 +100,6 @@ class ImageFile(Image.Image):
             # stream
             self.fp = fp
             self.filename = filename
-            # can be overridden
-            self._exclusive_fp = None
 
         try:
             try:
