@@ -802,9 +802,13 @@ font_render(FontObject* self, PyObject* args)
 
         temp = bitmap.rows - glyph_slot->bitmap_top;
         temp -= PIXEL(glyph_info[i].y_offset);
-        if (temp > ascender)
+        printf("glyphs %d %d %d\n", bitmap.rows, glyph_slot->bitmap_top, PIXEL(glyph_info[i].y_offset));
+        if (temp > ascender) {
+            printf("temp %d\n", temp);
             ascender = temp;
+        }
     }
+    printf("ascender %d\n", ascender);
 
     x = y = 0;
     horizontal_dir = dir && strcmp(dir, "ttb") == 0 ? 0 : 1;
@@ -862,7 +866,9 @@ font_render(FontObject* self, PyObject* args)
         for (bitmap_y = 0; bitmap_y < bitmap.rows; bitmap_y++) {
             if (horizontal_dir) {
                 yy = bitmap_y + im->ysize - (PIXEL(glyph_slot->metrics.horiBearingY) + ascender);
-                yy -= PIXEL(glyph_info[i].y_offset) + stroke_width * 2;
+                //printf("i %d y %d yy1 %d\n", i, bitmap_y, yy);
+                yy -= PIXEL(glyph_info[i].y_offset) + stroke_width * 2;//12;
+                //printf("i %d y %d yy2 %d\n", i, bitmap_y, yy);
             } else {
                 yy = bitmap_y + PIXEL(y + glyph_slot->metrics.vertBearingY) + ascender;
                 yy += PIXEL(glyph_info[i].y_offset);

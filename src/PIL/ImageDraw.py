@@ -316,6 +316,7 @@ class ImageDraw:
                     **kwargs,
                 )
                 coord = coord[0] + offset[0], coord[1] + offset[1]
+                #print("a")
             except AttributeError:
                 try:
                     mask = font.getmask(
@@ -328,10 +329,15 @@ class ImageDraw:
                         *args,
                         **kwargs,
                     )
+                    print("b")
                 except TypeError:
+                    print("c")
                     mask = font.getmask(text)
+            #print(['coord', coord])
+            #print(['stroke_offset', stroke_offset])
             if stroke_offset:
                 coord = coord[0] + stroke_offset[0], coord[1] + stroke_offset[1]
+            print("draw_bitmap "+str(coord))
             self.draw.draw_bitmap(coord, mask, ink)
 
         ink = getink(fill)
