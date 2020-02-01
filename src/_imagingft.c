@@ -794,6 +794,7 @@ font_render(FontObject* self, PyObject* args)
             ascender = temp;
         }
     }
+
     im = (Imaging) id;
     /* Note: bitmap fonts within ttf fonts do not work, see #891/pr#960 */
     load_flags = FT_LOAD_NO_BITMAP;
@@ -802,6 +803,14 @@ font_render(FontObject* self, PyObject* args)
     }
     if (mask) {
         load_flags |= FT_LOAD_TARGET_MONO;
+    }
+    if (stroke_width) {
+        error = FT_Stroker_New(library, &stroker);
+        if (error) {
+            return geterror(error);
+        }
+
+        FT_Stroker_Set(stroker, (FT_Fixed)stroke_width*64, FT_STROKER_LINECAP_ROUND, FT_STROKER_LINEJOIN_ROUND, 0);
     }
 
     printf("ascender %d\n", ascender);
