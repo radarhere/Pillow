@@ -771,7 +771,7 @@ font_render(FontObject* self, PyObject* args)
         Py_RETURN_NONE;
     }
 
-    load_flags = FT_LOAD_NO_BITMAP;
+    load_flags = FT_LOAD_NO_BITMAP | FT_LOAD_RENDER;
     if (mask) {
         load_flags |= FT_LOAD_TARGET_MONO;
     }
