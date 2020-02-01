@@ -760,6 +760,7 @@ font_render(FontObject* self, PyObject* args)
                                                    &stroke_width)) {
         return NULL;
     }
+    printf("torchstart\n");
 
     glyph_info = NULL;
     count = text_layout(string, self, dir, features, lang, &glyph_info, mask);
@@ -769,7 +770,6 @@ font_render(FontObject* self, PyObject* args)
     if (count == 0) {
         Py_RETURN_NONE;
     }
-
     if (stroke_width) {
         error = FT_Stroker_New(library, &stroker);
         if (error) {
@@ -779,16 +779,10 @@ font_render(FontObject* self, PyObject* args)
         FT_Stroker_Set(stroker, (FT_Fixed)stroke_width*64, FT_STROKER_LINECAP_ROUND, FT_STROKER_LINEJOIN_ROUND, 0);
     }
 
-    im = (Imaging) id;
-    /* Note: bitmap fonts within ttf fonts do not work, see #891/pr#960 */
-    load_flags = FT_LOAD_NO_BITMAP;
-    if (stroker == NULL) {
-        load_flags |= FT_LOAD_RENDER;
-    }
+    load_flags = FT_LOAD_NO_BITMAP | FT_LOAD_RENDER;
     if (mask) {
         load_flags |= FT_LOAD_TARGET_MONO;
     }
-
     ascender = 0;
     for (i = 0; i < count; i++) {
         index = glyph_info[i].index;
@@ -808,14 +802,27 @@ font_render(FontObject* self, PyObject* args)
             ascender = temp;
         }
     }
+
+    im = (Imaging) id;
+    /* Note: bitmap fonts within ttf fonts do not work, see #891/pr#960 */
+    load_flags = FT_LOAD_NO_BITMAP;
+    if (stroker == NULL) {
+        load_flags |= FT_LOAD_RENDER;
+    }
+    if (mask) {
+        load_flags |= FT_LOAD_TARGET_MONO;
+    }
+
     printf("ascender %d\n", ascender);
 
+    printf("x\n");
     x = y = 0;
     horizontal_dir = dir && strcmp(dir, "ttb") == 0 ? 0 : 1;
     for (i = 0; i < count; i++) {
         index = glyph_info[i].index;
         error = FT_Load_Glyph(self->face, index, load_flags);
         if (error) {
+            printf("xd?1\n");
             return geterror(error);
         }
 
@@ -830,6 +837,7 @@ font_render(FontObject* self, PyObject* args)
                 error = FT_Glyph_To_Bitmap(&glyph, FT_RENDER_MODE_NORMAL, &origin, 1);
             }
             if (error) {
+                printf("xd?2\n");
                 return geterror(error);
             }
 
@@ -905,6 +913,7 @@ font_render(FontObject* self, PyObject* args)
         }
     }
 
+    printf("xd3\n");
     FT_Stroker_Done(stroker);
     PyMem_Del(glyph_info);
     Py_RETURN_NONE;
