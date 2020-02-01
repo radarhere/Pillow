@@ -134,9 +134,9 @@ class TestImageFont(PillowTestCase):
                 stroke_width=1,
                 stroke_fill=outline_color_tuple
             )
-        text_image.save("Tests/errors/out.png" if os.path.exists("Tests/errors") else "out.png")
-        if sys.platform != "darwin":
-            self.assertEqual("torch", ImageFont.core.freetype2_version)
+        x = sys.platform+"_"+ImageFont.core.freetype2_version
+        text_image.save("Tests/errors/"+x+".png" if os.path.exists("Tests/errors") else x+".png")
+        self.assertEqual("torch", ImageFont.core.freetype2_version)
 
     #def test_torch2(self):
     #    self.assertEqual("torch", ImageFont.core.freetype2_version)

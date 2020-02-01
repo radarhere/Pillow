@@ -2,7 +2,7 @@
 # install libimagequant
 
 echo "0"
-archive=freetype-2.9
+archive=freetype-2.9.1
 
 echo "a"
 ./download-and-extract.sh $archive https://raw.githubusercontent.com/python-pillow/pillow-depends/master/$archive.tar.gz
