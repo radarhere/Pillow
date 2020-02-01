@@ -808,6 +808,7 @@ font_render(FontObject* self, PyObject* args)
             ascender = temp;
         }
     }
+    ascender = 10;
     printf("ascender %d\n", ascender);
 
     x = y = 0;
