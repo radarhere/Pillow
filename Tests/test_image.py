@@ -6,7 +6,14 @@ import tempfile
 import pytest
 
 import PIL
-from PIL import Image, ImageDraw, ImagePalette, ImageShow, UnidentifiedImageError
+from PIL import (
+    Image,
+    ImageDraw,
+    ImagePalette,
+    ImageShow,
+    TiffImagePlugin,
+    UnidentifiedImageError,
+)
 
 from .helper import (
     assert_image_equal,
@@ -376,6 +383,14 @@ class TestImage:
         assert extensions
         for ext in [".cur", ".icns", ".tif", ".tiff"]:
             assert ext in extensions
+
+    def test_no_convert_mode(self):
+        self.assertTrue(not hasattr(TiffImagePlugin, "_convert_mode"))
+
+        temp_file = self.tempfile("temp.tiff")
+
+        im = hopper()
+        im.save(temp_file, convert_mode=True)
 
     def test_effect_mandelbrot(self):
         # Arrange
