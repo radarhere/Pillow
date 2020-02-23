@@ -872,11 +872,8 @@ def getdata(im, offset=(0, 0), **params):
     return fp.data
 
 
-def _convert_mode(im):
-    return {
-        'LA':'P',
-        'CMYK':'RGB'
-    }.get(im.mode)
+def _supported_modes():
+    return ["RGB", "RGBA", "P", "I", "F", "LA", "L", "1"]
 
 
 # --------------------------------------------------------------------
