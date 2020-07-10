@@ -22,7 +22,4 @@ sudo apt-get -qq install python3-tk libffi-dev libjpeg-turbo-progs libopenjp2-7-
 
 pip install --upgrade pip
 PYTHONOPTIMIZE=0 pip install cffi
-pip install coverage
-pip install -U pytest
-pip install -U pytest-cov
 pip install pyroma
