@@ -53,11 +53,9 @@ inplace: clean
 
 install:
 	python3 setup.py install
-	python3 selftest.py
 
 install-coverage:
 	CFLAGS="-coverage" python3 setup.py build_ext install
-	python3 selftest.py
 
 debug:
 # make a debug version if we don't have a -dbg python. Leaves in symbols

@@ -1,6 +1,6 @@
 import pytest
 from PIL import _util
-
+from PIL import _imaging
 
 def test_is_path():
     # Arrange
