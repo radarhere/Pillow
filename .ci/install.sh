@@ -25,4 +25,4 @@ PYTHONOPTIMIZE=0 pip install cffi
 echo "PYR1"
 pip install pyroma
 echo "PYR2"
-pip install setuptools==49.0.0
+pip install setuptools==49.1.0
