@@ -22,4 +22,6 @@ sudo apt-get -qq install python3-tk libffi-dev libjpeg-turbo-progs libopenjp2-7-
 
 pip install --upgrade pip
 PYTHONOPTIMIZE=0 pip install cffi
+echo "PYR1"
 pip install pyroma
+echo "PYR2"
