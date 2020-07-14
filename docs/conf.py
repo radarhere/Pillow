@@ -115,7 +115,6 @@ nitpicky = True
 # if present. Example entries would be ('py:func', 'int') or
 # ('envvar', 'LD_LIBRARY_PATH').
 nitpick_ignore = [
-    ("py:meth", "CDC.GetHandleAttrib"),
     ("py:attr", "PIL.Image.Image.tag"),
     ("py:attr", "PIL.Image.Image.tag_v2"),
     ("py:attr", "PIL.Image.Image.tile"),
