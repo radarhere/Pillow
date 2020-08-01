@@ -44,6 +44,18 @@ install:
         c:\pillow\winbuild\build\build_dep_all.cmd
         $host.SetShouldExit(0)
       }
+- ps: Restart-Computer -Force
+- ps: |
+      if ($env:PYTHON -eq "c:/msys64/mingw32")
+      {
+        c:\msys64\usr\bin\bash -l -c c:\\pillow\\winbuild\\appveyor_install_msys2_deps2.sh
+      }
+      else
+      {
+        c:\python37\python.exe c:\pillow\winbuild\build_prepare.py -v --depends=C:\pillow-depends\
+        c:\pillow\winbuild\build\build_dep_all.cmd
+        $host.SetShouldExit(0)
+      }
 - path C:\pillow\winbuild\build\bin;%PATH%
 
 build_script:
