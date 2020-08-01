@@ -1,7 +1,15 @@
 #!/bin/sh
 
 mkdir /var/cache/pacman/pkg
-pacman-key --refresh-keys
+echo "FIRST"
+curl -O http://repo.msys2.org/msys/x86_64/msys2-keyring-r21.b39fb11-1-any.pkg.tar.xz
+echo "FIRST2"
+curl -O http://repo.msys2.org/msys/x86_64/msys2-keyring-r21.b39fb11-1-any.pkg.tar.xz.sig
+echo "FIRST3"
+pacman-key --verify msys2-keyring-r21.b39fb11-1-any.pkg.tar.xz{.sig,}
+echo "FIRST4"
+pacman -Uy msys2-keyring-r21.b39fb11-1-any.pkg.tar.xz
+echo "FIRST5"
 pacman -Syu --noconfirm mingw32/mingw-w64-i686-python3-pip \
      mingw32/mingw-w64-i686-python3-setuptools \
      mingw32/mingw-w64-i686-python3-pytest \
