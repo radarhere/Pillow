@@ -19,7 +19,6 @@ environment:
     DEPLOY: NO
 
 install:
-- ps: Restart-Computer -Force
 - curl -fsSL -o pillow-depends.zip https://github.com/python-pillow/pillow-depends/archive/master.zip
 - 7z x pillow-depends.zip -oc:\
 - mv c:\pillow-depends-master c:\pillow-depends
