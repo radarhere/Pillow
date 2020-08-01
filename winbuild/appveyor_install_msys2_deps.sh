@@ -8,6 +8,8 @@ curl -O http://repo.msys2.org/msys/x86_64/msys2-keyring-r21.b39fb11-1-any.pkg.ta
 echo "FIRST3"
 pacman -U --noconfirm msys2-keyring-r21.b39fb11-1-any.pkg.tar.xz
 echo "FIRST4"
+pacman -Syu
+echo "FIRST5"
 pacman -Syu --noconfirm mingw32/mingw-w64-i686-python3-pip \
      mingw32/mingw-w64-i686-python3-setuptools \
      mingw32/mingw-w64-i686-python3-pytest \
