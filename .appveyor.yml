@@ -46,6 +46,10 @@ install:
       }
 - ps: Restart-Computer -Force
 - ps: |
+      pacman -Syu --noconfirm && exit 0
+      echo "FIRST5"
+- ps: Restart-Computer -Force
+- ps: |
       if ($env:PYTHON -eq "c:/msys64/mingw32")
       {
         c:\msys64\usr\bin\bash -l -c c:\\pillow\\winbuild\\appveyor_install_msys2_deps2.sh
