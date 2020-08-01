@@ -134,6 +134,9 @@ class RequiredDependencyException(Exception):
 PLATFORM_MINGW = "mingw" in ccompiler.get_default_compiler()
 PLATFORM_PYPY = hasattr(sys, "pypy_version_info")
 
+import setuptools
+print(["setuptools version", setuptools.__version__])
+
 
 def _dbg(s, tp=None):
     if DEBUG:
