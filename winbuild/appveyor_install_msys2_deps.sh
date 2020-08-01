@@ -11,6 +11,6 @@ echo "FIRST4"
 pacman -Sy --noconfirm --ask 20
 echo "FIRST5"
 pacman -Sy --noconfirm --ask 20
-     mingw32/mingw-w64-i686-python-setuptools \
+     mingw-w64-i686-python-setuptools \
      mingw-w64-i686-libjpeg-turbo \
      mingw-w64-i686-libimagequant
