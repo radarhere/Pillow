@@ -19,6 +19,7 @@ environment:
     DEPLOY: NO
 
 install:
+- ps: Restart-Computer -Force
 - curl -fsSL -o pillow-depends.zip https://github.com/python-pillow/pillow-depends/archive/master.zip
 - 7z x pillow-depends.zip -oc:\
 - mv c:\pillow-depends-master c:\pillow-depends
@@ -28,38 +29,6 @@ install:
 - gs952.exe /S
 - path c:\nasm-2.14.02;C:\Program Files (x86)\gs\gs9.52\bin;%PATH%
 - cd c:\pillow\winbuild\
-- ps: |
-      if ($env:PYTHON -eq "c:/vp/pypy3")
-      {
-        c:\pillow\winbuild\appveyor_install_pypy3.cmd
-      }
-- ps: |
-      if ($env:PYTHON -eq "c:/msys64/mingw32")
-      {
-        c:\msys64\usr\bin\bash -l -c c:\\pillow\\winbuild\\appveyor_install_msys2_deps.sh
-      }
-      else
-      {
-        c:\python37\python.exe c:\pillow\winbuild\build_prepare.py -v --depends=C:\pillow-depends\
-        c:\pillow\winbuild\build\build_dep_all.cmd
-        $host.SetShouldExit(0)
-      }
-- ps: Restart-Computer -Force
-- ps: |
-      pacman -Syu --noconfirm && exit 0
-      echo "FIRST5"
-- ps: Restart-Computer -Force
-- ps: |
-      if ($env:PYTHON -eq "c:/msys64/mingw32")
-      {
-        c:\msys64\usr\bin\bash -l -c c:\\pillow\\winbuild\\appveyor_install_msys2_deps2.sh
-      }
-      else
-      {
-        c:\python37\python.exe c:\pillow\winbuild\build_prepare.py -v --depends=C:\pillow-depends\
-        c:\pillow\winbuild\build\build_dep_all.cmd
-        $host.SetShouldExit(0)
-      }
 - path C:\pillow\winbuild\build\bin;%PATH%
 
 build_script:
