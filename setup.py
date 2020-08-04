@@ -134,6 +134,36 @@ class RequiredDependencyException(Exception):
 PLATFORM_MINGW = "mingw" in ccompiler.get_default_compiler()
 PLATFORM_PYPY = hasattr(sys, "pypy_version_info")
 
+if sys.platform == "win32" and PLATFORM_MINGW:
+    from distutils import cygwinccompiler
+    from subprocess import Popen, PIPE
+
+    def patch():
+        """ Try to find out the versions of gcc, ld and dllwrap.
+
+        If not possible it returns None for it.
+        """
+        gcc = os.environ.get('CC') or 'gcc'
+        # MinGW64 doesn't have i686-w64-mingw32-ld, so instead we ask gcc.
+        gcc_ld = None
+        out = Popen(gcc+' --print-prog-name ld', shell=True, stdout=PIPE).stdout
+        try:
+            gcc_ld = test=str(out.read(),encoding='utf-8').strip()
+        finally:
+            out.close()
+        ld_exe_version = None
+        if gcc_ld is not None:
+            ld_exe_version = cygwinccompiler._find_exe_version(gcc_ld+' -v')
+        if ld_exe_version is None:
+            ld = 'ld'
+            ld_exe_version = cygwinccompiler._find_exe_version(ld+' -v')
+        dllwrap = os.environ.get('DLLWRAP') or 'dllwrap'
+        return (
+            cygwinccompiler._find_exe_version(gcc+' -dumpversion'),
+            ld_exe_version,
+            cygwinccompiler._find_exe_version(dllwrap+' --version'),
+        )
+    cygwinccompiler.get_versions = patch
 
 def _dbg(s, tp=None):
     if DEBUG:
