@@ -243,3 +243,8 @@ class TestPyDecoder:
         im = MockImageFile(buf)
         assert im.format is None
         assert im.get_format_mimetype() is None
+
+    def test_oserror(self):
+        im = Image.new("RGB", (1, 1))
+        with pytest.raises(OSError):
+            im.save(BytesIO(), "JPEG2000")
