@@ -133,18 +133,6 @@ class RequiredDependencyException(Exception):
 PLATFORM_MINGW = os.name == "nt" and "GCC" in sys.version
 PLATFORM_PYPY = hasattr(sys, "pypy_version_info")
 
-if sys.platform == "win32" and PLATFORM_MINGW:
-    from distutils import cygwinccompiler
-
-    cygwin_versions = cygwinccompiler.get_versions()
-    if cygwin_versions[1] is None:
-        # ld version is None
-        # distutils cygwinccompiler might fetch the ld path from gcc
-        # Try the normal path instead
-        cygwin_versions = list(cygwin_versions)
-        cygwin_versions[1] = cygwinccompiler._find_exe_version("ld -v")
-        cygwinccompiler.get_versions = lambda: tuple(cygwin_versions)
-
 
 def _dbg(s, tp=None):
     if DEBUG:
@@ -368,6 +356,8 @@ class pil_build_ext(build_ext):
                 break
 
     def build_extensions(self):
+        print("torch")
+        print(self.compiler)
 
         library_dirs = []
         include_dirs = []
