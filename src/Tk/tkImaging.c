@@ -100,7 +100,6 @@ PyImagingPhotoPut(ClientData clientdata, Tcl_Interp* interp,
         return TCL_ERROR;
     }
     printf("b\n");
-    return TCL_OK;
 
     /* get PIL Image handle */
     im = ImagingFind(argv[2]);
@@ -113,6 +112,7 @@ PyImagingPhotoPut(ClientData clientdata, Tcl_Interp* interp,
         return TCL_ERROR;
     }
     printf("c\n");
+    return TCL_OK;
 
     /* Mode */
 
