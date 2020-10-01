@@ -133,13 +133,13 @@ PyImagingPhotoPut(ClientData clientdata, Tcl_Interp* interp,
         return TCL_ERROR;
     }
     printf("d\n");
-    return TCL_OK;
 
     block.width = im->xsize;
     block.height = im->ysize;
     block.pitch = im->linesize;
     block.pixelPtr = (unsigned char*) im->block;
     printf("e\n");
+    return TCL_OK;
 
     if (TK_LT_85) { /* Tk 8.4 */
         TK_PHOTO_PUT_BLOCK_84(photo, &block, 0, 0, block.width, block.height,
