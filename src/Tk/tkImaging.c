@@ -84,7 +84,6 @@ PyImagingPhotoPut(ClientData clientdata, Tcl_Interp* interp,
     Tk_PhotoHandle photo;
     Tk_PhotoImageBlock block;
     printf("a\n");
-    return TCL_OK;
 
     if (argc != 3) {
         TCL_APPEND_RESULT(interp, "usage: ", argv[0],
@@ -101,6 +100,7 @@ PyImagingPhotoPut(ClientData clientdata, Tcl_Interp* interp,
         return TCL_ERROR;
     }
     printf("b\n");
+    return TCL_OK;
 
     /* get PIL Image handle */
     im = ImagingFind(argv[2]);
