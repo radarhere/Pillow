@@ -108,7 +108,7 @@ PyImagingPhotoPut(ClientData clientdata, Tcl_Interp* interp,
         return TCL_ERROR;
     }
     if (!im->block) {
-        TCL_APPEND_RESULT(interp, "bad display memory", (char*) NULL);
+        //TCL_APPEND_RESULT(interp, "bad display memory", (char*) NULL);
         return TCL_ERROR;
     }
     return TCL_OK;
