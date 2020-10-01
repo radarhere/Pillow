@@ -103,11 +103,11 @@ PyImagingPhotoPut(ClientData clientdata, Tcl_Interp* interp,
 
     /* get PIL Image handle */
     im = ImagingFind(argv[2]);
-    return TCL_OK;
     if (!im) {
         TCL_APPEND_RESULT(interp, "bad name", (char*) NULL);
         return TCL_ERROR;
     }
+    return TCL_OK;
     if (!im->block) {
         TCL_APPEND_RESULT(interp, "bad display memory", (char*) NULL);
         return TCL_ERROR;
