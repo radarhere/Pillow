@@ -103,6 +103,7 @@ PyImagingPhotoPut(ClientData clientdata, Tcl_Interp* interp,
 
     /* get PIL Image handle */
     im = ImagingFind(argv[2]);
+    return TCL_OK;
     if (!im) {
         TCL_APPEND_RESULT(interp, "bad name", (char*) NULL);
         return TCL_ERROR;
@@ -139,7 +140,6 @@ PyImagingPhotoPut(ClientData clientdata, Tcl_Interp* interp,
     block.pitch = im->linesize;
     block.pixelPtr = (unsigned char*) im->block;
     printf("e\n");
-    return TCL_OK;
 
     if (TK_LT_85) { /* Tk 8.4 */
         TK_PHOTO_PUT_BLOCK_84(photo, &block, 0, 0, block.width, block.height,
