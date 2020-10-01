@@ -192,9 +192,11 @@ class PhotoImage:
                         _imagingtk.tkinit(int(ffi.cast("uintptr_t", tk.interp)), 1)
                     else:
                         _imagingtk.tkinit(tk.interpaddr(), 1)
+                        print("here")
                 except AttributeError:
                     _imagingtk.tkinit(id(tk), 0)
-                tk.call("PyImagingPhoto", self.__photo, block.id)
+                print("here2", self.__photo, block.id)
+                #tk.call("PyImagingPhoto", self.__photo, block.id)
             except (ImportError, AttributeError, tkinter.TclError):
                 raise  # configuration problem; cannot attach to Tkinter
 
