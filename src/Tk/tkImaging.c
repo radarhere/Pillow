@@ -112,7 +112,6 @@ PyImagingPhotoPut(ClientData clientdata, Tcl_Interp* interp,
         return TCL_ERROR;
     }
     printf("c\n");
-    return TCL_OK;
 
     /* Mode */
 
@@ -134,6 +133,7 @@ PyImagingPhotoPut(ClientData clientdata, Tcl_Interp* interp,
         return TCL_ERROR;
     }
     printf("d\n");
+    return TCL_OK;
 
     block.width = im->xsize;
     block.height = im->ysize;
