@@ -196,7 +196,7 @@ class PhotoImage:
                 except AttributeError:
                     _imagingtk.tkinit(id(tk), 0)
                 print("here2", self.__photo, block.id)
-                #tk.call("PyImagingPhoto", self.__photo, block.id)
+                tk.call("PyImagingPhoto", self.__photo, block.id)
             except (ImportError, AttributeError, tkinter.TclError):
                 raise  # configuration problem; cannot attach to Tkinter
 
