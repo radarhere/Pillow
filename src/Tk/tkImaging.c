@@ -83,6 +83,7 @@ PyImagingPhotoPut(ClientData clientdata, Tcl_Interp* interp,
     Imaging im;
     Tk_PhotoHandle photo;
     Tk_PhotoImageBlock block;
+    printf("a\n");
 
     if (argc != 3) {
         TCL_APPEND_RESULT(interp, "usage: ", argv[0],
@@ -98,6 +99,7 @@ PyImagingPhotoPut(ClientData clientdata, Tcl_Interp* interp,
             );
         return TCL_ERROR;
     }
+    printf("b\n");
 
     /* get PIL Image handle */
     im = ImagingFind(argv[2]);
@@ -109,6 +111,7 @@ PyImagingPhotoPut(ClientData clientdata, Tcl_Interp* interp,
         TCL_APPEND_RESULT(interp, "bad display memory", (char*) NULL);
         return TCL_ERROR;
     }
+    printf("c\n");
 
     /* Mode */
 
@@ -129,11 +132,13 @@ PyImagingPhotoPut(ClientData clientdata, Tcl_Interp* interp,
         TCL_APPEND_RESULT(interp, "Bad mode", (char*) NULL);
         return TCL_ERROR;
     }
+    printf("d\n");
 
     block.width = im->xsize;
     block.height = im->ysize;
     block.pitch = im->linesize;
     block.pixelPtr = (unsigned char*) im->block;
+    printf("e\n");
 
     if (TK_LT_85) { /* Tk 8.4 */
         TK_PHOTO_PUT_BLOCK_84(photo, &block, 0, 0, block.width, block.height,
@@ -148,6 +153,7 @@ PyImagingPhotoPut(ClientData clientdata, Tcl_Interp* interp,
         TK_PHOTO_PUT_BLOCK_85(interp, photo, &block, 0, 0, block.width,
                 block.height, TK_PHOTO_COMPOSITE_SET);
     }
+    printf("f\n");
 
     return TCL_OK;
 }
