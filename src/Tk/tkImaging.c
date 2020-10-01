@@ -83,7 +83,6 @@ PyImagingPhotoPut(ClientData clientdata, Tcl_Interp* interp,
     Imaging im;
     Tk_PhotoHandle photo;
     Tk_PhotoImageBlock block;
-    TCL_APPEND_RESULT(interp, "bad name", (char*) NULL);
     return TCL_ERROR;
     printf("a\n");
 
