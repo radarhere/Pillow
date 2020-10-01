@@ -84,6 +84,7 @@ PyImagingPhotoPut(ClientData clientdata, Tcl_Interp* interp,
     Tk_PhotoHandle photo;
     Tk_PhotoImageBlock block;
     printf("a\n");
+    return TCL_OK;
 
     if (argc != 3) {
         TCL_APPEND_RESULT(interp, "usage: ", argv[0],
