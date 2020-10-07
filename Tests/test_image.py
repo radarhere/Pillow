@@ -746,9 +746,14 @@ class TestImage:
                 4098: 1704,
             }
 
+            reloaded_exif = Image.Exif()
+            reloaded_exif.load(exif.tobytes())
+            assert reloaded_exif.get_ifd(0xA005) == exif.get_ifd(0xA005)
+
     def test_exif_ifd(self):
         im = Image.open("Tests/images/flower.jpg")
         exif = im.getexif()
+        del exif.get_ifd(0x8769)[0xA005]
 
         reloaded_exif = Image.Exif()
         reloaded_exif.load(exif.tobytes())
