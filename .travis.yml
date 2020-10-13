@@ -15,36 +15,9 @@ notifications:
 matrix:
   fast_finish: true
   include:
-    - python: "3.6"
-      name: "Lint"
-      env: LINT="true"
-
-    - python: "3.6"
-      arch: arm64
-    - python: "3.7"
-      arch: ppc64le
-    - python: "3.8"
-      arch: s390x
-
-    - python: "pypy3.6-7.3.1"
-      name: "PyPy3 Xenial"
-    - python: "3.9-dev"
-      name: "3.9-dev Xenial"
+    - python: "3.9"
+      name: "3.9 Xenial"
       services: xvfb
-    - python: "3.8"
-      name: "3.8 Xenial"
-      services: xvfb
-    - python: '3.7'
-      name: "3.7 Xenial PYTHONOPTIMIZE=2"
-      env: PYTHONOPTIMIZE=2
-      services: xvfb
-    - python: '3.6'
-      name: "3.6 Xenial PYTHONOPTIMIZE=1"
-      env: PYTHONOPTIMIZE=1
-      services: xvfb
-
-  allow_failures:
-  - python: "3.9-dev"
 
 install:
   - |
