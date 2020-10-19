@@ -35,16 +35,6 @@ jobs:
         repository: python-pillow/pillow-depends
         path: winbuild\depends
 
-    - name: Cache pip
-      uses: actions/cache@v2
-      with:
-        path: ~\AppData\Local\pip\Cache
-        key:
-          ${{ runner.os }}-${{ matrix.python-version }}-${{ matrix.architecture }}-${{ hashFiles('**/.github/workflows/test-windows.yml') }}
-        restore-keys: |
-          ${{ runner.os }}-${{ matrix.python-version }}-${{ matrix.architecture }}-
-          ${{ runner.os }}-${{ matrix.python-version }}-
-
     # sets env: pythonLocation
     - name: Set up Python
       uses: actions/setup-python@v2
@@ -54,6 +44,20 @@ jobs:
 
     - name: Print build system information
       run: python .github/workflows/system-info.py
+
+    - name: Add pip to path
+      if: "contains(matrix.python-version, '3.9')"
+      run: echo "${{ env.pythonLocation }}\Scripts" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
+
+    - name: Cache pip
+      uses: actions/cache@v2
+      with:
+        path: ~\AppData\Local\pip\Cache
+        key:
+          ${{ runner.os }}-${{ matrix.python-version }}-${{ matrix.architecture }}-${{ hashFiles('**/.github/workflows/test-windows.yml') }}
+        restore-keys: |
+          ${{ runner.os }}-${{ matrix.python-version }}-${{ matrix.architecture }}-
+          ${{ runner.os }}-${{ matrix.python-version }}-
 
     - name: pip install wheel pytest pytest-cov
       run: python -m pip install wheel pytest pytest-cov
