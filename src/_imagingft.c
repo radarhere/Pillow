@@ -49,8 +49,21 @@
 #define FT_ERROR_START_LIST  {
 #define FT_ERROR_END_LIST    { 0, 0 } };
 
-#include "thirdparty/raqm/raqm.h"
-#include "thirdparty/fribidi-shim/fribidi.h"
+#ifdef HAVE_RAQM
+# ifdef HAVE_RAQM_SYSTEM
+#  include <raqm.h>
+# else
+#  include "thirdparty/raqm/raqm.h"
+#  ifdef HAVE_FRIBIDI_SYSTEM
+#   include <fribidi.h>
+#  else
+#   include "thirdparty/fribidi-shim/fribidi.h"
+#   include <hb.h>
+#  endif
+# endif
+#endif
+
+static int have_raqm = 0;
 
 #define LAYOUT_FALLBACK 0
 #define LAYOUT_RAQM 1
@@ -99,12 +112,6 @@ geterror(int code)
 
     PyErr_SetString(PyExc_OSError, "unknown freetype error");
     return NULL;
-}
-
-static int
-setraqm(void)
-{
-    return load_fribidi();
 }
 
 static PyObject*
@@ -443,7 +450,7 @@ text_layout(PyObject* string, FontObject* self, const char* dir, PyObject *featu
 {
     size_t count;
 
-    if (p_fribidi && self->layout_engine == LAYOUT_RAQM) {
+    if (have_raqm && self->layout_engine == LAYOUT_RAQM) {
         count = text_layout_raqm(string, self, dir, features, lang, glyph_info,  mask, color);
     } else {
         count = text_layout_fallback(string, self, dir, features, lang, glyph_info, mask, color);
@@ -1327,15 +1334,51 @@ setup_module(PyObject* m) {
     v = PyUnicode_FromFormat("%d.%d.%d", major, minor, patch);
     PyDict_SetItemString(d, "freetype2_version", v);
 
+#ifdef HAVE_RAQM
+#ifdef HAVE_FRIBIDI_SYSTEM
+    have_raqm = 1;
+#else
+    load_fribidi();
+    have_raqm = !!p_fribidi;
+#endif
+#else
+    have_raqm = 0;
+#endif
 
-    setraqm();
-    v = PyBool_FromLong(!!p_fribidi);
+    /* if we have Raqm, we have all three (but possibly no version info) */
+    v = PyBool_FromLong(have_raqm);
     PyDict_SetItemString(d, "HAVE_RAQM", v);
-//    if (p_raqm.version_string) {
-        PyDict_SetItemString(d, "raqm_version", PyUnicode_FromString(raqm_version_string()));
-//    };
-
     PyDict_SetItemString(d, "HAVE_FRIBIDI", v);
+    PyDict_SetItemString(d, "HAVE_HARFBUZZ", v);
+    if (have_raqm) {
+        const char *a, *b;
+#ifdef RAQM_VERSION_MAJOR
+        v = PyUnicode_FromString(raqm_version_string());
+#else
+        v = Py_None;
+#endif
+        PyDict_SetItemString(d, "raqm_version", v);
+
+#ifdef FRIBIDI_MAJOR_VERSION
+        a = strchr(fribidi_version_info, '1');
+        b = strchr(fribidi_version_info, '\n');
+        if (a && b) {
+            v = PyUnicode_FromStringAndSize(a, b - a);
+        } else {
+            v = Py_None;
+        }
+#else
+        v = Py_None;
+#endif
+        PyDict_SetItemString(d, "fribidi_version", v);
+
+#ifdef HB_VERSION_STRING
+        v = PyUnicode_FromString(hb_version_string());
+#else
+        v = Py_None;
+#endif
+        PyDict_SetItemString(d, "harfbuzz_version", v);
+    }
 
     return 0;
 }
