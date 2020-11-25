@@ -216,6 +216,8 @@ font_getchar(PyObject* string, int index, FT_ULong* char_out)
     return 0;
 }
 
+#ifdef HAVE_RAQM
+
 static size_t
 text_layout_raqm(PyObject* string, FontObject* self, const char* dir, PyObject *features,
                  const char* lang, GlyphInfo **glyph_info, int mask, int color)
@@ -373,6 +375,8 @@ failed:
     return count;
 }
 
+#endif
+
 static size_t
 text_layout_fallback(PyObject* string, FontObject* self, const char* dir, PyObject *features,
                      const char* lang, GlyphInfo **glyph_info, int mask, int color)
@@ -449,10 +453,12 @@ text_layout(PyObject* string, FontObject* self, const char* dir, PyObject *featu
             const char* lang, GlyphInfo **glyph_info, int mask, int color)
 {
     size_t count;
-
+#ifdef HAVE_RAQM
     if (have_raqm && self->layout_engine == LAYOUT_RAQM) {
         count = text_layout_raqm(string, self, dir, features, lang, glyph_info,  mask, color);
-    } else {
+    } else
+#endif
+    {
         count = text_layout_fallback(string, self, dir, features, lang, glyph_info, mask, color);
     }
     return count;
@@ -1335,7 +1341,7 @@ setup_module(PyObject* m) {
     PyDict_SetItemString(d, "freetype2_version", v);
 
 #ifdef HAVE_RAQM
-#ifdef HAVE_FRIBIDI_SYSTEM
+#if defined(HAVE_RAQM_SYSTEM) || defined(HAVE_FRIBIDI_SYSTEM)
     have_raqm = 1;
 #else
     load_fribidi();
