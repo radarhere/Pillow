@@ -11,10 +11,13 @@ pytestmark = pytest.mark.skipif(
 if ImageQt.qt_is_installed:
     from PIL.ImageQt import QImage
 
-    try:
+    if ImageQt.qt_version == "side6":
+        from PySide6 import QtGui
+        from PySide6.QtWidgets import QApplication, QHBoxLayout, QLabel, QWidget
+    elif ImageQt.qt_version == "5":
         from PyQt5 import QtGui
         from PyQt5.QtWidgets import QApplication, QHBoxLayout, QLabel, QWidget
-    except (ImportError, RuntimeError):
+    elif ImageQt.qt_version == "side2":
         from PySide2 import QtGui
         from PySide2.QtWidgets import QApplication, QHBoxLayout, QLabel, QWidget
 
