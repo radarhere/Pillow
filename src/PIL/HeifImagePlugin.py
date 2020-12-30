@@ -7,6 +7,7 @@ try:
 except ImportError:
     pyheif = None
 
+
 def _accept(prefix):
     check = pyheif.check(prefix)
     return check != pyheif.heif_filetype_no
@@ -25,7 +26,9 @@ class HeifImageFile(ImageFile.ImageFile):
         self._size = heif_file.size
         self.mode = heif_file.mode
         self.fp = io.BytesIO(heif_file.data)
-        self.tile = [("raw", (0, 0) + heif_file.size, 0, (heif_file.mode, heif_file.stride))]
+        self.tile = [
+            ("raw", (0, 0) + heif_file.size, 0, (heif_file.mode, heif_file.stride))
+        ]
 
 
 if pyheif:
@@ -33,4 +36,3 @@ if pyheif:
     Image.register_extensions(HeifImageFile.format, [".heif", ".heic", ".hif"])
     Image.register_mime(HeifImageFile.format, "image/heif")
     Image.register_mime(HeifImageFile.format, "image/heic")
-
