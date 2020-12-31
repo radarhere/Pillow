@@ -11,13 +11,6 @@ pytestmark = pytest.mark.skipif(
 if ImageQt.qt_is_installed:
     from PIL.ImageQt import QImage
 
-    if ImageQt.qt_version == "side6":
-        from PySide6.QtWidgets import QApplication, QHBoxLayout, QLabel, QWidget
-    elif ImageQt.qt_version == "5":
-        from PyQt5.QtWidgets import QApplication, QHBoxLayout, QLabel, QWidget
-    elif ImageQt.qt_version == "side2":
-        from PySide2.QtWidgets import QApplication, QHBoxLayout, QLabel, QWidget
-
 
 def test_sanity(tmp_path):
     for mode in ("RGB", "RGBA", "L", "P", "1"):
@@ -49,29 +42,3 @@ def test_sanity(tmp_path):
         # Check that it actually worked.
         with Image.open(tempfile) as reloaded:
             assert_image_equal(reloaded, src)
-
-
-def test_segfault():
-    app = QApplication([])
-    ex = Example()
-    assert app  # Silence warning
-    assert ex  # Silence warning
-
-
-if ImageQt.qt_is_installed:
-
-    class Example(QWidget):
-        def __init__(self):
-            super().__init__()
-
-            img = hopper().resize((1000, 1000))
-
-            qimage = ImageQt.ImageQt(img)
-
-            pixmap1 = ImageQt.QPixmap.fromImage(qimage)
-
-            QHBoxLayout(self)  # hbox
-
-            lbl = QLabel(self)
-            # Segfault in the problem
-            lbl.setPixmap(pixmap1.copy())
