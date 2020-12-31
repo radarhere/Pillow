@@ -4,6 +4,7 @@ from PIL import ImageQt
 
 from .helper import assert_image_equal, hopper
 
+app = None
 if ImageQt.qt_is_installed:
     from PIL.ImageQt import QPixmap
 
@@ -46,7 +47,6 @@ def roundtrip(expected):
 def test_sanity(tmp_path):
     # Segfault test
     ex = Example()
-    assert app  # Silence warning
     assert ex  # Silence warning
 
     # class TestFromQPixmap(PillowQPixmapTestCase):
@@ -63,6 +63,3 @@ def test_sanity(tmp_path):
         # Test saving the file
         tempfile = str(tmp_path / f"temp_{mode}.png")
         data.save(tempfile)
-
-    app.quit()
-    app = None
