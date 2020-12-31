@@ -17,6 +17,8 @@ if ImageQt.qt_is_installed:
         from PySide2 import QtGui
         from PySide2.QtWidgets import QApplication, QHBoxLayout, QLabel, QWidget
 
+    app = QApplication([])
+
     class Example(QWidget):
         def __init__(self):
             super().__init__()
@@ -43,7 +45,6 @@ def roundtrip(expected):
 @pytest.mark.skipif(not ImageQt.qt_is_installed, reason="Qt bindings are not installed")
 def test_sanity(tmp_path):
     # Segfault test
-    app = QApplication([])
     ex = Example()
     assert app  # Silence warning
     assert ex  # Silence warning
