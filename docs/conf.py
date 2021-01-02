@@ -32,6 +32,7 @@ extensions = [
     "sphinx.ext.autodoc",
     "sphinx.ext.intersphinx",
     "sphinx.ext.viewcode",
+    "sphinx_issues",
     "sphinx_removed_in",
 ]
 
@@ -50,7 +51,7 @@ master_doc = "index"
 
 # General information about the project.
 project = "Pillow (PIL Fork)"
-copyright = "1995-2011 Fredrik Lundh, 2010-2020 Alex Clark and Contributors"
+copyright = "1995-2011 Fredrik Lundh, 2010-2021 Alex Clark and Contributors"
 author = "Fredrik Lundh, Alex Clark and Contributors"
 
 # The version info for the project you're documenting, acts as replacement for
@@ -310,3 +311,4 @@ texinfo_documents = [
 def setup(app):
     app.add_js_file("js/script.js")
     app.add_css_file("css/dark.css")
+    app.add_css_file("css/light.css")

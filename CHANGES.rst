@@ -5,6 +5,54 @@ Changelog (Pillow)
 8.1.0 (unreleased)
 ------------------
 
+- Fix OOB Read when saving GIF of xsize=1 #5149
+  [wiredfool]
+
+- Makefile updates #5159
+  [wiredfool, radarhere]
+
+- Add support for PySide6 #5161
+  [hugovk]
+
+- Use disposal settings from previous frame in APNG #5126
+  [radarhere]
+
+- Added exception explaining that _repr_png_ saves to PNG #5139
+  [radarhere]
+
+- Use previous disposal method in GIF load_end #5125
+  [radarhere]
+
+- Allow putpalette to accept 1024 integers to include alpha values #5089
+  [radarhere]
+
+- Fix OOB Read when writing TIFF with custom Metadata #5148
+  [wiredfool]
+
+- Added append_images support for ICO #4568
+  [ziplantil, radarhere]
+
+- Block TIFFTAG_SUBIFD #5120
+  [radarhere]
+
+- Fixed dereferencing potential null pointers #5108, #5111
+  [cgohlke, radarhere]
+
+- Deprecate FreeType 2.7 #5098
+  [hugovk, radarhere]
+
+- Moved warning to end of execution #4965
+  [radarhere]
+
+- Removed unused fromstring and tostring C methods #5026
+  [radarhere]
+
+- init() if one of the formats is unrecognised #5037
+  [radarhere]
+
+- Moved string_dimension CVE image to pillow-depends #4993
+  [radarhere]
+
 - Support raw rgba8888 for DDS #4760
   [qiankanglai]
 
@@ -4039,8 +4087,8 @@ Changelog (Pillow)
 1.0 (07/30/2010)
 ----------------
 
-- Remove support for ``import Image``, etc. from the standard namespace. ``from PIL import Image`` etc. now required.
-- Forked PIL based on `Hanno Schlichting's re-packaging <https://dist.plone.org/thirdparty/PIL-1.1.7.tar.gz>`_
+- Remove support for ``import Image``. ``from PIL import Image`` now required.
+- Forked PIL based on `Chris McDonough and Hanno Schlichting's setuptools compatible re-packaging <https://dist.plone.org/thirdparty/PIL-1.1.7.tar.gz>`_
   [aclark4life]
 
 Pre-fork

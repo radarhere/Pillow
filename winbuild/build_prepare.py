@@ -141,9 +141,9 @@ deps = {
         "libs": [r"*.lib"],
     },
     "libtiff": {
-        "url": "https://download.osgeo.org/libtiff/tiff-4.1.0.tar.gz",
-        "filename": "tiff-4.1.0.tar.gz",
-        "dir": "tiff-4.1.0",
+        "url": "https://download.osgeo.org/libtiff/tiff-4.2.0.tar.gz",
+        "filename": "tiff-4.2.0.tar.gz",
+        "dir": "tiff-4.2.0",
         "build": [
             cmd_copy(r"{winbuild_dir}\tiff.opt", "nmake.opt"),
             cmd_nmake("makefile.vc", "clean"),
@@ -242,15 +242,15 @@ deps = {
         "libs": [r"Lib\MS\*.lib"],
     },
     "openjpeg": {
-        "url": "https://github.com/uclouvain/openjpeg/archive/v2.3.1.tar.gz",
-        "filename": "openjpeg-2.3.1.tar.gz",
-        "dir": "openjpeg-2.3.1",
+        "url": "https://github.com/uclouvain/openjpeg/archive/v2.4.0.tar.gz",
+        "filename": "openjpeg-2.4.0.tar.gz",
+        "dir": "openjpeg-2.4.0",
         "build": [
             cmd_cmake(("-DBUILD_THIRDPARTY:BOOL=OFF", "-DBUILD_SHARED_LIBS:BOOL=OFF")),
             cmd_nmake(target="clean"),
             cmd_nmake(target="openjp2"),
-            cmd_mkdir(r"{inc_dir}\openjpeg-2.3.1"),
-            cmd_copy(r"src\lib\openjp2\*.h", r"{inc_dir}\openjpeg-2.3.1"),
+            cmd_mkdir(r"{inc_dir}\openjpeg-2.4.0"),
+            cmd_copy(r"src\lib\openjp2\*.h", r"{inc_dir}\openjpeg-2.4.0"),
         ],
         "libs": [r"bin\*.lib"],
     },
@@ -275,9 +275,9 @@ deps = {
         "libs": [r"*.lib"],
     },
     "harfbuzz": {
-        "url": "https://github.com/harfbuzz/harfbuzz/archive/2.7.2.zip",
-        "filename": "harfbuzz-2.7.2.zip",
-        "dir": "harfbuzz-2.7.2",
+        "url": "https://github.com/harfbuzz/harfbuzz/archive/2.7.4.zip",
+        "filename": "harfbuzz-2.7.4.zip",
+        "dir": "harfbuzz-2.7.4",
         "build": [
             cmd_cmake("-DHB_HAVE_FREETYPE:BOOL=TRUE"),
             cmd_nmake(target="clean"),
@@ -287,9 +287,9 @@ deps = {
         "libs": [r"*.lib"],
     },
     "fribidi": {
-        "url": "https://github.com/fribidi/fribidi/archive/v1.0.9.zip",
-        "filename": "fribidi-1.0.9.zip",
-        "dir": "fribidi-1.0.9",
+        "url": "https://github.com/fribidi/fribidi/archive/v1.0.10.zip",
+        "filename": "fribidi-1.0.10.zip",
+        "dir": "fribidi-1.0.10",
         "build": [
             cmd_copy(r"{winbuild_dir}\fribidi.cmake", r"CMakeLists.txt"),
             cmd_cmake(),
