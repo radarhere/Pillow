@@ -1123,7 +1123,7 @@ typedef struct {
 typedef void (*clip_ellipse_init)(
     clip_ellipse_state *, int32_t, int32_t, int32_t, float, float);
 
-void
+/*void
 debug_clip_tree(clip_node *root, int space) {
     if (root == NULL) {
         return;
@@ -1146,7 +1146,7 @@ debug_clip_tree(clip_node *root, int space) {
     if (space == 0) {
         fputc('\n', stderr);
     }
-}
+}*/
 
 // Resulting angles will satisfy 0 <= al < 360, al <= ar <= al + 360
 void
