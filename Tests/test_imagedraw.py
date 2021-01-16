@@ -728,6 +728,29 @@ def test_rounded_rectangle_zero_radius():
     assert_image_equal(im, Image.open(expected))
 
 
+@pytest.mark.parametrize(
+    "xy, suffix",
+    [
+        ((20, 10, 80, 90), "x"),
+        ((10, 20, 90, 80), "y"),
+        ((20, 20, 80, 80), "both"),
+    ],
+)
+def test_rounded_rectangle_translucent(xy, suffix):
+    # Arrange
+    im = Image.new("RGB", (W, H))
+    draw = ImageDraw.Draw(im, "RGBA")
+    expected = "Tests/images/imagedraw_rounded_rectangle_" + suffix + ".png"
+
+    # Act
+    draw.rounded_rectangle(
+        xy, 30, fill=(255, 0, 0, 127), outline=(0, 255, 0, 127), width=5
+    )
+
+    # Assert
+    assert_image_equal(im, Image.open(expected))
+
+
 def test_floodfill():
     red = ImageColor.getrgb("red")
 
