@@ -699,6 +699,35 @@ def test_rectangle_I16():
     )
 
 
+@pytest.mark.parametrize(
+    "xy",
+    [(10, 20, 190, 180), ([10, 20], [190, 180]), ((10, 20), (190, 180))],
+)
+def test_rounded_rectangle(xy):
+    # Arrange
+    im = Image.new("RGB", (200, 200))
+    draw = ImageDraw.Draw(im)
+
+    # Act
+    draw.rounded_rectangle(xy, 30, fill="red", outline="green", width=5)
+
+    # Assert
+    assert_image_equal(im, Image.open("Tests/images/imagedraw_rounded_rectangle.png"))
+
+
+def test_rounded_rectangle_zero_radius():
+    # Arrange
+    im = Image.new("RGB", (W, H))
+    draw = ImageDraw.Draw(im)
+    expected = "Tests/images/imagedraw_rectangle_width_fill.png"
+
+    # Act
+    draw.rounded_rectangle(BBOX1, 0, fill="blue", outline="green", width=5)
+
+    # Assert
+    assert_image_equal(im, Image.open(expected))
+
+
 def test_floodfill():
     red = ImageColor.getrgb("red")
 
