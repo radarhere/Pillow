@@ -57,11 +57,7 @@ def has_ghostscript():
                     gs_windows_binary = False
             gs_binary = gs_windows_binary
         else:
-            try:
-                subprocess.check_call(["gs", "--version"], stdout=subprocess.DEVNULL)
-                gs_binary = "gs"
-            except OSError:
-                gs_binary = False
+            gs_binary = False
     return gs_binary is not False
 
 
