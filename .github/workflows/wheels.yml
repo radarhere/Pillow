@@ -2,23 +2,7 @@ name: Wheels
 
 on:
   push:
-    paths:
-      - ".ci/requirements-cibw.txt"
-      - ".github/workflows/wheel*"
-      - "setup.py"
-      - "wheels/*"
-      - "winbuild/build_prepare.py"
-      - "winbuild/fribidi.cmake"
-    tags:
-      - "*"
   pull_request:
-    paths:
-      - ".ci/requirements-cibw.txt"
-      - ".github/workflows/wheel*"
-      - "setup.py"
-      - "wheels/*"
-      - "winbuild/build_prepare.py"
-      - "winbuild/fribidi.cmake"
   workflow_dispatch:
 
 permissions:
