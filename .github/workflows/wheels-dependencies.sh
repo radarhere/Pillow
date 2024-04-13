@@ -83,21 +83,10 @@ function build {
     build_simple libxcb $LIBXCB_VERSION https://www.x.org/releases/individual/lib
 
     build_libjpeg_turbo
-    build_tiff
     build_libpng
-    build_lcms2
-    build_openjpeg
     if [ -f /usr/local/lib64/libopenjp2.so ]; then
         cp /usr/local/lib64/libopenjp2.so /usr/local/lib
     fi
-
-    ORIGINAL_CFLAGS=$CFLAGS
-    CFLAGS="$CFLAGS -O3 -DNDEBUG"
-    if [[ -n "$IS_MACOS" ]]; then
-        CFLAGS="$CFLAGS -Wl,-headerpad_max_install_names"
-    fi
-    build_libwebp
-    CFLAGS=$ORIGINAL_CFLAGS
 
     build_brotli
 
