@@ -301,22 +301,6 @@ def netpbm_available() -> bool:
 
 
 def magick_command() -> list[str] | None:
-    if sys.platform == "win32":
-        magickhome = os.environ.get("MAGICK_HOME")
-        if magickhome:
-            imagemagick = [os.path.join(magickhome, "convert.exe")]
-            graphicsmagick = [os.path.join(magickhome, "gm.exe"), "convert"]
-        else:
-            imagemagick = None
-            graphicsmagick = None
-    else:
-        imagemagick = ["convert"]
-        graphicsmagick = ["gm", "convert"]
-
-    if imagemagick and shutil.which(imagemagick[0]):
-        return imagemagick
-    if graphicsmagick and shutil.which(graphicsmagick[0]):
-        return graphicsmagick
     return None
 
 
