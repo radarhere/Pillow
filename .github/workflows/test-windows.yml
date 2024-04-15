@@ -22,10 +22,6 @@ on:
 permissions:
   contents: read
 
-concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
-
 env:
   COVERAGE_CORE: sysmon
 
@@ -145,10 +141,6 @@ jobs:
     - name: Build dependencies / FreeType
       if: steps.build-cache.outputs.cache-hit != 'true'
       run: "& winbuild\\build\\build_dep_freetype.cmd"
-
-    - name: Build dependencies / LCMS2
-      if: steps.build-cache.outputs.cache-hit != 'true'
-      run: "& winbuild\\build\\build_dep_lcms2.cmd"
 
     - name: Build dependencies / OpenJPEG
       if: steps.build-cache.outputs.cache-hit != 'true'
