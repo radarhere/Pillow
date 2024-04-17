@@ -83,6 +83,7 @@ function build {
     build_simple libxcb $LIBXCB_VERSION https://www.x.org/releases/individual/lib
 
     build_libjpeg_turbo
+    build_tiff
     build_libpng
     if [ -f /usr/local/lib64/libopenjp2.so ]; then
         cp /usr/local/lib64/libopenjp2.so /usr/local/lib
