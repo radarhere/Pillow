@@ -456,6 +456,7 @@ OPJ_BOOL opj_t2_decode_packets(opj_tcd_t* tcd,
         memset(first_pass_failed, OPJ_TRUE, l_image->numcomps * sizeof(OPJ_BOOL));
 
         printf("start while %d %d\n", l_tcp->num_layers_to_decode, (int)time(NULL));
+        exit(0);
         while (opj_pi_next(l_current_pi)) {
             OPJ_BOOL skip_packet = OPJ_FALSE;
             JAS_FPRINTF(stderr,
