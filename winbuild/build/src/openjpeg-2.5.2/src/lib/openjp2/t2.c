@@ -455,6 +455,7 @@ OPJ_BOOL opj_t2_decode_packets(opj_tcd_t* tcd,
         }
         memset(first_pass_failed, OPJ_TRUE, l_image->numcomps * sizeof(OPJ_BOOL));
 
+        printf("start while %d %d\n", l_tcp->num_layers_to_decode, (int)time(NULL));
         while (opj_pi_next(l_current_pi)) {
             OPJ_BOOL skip_packet = OPJ_FALSE;
             JAS_FPRINTF(stderr,
@@ -511,6 +512,7 @@ OPJ_BOOL opj_t2_decode_packets(opj_tcd_t* tcd,
                                            &l_nb_bytes_read, p_max_len, l_pack_info, p_manager)) {
                     opj_pi_destroy(l_pi, l_nb_pocs);
                     opj_free(first_pass_failed);
+                    printf("return\n");
                     return OPJ_FALSE;
                 }
 
@@ -523,6 +525,7 @@ OPJ_BOOL opj_t2_decode_packets(opj_tcd_t* tcd,
                                          &l_nb_bytes_read, p_max_len, l_pack_info, p_manager)) {
                     opj_pi_destroy(l_pi, l_nb_pocs);
                     opj_free(first_pass_failed);
+                    printf("return2\n");
                     return OPJ_FALSE;
                 }
             }
@@ -571,6 +574,7 @@ OPJ_BOOL opj_t2_decode_packets(opj_tcd_t* tcd,
 
         opj_free(first_pass_failed);
     }
+    printf("end while %d\n", (int)time(NULL));
     /* INDEX >> */
 #ifdef TODO_MSD
     if
