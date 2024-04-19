@@ -572,7 +572,10 @@ def build_dep(name: str, prefs: dict[str, str], verbose: bool) -> str:
     license_dir = prefs["license_dir"]
     sources_dir = prefs["src_dir"]
 
-    extract_dep(dep["url"], dep["filename"], prefs)
+    if name == "openjpeg":
+        print("torch skip")
+    else:
+        extract_dep(dep["url"], dep["filename"], prefs)
 
     licenses = dep["license"]
     if isinstance(licenses, str):
@@ -729,8 +732,7 @@ def main() -> None:
     # copy dependency licenses to this directory
     license_dir = os.path.join(args.build_dir, "license")
 
-    shutil.rmtree(args.build_dir, ignore_errors=True)
-    os.makedirs(args.build_dir, exist_ok=False)
+    os.makedirs(args.build_dir, exist_ok=True)
     for path in [inc_dir, lib_dir, bin_dir, sources_dir, license_dir]:
         os.makedirs(path, exist_ok=True)
 
