@@ -603,6 +603,7 @@ OPJ_BOOL OPJ_CALLCONV opj_decode_tile_data(opj_codec_t *p_codec,
         }
 
         printf("a\n");
+        exit(0);
         return l_codec->m_codec_data.m_decompression.opj_decode_tile_data(
                    l_codec->m_codec,
                    p_tile_index,
