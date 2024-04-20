@@ -457,6 +457,7 @@ OPJ_BOOL opj_t2_decode_packets(opj_tcd_t* tcd,
         memset(first_pass_failed, OPJ_TRUE, l_image->numcomps * sizeof(OPJ_BOOL));
 
         printf("start while %d %d\n", l_tcp->num_layers_to_decode, (int)time(NULL));
+        int torch = 0;
         while (opj_pi_next(l_current_pi)) {
             printf("read %zu max %zu\n", p_data_read, p_max_len);
             OPJ_BOOL skip_packet = OPJ_FALSE;
@@ -478,6 +479,7 @@ OPJ_BOOL opj_t2_decode_packets(opj_tcd_t* tcd,
             } else {
                 /* If no precincts of any band intersects the area of interest, */
                 /* skip the packet */
+                printf("a\n");
                 OPJ_UINT32 bandno;
                 opj_tcd_tilecomp_t *tilec = &p_tile->comps[l_current_pi->compno];
                 opj_tcd_resolution_t *res = &tilec->resolutions[l_current_pi->resno];
@@ -506,6 +508,7 @@ OPJ_BOOL opj_t2_decode_packets(opj_tcd_t* tcd,
                 */
             }
             if (!skip_packet) {
+                printf("b\n");
                 l_nb_bytes_read = 0;
 
                 first_pass_failed[l_current_pi->compno] = OPJ_FALSE;
@@ -522,6 +525,7 @@ OPJ_BOOL opj_t2_decode_packets(opj_tcd_t* tcd,
                 l_img_comp->resno_decoded = opj_uint_max(l_current_pi->resno,
                                             l_img_comp->resno_decoded);
             } else {
+                printf("c\n");
                 l_nb_bytes_read = 0;
                 if (! opj_t2_skip_packet(p_t2, p_tile, l_tcp, l_current_pi, l_current_data,
                                          &l_nb_bytes_read, p_max_len, l_pack_info, p_manager)) {
@@ -533,6 +537,7 @@ OPJ_BOOL opj_t2_decode_packets(opj_tcd_t* tcd,
             }
 
             if (first_pass_failed[l_current_pi->compno]) {
+                printf("d\n");
                 l_img_comp = &(l_image->comps[l_current_pi->compno]);
                 if (l_img_comp->resno_decoded == 0) {
                     l_img_comp->resno_decoded =
@@ -546,6 +551,7 @@ OPJ_BOOL opj_t2_decode_packets(opj_tcd_t* tcd,
             /* INDEX >> */
 #ifdef TODO_MSD
             if (p_cstr_info) {
+                printf("e\n");
                 opj_tile_info_v2_t *info_TL = &p_cstr_info->tile[p_tile_no];
                 opj_packet_info_t *info_PK = &info_TL->packet[p_cstr_info->packno];
                 tp_start_packno = 0;
@@ -571,6 +577,14 @@ OPJ_BOOL opj_t2_decode_packets(opj_tcd_t* tcd,
             }
 #endif
             /* << INDEX */
+            printf("read %zu max %zu end\n", p_data_read, p_max_len);
+            if (torch == 0) {
+                torch = 1;
+                printf("end first loop\n\n");
+            } else {
+                printf("end second loop\n");
+                exit(0);
+            }
         }
         ++l_current_pi;
 
@@ -633,14 +647,17 @@ static OPJ_BOOL opj_t2_decode_packet(opj_t2_t* p_t2,
                                      opj_packet_info_t *p_pack_info,
                                      opj_event_mgr_t *p_manager)
 {
+    printf("decode\n");
     OPJ_BOOL l_read_data;
     OPJ_UINT32 l_nb_bytes_read = 0;
     OPJ_UINT32 l_nb_total_bytes_read = 0;
 
     *p_data_read = 0;
 
+    printf("read packet header\n");
     if (! opj_t2_read_packet_header(p_t2, p_tile, p_tcp, p_pi, &l_read_data, p_src,
                                     &l_nb_bytes_read, p_max_length, p_pack_info, p_manager)) {
+        printf("read packet header failed\n");
         return OPJ_FALSE;
     }
 
@@ -650,10 +667,12 @@ static OPJ_BOOL opj_t2_decode_packet(opj_t2_t* p_t2,
 
     /* we should read data for the packet */
     if (l_read_data) {
+        printf("read packet data\n");
         l_nb_bytes_read = 0;
 
         if (! opj_t2_read_packet_data(p_t2, p_tile, p_pi, p_src, &l_nb_bytes_read,
                                       p_max_length, p_pack_info, p_manager)) {
+            printf("read packet data failed\n");
             return OPJ_FALSE;
         }
 
@@ -1117,7 +1136,9 @@ static OPJ_BOOL opj_t2_read_packet_header(opj_t2_t* p_t2,
     /* SOP markers */
 
     if (p_tcp->csty & J2K_CP_CSTY_SOP) {
+        printf("maybe %zu\n", p_max_length);
         if (p_max_length < 6) {
+            printf("not enough space\n");
             opj_event_msg(p_manager, EVT_WARNING,
                           "Not enough space for expected SOP marker\n");
         } else if ((*l_current_data) != 0xff || (*(l_current_data + 1) != 0x91)) {
@@ -1181,6 +1202,7 @@ static OPJ_BOOL opj_t2_read_packet_header(opj_t2_t* p_t2,
         }
 
         l_header_length = (OPJ_UINT32)(l_header_data - *l_header_data_start);
+        printf("header_length %zu\n", l_header_length);
         *l_modified_length_ptr -= l_header_length;
         *l_header_data_start += l_header_length;
 
@@ -1195,6 +1217,8 @@ static OPJ_BOOL opj_t2_read_packet_header(opj_t2_t* p_t2,
         * p_is_data_present = OPJ_FALSE;
         *p_data_read = (OPJ_UINT32)(l_current_data - p_src_data);
         return OPJ_TRUE;
+    } else {
+        printf("l present\n");
     }
 
     l_band = l_res->bands;
@@ -1288,6 +1312,7 @@ static OPJ_BOOL opj_t2_read_packet_header(opj_t2_t* p_t2,
                         return OPJ_FALSE;
                     }
                     l_cblk->segs[l_segno].newlen = opj_bio_read(l_bio, bit_number);
+                    printf("set newlen1 %zu\n", l_cblk->segs[l_segno].newlen);
                     JAS_FPRINTF(stderr, "included=%d numnewpasses=%d increment=%d len=%d \n",
                                 l_included, l_cblk->segs[l_segno].numnewpasses, l_increment,
                                 l_cblk->segs[l_segno].newlen);
@@ -1317,11 +1342,14 @@ static OPJ_BOOL opj_t2_read_packet_header(opj_t2_t* p_t2,
                         return OPJ_FALSE;
                     }
                     l_cblk->segs[l_segno].newlen = opj_bio_read(l_bio, bit_number);
+                    printf("set newlen2 %zu\n", l_cblk->segs[l_segno].newlen);
                     JAS_FPRINTF(stderr, "included=%d numnewpasses=%d increment=%d len=%d \n",
                                 l_included, l_cblk->segs[l_segno].numnewpasses, l_increment,
                                 l_cblk->segs[l_segno].newlen);
 
                     n -= (OPJ_INT32)l_cblk->segs[l_segno].numnewpasses;
+                    printf("numnewpasses %zu\n", (OPJ_INT32)l_cblk->segs[l_segno].numnewpasses);
+                    printf("n %zu\n", n);
                     if (n > 0) {
                         ++l_segno;
 
@@ -1358,6 +1386,7 @@ static OPJ_BOOL opj_t2_read_packet_header(opj_t2_t* p_t2,
     }
 
     l_header_length = (OPJ_UINT32)(l_header_data - *l_header_data_start);
+    printf("end header_length %zu\n", l_header_length);
     JAS_FPRINTF(stderr, "hdrlen=%d \n", l_header_length);
     JAS_FPRINTF(stderr, "packet body\n");
     *l_modified_length_ptr -= l_header_length;
@@ -1386,6 +1415,7 @@ static OPJ_BOOL opj_t2_read_packet_data(opj_t2_t* p_t2,
                                         opj_packet_info_t *pack_info,
                                         opj_event_mgr_t* p_manager)
 {
+    printf("read packet data max length %zu\n", p_max_length);
     OPJ_UINT32 bandno, cblkno;
     OPJ_UINT32 l_nb_code_blocks;
     OPJ_BYTE *l_current_data = p_src_data;
