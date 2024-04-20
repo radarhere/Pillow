@@ -400,6 +400,7 @@ OPJ_BOOL opj_t2_decode_packets(opj_tcd_t* tcd,
                                opj_codestream_index_t *p_cstr_index,
                                opj_event_mgr_t *p_manager)
 {
+    printf("read %zu max %zu\n", p_data_read, p_max_len);
     OPJ_BYTE *l_current_data = p_src;
     opj_pi_iterator_t *l_pi = 00;
     OPJ_UINT32 pino;
@@ -457,6 +458,7 @@ OPJ_BOOL opj_t2_decode_packets(opj_tcd_t* tcd,
 
         printf("start while %d %d\n", l_tcp->num_layers_to_decode, (int)time(NULL));
         while (opj_pi_next(l_current_pi)) {
+            printf("read %zu max %zu\n", p_data_read, p_max_len);
             OPJ_BOOL skip_packet = OPJ_FALSE;
             JAS_FPRINTF(stderr,
                         "packet offset=00000166 prg=%d cmptno=%02d rlvlno=%02d prcno=%03d lyrno=%02d\n\n",
