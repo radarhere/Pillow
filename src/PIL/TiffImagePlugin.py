@@ -1823,9 +1823,6 @@ def _save(im, fp, filename):
             # Custom items are supported for int, float, unicode, string and byte
             # values. Other types and tuples require a tagtype.
             if tag not in TiffTags.LIBTIFF_CORE:
-                if not getattr(Image.core, "libtiff_support_custom_tags", False):
-                    continue
-
                 if tag in ifd.tagtype:
                     types[tag] = ifd.tagtype[tag]
                 elif not (isinstance(value, (int, float, str, bytes))):

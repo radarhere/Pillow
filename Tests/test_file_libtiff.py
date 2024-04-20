@@ -281,11 +281,7 @@ class TestFileLibTiff(LibTiffTestCase):
             )
         }
 
-        libtiffs = [False]
-        if Image.core.libtiff_support_custom_tags:
-            libtiffs.append(True)
-
-        for libtiff in libtiffs:
+        for libtiff in [False, True]:
             TiffImagePlugin.WRITE_LIBTIFF = libtiff
 
             def check_tags(
@@ -691,8 +687,7 @@ class TestFileLibTiff(LibTiffTestCase):
             im.save(outfile)
 
         with Image.open(outfile) as reloaded:
-            if Image.core.libtiff_support_custom_tags:
-                assert reloaded.tag_v2[34665] == 125456
+            assert reloaded.tag_v2[34665] == 125456
 
     def test_crashing_metadata(self, tmp_path: Path) -> None:
         # issue 1597
@@ -756,12 +751,7 @@ class TestFileLibTiff(LibTiffTestCase):
             with Image.open(out) as reloaded:
                 assert icc_profile == reloaded.info["icc_profile"]
 
-        libtiffs = []
-        if Image.core.libtiff_support_custom_tags:
-            libtiffs.append(True)
-        libtiffs.append(False)
-
-        for libtiff in libtiffs:
+        for libtiff in [True, False]:
             check_write(libtiff)
 
     def test_multipage_compression(self) -> None:
