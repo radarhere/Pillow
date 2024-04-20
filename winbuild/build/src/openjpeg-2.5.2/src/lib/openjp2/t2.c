@@ -1282,6 +1282,10 @@ static OPJ_BOOL opj_t2_read_packet_header(opj_t2_t* p_t2,
                         return OPJ_FALSE;
                     }
                     l_cblk->segs[l_segno].newlen = opj_bio_read(l_bio, bit_number);
+                    if (l_cblk->segs[l_segno].newlen == 0) {
+                        opj_bio_destroy(l_bio);
+                        return OPJ_FALSE;
+                    }
                     JAS_FPRINTF(stderr, "included=%d numnewpasses=%d increment=%d len=%d \n",
                                 l_included, l_cblk->segs[l_segno].numnewpasses, l_increment,
                                 l_cblk->segs[l_segno].newlen);
@@ -1311,6 +1315,10 @@ static OPJ_BOOL opj_t2_read_packet_header(opj_t2_t* p_t2,
                         return OPJ_FALSE;
                     }
                     l_cblk->segs[l_segno].newlen = opj_bio_read(l_bio, bit_number);
+                    if (l_cblk->segs[l_segno].newlen == 0) {
+                        opj_bio_destroy(l_bio);
+                        return OPJ_FALSE;
+                    }
                     JAS_FPRINTF(stderr, "included=%d numnewpasses=%d increment=%d len=%d \n",
                                 l_included, l_cblk->segs[l_segno].numnewpasses, l_increment,
                                 l_cblk->segs[l_segno].newlen);
