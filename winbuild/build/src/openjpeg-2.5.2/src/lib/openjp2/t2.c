@@ -1192,6 +1192,7 @@ static OPJ_BOOL opj_t2_read_packet_header(opj_t2_t* p_t2,
     }
 
     l_band = l_res->bands;
+    printf("l_res->numbands %zu\n", l_res->numbands);
     for (bandno = 0; bandno < l_res->numbands; ++bandno, ++l_band) {
         opj_tcd_precinct_t *l_prc = &(l_band->precincts[p_pi->precno]);
 
