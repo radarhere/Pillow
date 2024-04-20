@@ -593,7 +593,6 @@ OPJ_BOOL OPJ_CALLCONV opj_decode_tile_data(opj_codec_t *p_codec,
         opj_stream_t *p_stream
                                           )
 {
-    printf("torchwood\n");
     if (p_codec && p_data && p_stream) {
         opj_codec_private_t * l_codec = (opj_codec_private_t *) p_codec;
         opj_stream_private_t * l_stream = (opj_stream_private_t *) p_stream;
@@ -602,7 +601,6 @@ OPJ_BOOL OPJ_CALLCONV opj_decode_tile_data(opj_codec_t *p_codec,
             return OPJ_FALSE;
         }
 
-        printf("a\n");
         return l_codec->m_codec_data.m_decompression.opj_decode_tile_data(
                    l_codec->m_codec,
                    p_tile_index,
