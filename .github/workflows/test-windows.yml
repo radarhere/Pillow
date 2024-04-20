@@ -91,7 +91,6 @@ jobs:
       run: "& winbuild\\build\\build_dep_zlib.cmd"
 
     - name: Build dependencies / OpenJPEG
-      if: steps.build-cache.outputs.cache-hit != 'true'
       run: "& winbuild\\build\\build_dep_openjpeg.cmd"
 
     # trim ~150MB for each job
@@ -112,13 +111,3 @@ jobs:
         path %GITHUB_WORKSPACE%\\winbuild\\build\\bin;%PATH%
         python.exe -c "from PIL import Image;im = Image.open('image');im.load()"
       shell: cmd
-
-  success:
-    permissions:
-      contents: none
-    needs: build
-    runs-on: ubuntu-latest
-    name: Windows Test Successful
-    steps:
-      - name: Success
-        run: echo Windows Test Successful
