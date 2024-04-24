@@ -23,8 +23,8 @@ jobs:
             os: macos-13
             cibw_arch: x86_64
             macosx_deployment_target: "10.10"
-          - name: "macOS-latest x86_64"
-            os: macos-latest
+          - name: "macOS-14 x86_64"
+            os: macos-14
             cibw_arch: x86_64
             macosx_deployment_target: "10.10"
     steps:

@@ -133,10 +133,7 @@ if [[ -n "$IS_MACOS" ]]; then
   # remove jpeg-turbo to avoid inclusion on arm64
   # remove webp and zstd to avoid inclusion on x86_64
   # curl from brew requires zstd, use system curl
-  brew remove --ignore-dependencies libpng libtiff libxcb libxau libxdmcp curl cairo lcms2 zstd
-  if [[ "$CIBW_ARCHS" == "arm64" ]]; then
-    brew remove --ignore-dependencies jpeg-turbo
-  fi
+  brew remove --ignore-dependencies jpeg-turbo libpng libtiff libxcb libxau libxdmcp curl cairo lcms2 zstd
 
   brew install pkg-config
 fi
