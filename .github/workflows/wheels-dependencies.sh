@@ -136,8 +136,6 @@ if [[ -n "$IS_MACOS" ]]; then
   brew remove --ignore-dependencies libpng libtiff libxcb libxau libxdmcp curl cairo lcms2 zstd
   if [[ "$CIBW_ARCHS" == "arm64" ]]; then
     brew remove --ignore-dependencies jpeg-turbo
-  else
-    brew remove --ignore-dependencies webp
   fi
 
   brew install pkg-config
