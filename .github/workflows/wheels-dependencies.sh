@@ -12,6 +12,12 @@ if [ -z "$IS_MACOS" ]; then
     source wheels/multibuild/manylinux_utils.sh
 fi
 
+function macos_intel_cross_build_setup {
+    # Setup cross build for single arch x86_64 wheels
+    macos_intel_native_build_setup
+    export CROSS_COMPILING=1
+}
+
 ARCHIVE_SDIR=pillow-depends-main
 
 # Package versions for fresh source builds
@@ -61,7 +67,7 @@ function build_brotli {
 }
 
 function build {
-    if [[ -n "$IS_MACOS" ]] && [[ "$CIBW_ARCHS" == "arm64" ]]; then
+    if [[ -n "$IS_MACOS" ]]; then
         sudo chown -R runner /usr/local
     fi
     build_xz
@@ -75,9 +81,7 @@ function build {
         build_simple xorgproto 2024.1 https://www.x.org/pub/individual/proto
         build_simple libXau 1.0.11 https://www.x.org/pub/individual/lib
         build_simple libpthread-stubs 0.5 https://xcb.freedesktop.org/dist
-        if [[ "$CIBW_ARCHS" == "arm64" ]]; then
-            cp /usr/local/share/pkgconfig/xcb-proto.pc /usr/local/lib/pkgconfig
-        fi
+        cp /usr/local/share/pkgconfig/xcb-proto.pc /usr/local/lib/pkgconfig
     else
         sed s/\${pc_sysrootdir\}// /usr/local/share/pkgconfig/xcb-proto.pc > /usr/local/lib/pkgconfig/xcb-proto.pc
     fi
