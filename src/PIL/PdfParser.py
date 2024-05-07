@@ -822,13 +822,11 @@ class PdfParser:
             offset = m.end()
             m = cls.re_stream_start.match(data, offset)
             if m:
+                stream_len_str = result.get(b"Length")
                 try:
-                    stream_len = int(result[b"Length"])
+                    stream_len = int(stream_len_str)
                 except (TypeError, KeyError, ValueError) as e:
-                    msg = (
-                        "bad or missing Length in stream dict "
-                        f"({result.get(b'Length')})"
-                    )
+                    msg = f"bad or missing Length in stream dict ({stream_len_str})"
                     raise PdfFormatError(msg) from e
                 stream_data = data[m.end() : m.end() + stream_len]
                 m = cls.re_stream_end.match(data, m.end() + stream_len)
