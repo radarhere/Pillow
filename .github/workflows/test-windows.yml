@@ -180,5 +180,12 @@ jobs:
     - name: Test Pillow
       run: |
         path %GITHUB_WORKSPACE%\\winbuild\\build\\bin;%PATH%
-        python.exe -c "from PIL import Image;im = Image.open('image');im.load()"
+        python.exe -c "from PIL import Image;im = Image.open('image');im.save('out.j2k')"
       shell: cmd
+
+    - name: Upload errors
+      uses: actions/upload-artifact@v4
+      if: failure()
+      with:
+        name: errors
+        path: out.j2k
