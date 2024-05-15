@@ -328,6 +328,10 @@ j2k_encode_entry(Imaging im, ImagingCodecState state) {
         components = 4;
         color_space = OPJ_CLRSPC_SRGB;
         pack = j2k_pack_rgba;
+    } else if (strcmp(im->mode, "CMYK") == 0) {
+        components = 4;
+        color_space = OPJ_CLRSPC_CMYK;
+        pack = j2k_pack_rgba;
     } else {
         state->errcode = IMAGING_CODEC_BROKEN;
         state->state = J2K_STATE_FAILED;
