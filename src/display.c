@@ -505,7 +505,6 @@ windowCallback(HWND wnd, UINT message, WPARAM wParam, LPARAM lParam) {
     PyObject *callback = NULL;
     PyObject *result;
     PyThreadState *threadstate;
-    PyThreadState *current_threadstate;
     HDC dc;
     RECT rect;
     LRESULT status = 0;
@@ -524,7 +523,7 @@ windowCallback(HWND wnd, UINT message, WPARAM wParam, LPARAM lParam) {
             if (callback) {
                 threadstate =
                     (PyThreadState *)GetWindowLongPtr(wnd, sizeof(PyObject *));
-                current_threadstate = PyThreadState_Swap(NULL);
+                PyThreadState_Swap(NULL);
                 PyEval_RestoreThread(threadstate);
             } else {
                 return DefWindowProc(wnd, message, wParam, lParam);
