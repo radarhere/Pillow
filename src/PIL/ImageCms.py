@@ -23,7 +23,7 @@ import operator
 import sys
 from enum import IntEnum, IntFlag
 from functools import reduce
-from typing import Any, Literal, SupportsFloat, SupportsInt, Union
+from typing import Any, Literal, SupportsInt, Union
 
 from . import Image, __version__
 from ._deprecate import deprecate
@@ -754,7 +754,7 @@ def applyTransform(
 
 
 def createProfile(
-    colorSpace: Literal["LAB", "XYZ", "sRGB"], colorTemp: SupportsFloat = -1
+    colorSpace: Literal["LAB", "XYZ", "sRGB"], colorTemp: int = -1
 ) -> core.CmsProfile:
     """
     (pyCMS) Creates a profile.
@@ -791,15 +791,16 @@ def createProfile(
         )
         raise PyCMSError(msg)
 
+    colorTempFloat: float = 0
     if colorSpace == "LAB":
         try:
-            colorTemp = float(colorTemp)
+            colorTempFloat = float(colorTemp)
         except (TypeError, ValueError) as e:
             msg = f'Color temperature must be numeric, "{colorTemp}" not valid'
             raise PyCMSError(msg) from e
 
     try:
-        return core.createProfile(colorSpace, colorTemp)
+        return core.createProfile(colorSpace, colorTempFloat)
     except (TypeError, ValueError) as v:
         raise PyCMSError(v) from v
 
