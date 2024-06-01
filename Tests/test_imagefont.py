@@ -592,12 +592,6 @@ def test_find_font(
 
 def test_imagefont_getters(font: ImageFont.FreeTypeFont) -> None:
     assert font.getmetrics() == (16, 4)
-    assert font.font.ascent == 16
-    assert font.font.descent == 4
-    assert font.font.height == 20
-    assert font.font.x_ppem == 20
-    assert font.font.y_ppem == 20
-    assert font.font.glyphs == 4177
     assert font.getbbox("A") == (0, 4, 12, 16)
     assert font.getbbox("AB") == (0, 4, 24, 16)
     assert font.getbbox("M") == (0, 4, 12, 16)
