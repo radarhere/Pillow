@@ -19,7 +19,6 @@ from .helper import (
     assert_image_similar,
     assert_image_similar_tofile,
     hopper,
-    is_pypy,
 )
 
 try:
@@ -524,15 +523,13 @@ def test_profile_typesafety() -> None:
     with pytest.raises(TypeError):
         ImageCms.core.profile_tobytes(1)  # type: ignore[arg-type]
 
-    if not is_pypy():
-        # core profile should not be directly instantiable
-        with pytest.raises(TypeError):
-            ImageCms.core.CmsProfile()
-        with pytest.raises(TypeError):
-            ImageCms.core.CmsProfile(0)  # type: ignore[call-arg]
+    # core profile should not be directly instantiable
+    with pytest.raises(TypeError):
+        ImageCms.core.CmsProfile()
+    with pytest.raises(TypeError):
+        ImageCms.core.CmsProfile(0)  # type: ignore[call-arg]
 
 
-@pytest.mark.skipif(is_pypy(), reason="fails on PyPy")
 def test_transform_typesafety() -> None:
     # core transform should not be directly instantiable
     with pytest.raises(TypeError):
