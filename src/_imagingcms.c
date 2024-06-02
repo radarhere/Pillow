@@ -1449,7 +1449,7 @@ static PyTypeObject CmsProfile_Type = {
     0,                               /* tp_dictoffset */
     0,                               /* tp_init */
     0,                               /* tp_alloc */
-    0,                               /* tp_new */
+    NULL,                            /* tp_new */
 };
 
 static struct PyMethodDef cms_transform_methods[] = {
