@@ -1495,6 +1495,9 @@ setup_module(PyObject *m) {
     PyObject *v;
     int vn;
 
+    CmsProfile_Type.tp_new = NULL;
+    CmsTransform_Type.tp_new = NULL;
+
     /* Ready object types */
     PyType_Ready(&CmsProfile_Type);
     PyType_Ready(&CmsTransform_Type);
