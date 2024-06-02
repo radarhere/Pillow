@@ -1442,6 +1442,14 @@ static PyTypeObject CmsProfile_Type = {
     cms_profile_methods,             /*tp_methods*/
     0,                               /*tp_members*/
     cms_profile_getsetters,          /*tp_getset*/
+    0,                               /* tp_base */
+    0,                               /* tp_dict */
+    0,                               /* tp_descr_get */
+    0,                               /* tp_descr_set */
+    0,                               /* tp_dictoffset */
+    0,                               /* tp_init */
+    0,                               /* tp_alloc */
+    0,                               /* tp_new */
 };
 
 static struct PyMethodDef cms_transform_methods[] = {
@@ -1486,9 +1494,6 @@ setup_module(PyObject *m) {
     PyObject *d;
     PyObject *v;
     int vn;
-
-    CmsProfile_Type.tp_new = NULL;
-    CmsTransform_Type.tp_new = NULL;
 
     /* Ready object types */
     PyType_Ready(&CmsProfile_Type);
