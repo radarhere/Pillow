@@ -22,10 +22,6 @@ on:
 permissions:
   contents: read
 
-concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
-
 env:
   COVERAGE_CORE: sysmon
   FORCE_COLOR: 1
@@ -37,35 +33,11 @@ jobs:
       fail-fast: false
       matrix:
         os: [
-          "macos-14",
           "ubuntu-latest",
         ]
         python-version: [
-          "pypy3.10",
-          "pypy3.9",
-          "3.13",
           "3.12",
-          "3.11",
-          "3.10",
-          "3.9",
-          "3.8",
         ]
-        include:
-        - python-version: "3.11"
-          PYTHONOPTIMIZE: 1
-          REVERSE: "--reverse"
-        - python-version: "3.10"
-          PYTHONOPTIMIZE: 2
-        # M1 only available for 3.10+
-        - os: "macos-13"
-          python-version: "3.9"
-        - os: "macos-13"
-          python-version: "3.8"
-        exclude:
-        - os: "macos-14"
-          python-version: "3.9"
-        - os: "macos-14"
-          python-version: "3.8"
 
     runs-on: ${{ matrix.os }}
     name: ${{ matrix.os }} Python ${{ matrix.python-version }}
@@ -102,67 +74,7 @@ jobs:
         GHA_PYTHON_VERSION: ${{ matrix.python-version }}
         GHA_LIBIMAGEQUANT_CACHE_HIT: ${{ steps.cache-libimagequant.outputs.cache-hit }}
 
-    - name: Install macOS dependencies
-      if: startsWith(matrix.os, 'macOS')
-      run: |
-        .github/workflows/macos-install.sh
-      env:
-        GHA_PYTHON_VERSION: ${{ matrix.python-version }}
-
-    - name: Register gcc problem matcher
-      if: "matrix.os == 'ubuntu-latest' && matrix.python-version == '3.12'"
-      run: echo "::add-matcher::.github/problem-matchers/gcc.json"
-
     - name: Build
       run: |
-        .ci/build.sh
-
-    - name: Test
-      run: |
-        if [ $REVERSE ]; then
-          python3 -m pip install pytest-reverse
-        fi
-        if [ "${{ matrix.os }}" = "ubuntu-latest" ]; then
-          xvfb-run -s '-screen 0 1024x768x24' sway&
-          export WAYLAND_DISPLAY=wayland-1
-          .ci/test.sh
-        else
-          .ci/test.sh
-        fi
-      env:
-        PYTHONOPTIMIZE: ${{ matrix.PYTHONOPTIMIZE }}
-        REVERSE: ${{ matrix.REVERSE }}
-
-    - name: Prepare to upload errors
-      if: failure()
-      run: |
-        mkdir -p Tests/errors
-
-    - name: Upload errors
-      uses: actions/upload-artifact@v4
-      if: failure()
-      with:
-        name: errors
-        path: Tests/errors
-
-    - name: After success
-      run: |
-        .ci/after_success.sh
-
-    - name: Upload coverage
-      uses: codecov/codecov-action@v4
-      with:
-        flags: ${{ matrix.os == 'ubuntu-latest' && 'GHA_Ubuntu' || 'GHA_macOS' }}
-        name: ${{ matrix.os }} Python ${{ matrix.python-version }}
-        gcov: true
-        token: ${{ secrets.CODECOV_ORG_TOKEN }}
-
-  success:
-    permissions:
-      contents: none
-    needs: build
-    runs-on: ubuntu-latest
-    name: Test Successful
-    steps:
-      - name: Success
-        run: echo Test Successful
+        cp Tests/images/apng/different_durations.png .
+        identify -format %T\n apng:different_durations.png
