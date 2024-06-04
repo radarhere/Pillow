@@ -77,4 +77,4 @@ jobs:
     - name: Build
       run: |
         cp Tests/images/apng/different_durations.png .
-        magick identify -format %T\n apng:different_durations.png
+        identify -format %T\n apng:different_durations.png
