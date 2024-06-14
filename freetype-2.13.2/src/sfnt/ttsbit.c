@@ -83,6 +83,7 @@
     if ( table_size < 8 )
     {
       FT_ERROR(( "tt_face_load_sbit_strikes: table too short\n" ));
+      printf("iff1\n");
       error = FT_THROW( Invalid_File_Format );
       goto Exit;
     }
@@ -123,6 +124,7 @@
 
         if ( num_strikes >= 0x10000UL )
         {
+          printf("iff2\n");
           error = FT_THROW( Invalid_File_Format );
           goto Exit;
         }
@@ -168,6 +170,7 @@
         if ( !( flags == 1 || flags == 3 ) ||
              num_strikes >= 0x10000UL      )
         {
+          printf("iff3\n");
           error = FT_THROW( Invalid_File_Format );
           goto Exit;
         }
@@ -408,8 +411,10 @@
         p      = face->sbit_table + 8 + 4 * strike_index;
         offset = FT_NEXT_ULONG( p );
 
-        if ( offset + 4 > face->ebdt_size )
+        if ( offset + 4 > face->ebdt_size ) {
+          printf("iff4\n");
           return FT_THROW( Invalid_File_Format );
+        }
 
         if ( FT_STREAM_SEEK( face->ebdt_start + offset ) ||
              FT_FRAME_ENTER( 4 )                         )
@@ -508,6 +513,7 @@
 
       if ( 8 + 48 * strike_index + 3 * 4 + 34 + 1 > face->sbit_table_size )
       {
+          printf("iff5\n");
         error = FT_THROW( Invalid_File_Format );
         goto Exit;
       }
@@ -524,8 +530,10 @@
       /*   8 * decoder->strike_index_count > face->sbit_table_size ? */
       if ( decoder->strike_index_array > face->sbit_table_size           ||
            decoder->strike_index_count >
-             ( face->sbit_table_size - decoder->strike_index_array ) / 8 )
+             ( face->sbit_table_size - decoder->strike_index_array ) / 8 ) {
+                       printf("iff6\n");
         error = FT_THROW( Invalid_File_Format );
+      }
     }
 
   Exit:
@@ -595,6 +603,7 @@
       break;
 
     default:
+          printf("iff7\n");
       error = FT_THROW( Invalid_File_Format );
       goto Exit;
     }
@@ -723,6 +732,7 @@
     {
       FT_TRACE1(( "tt_sbit_decoder_load_byte_aligned:"
                   " invalid bitmap dimensions\n" ));
+          printf("iff8\n");
       error = FT_THROW( Invalid_File_Format );
       goto Exit;
     }
@@ -730,6 +740,7 @@
     if ( p + ( ( line_bits + 7 ) >> 3 ) * height > limit )
     {
       FT_TRACE1(( "tt_sbit_decoder_load_byte_aligned: broken bitmap\n" ));
+          printf("iff9\n");
       error = FT_THROW( Invalid_File_Format );
       goto Exit;
     }
@@ -866,6 +877,7 @@
     {
       FT_TRACE1(( "tt_sbit_decoder_load_bit_aligned:"
                   " invalid bitmap dimensions\n" ));
+          printf("iff9\n");
       error = FT_THROW( Invalid_File_Format );
       goto Exit;
     }
@@ -873,6 +885,7 @@
     if ( p + ( ( line_bits * height + 7 ) >> 3 ) > limit )
     {
       FT_TRACE1(( "tt_sbit_decoder_load_bit_aligned: broken bitmap\n" ));
+          printf("iff10\n");
       error = FT_THROW( Invalid_File_Format );
       goto Exit;
     }
@@ -1031,6 +1044,7 @@
     return error;
 
   Fail:
+          printf("iff11\n");
     error = FT_THROW( Invalid_File_Format );
     goto Exit;
   }
@@ -1055,6 +1069,7 @@
     if ( limit - p < 4 )
     {
       FT_TRACE1(( "tt_sbit_decoder_load_png: broken bitmap\n" ));
+          printf("iff12\n");
       error = FT_THROW( Invalid_File_Format );
       goto Exit;
     }
@@ -1062,6 +1077,7 @@
     png_len = FT_NEXT_ULONG( p );
     if ( (FT_ULong)( limit - p ) < png_len )
     {
+          printf("iff13\n");
       FT_TRACE1(( "tt_sbit_decoder_load_png: broken bitmap\n" ));
       error = FT_THROW( Invalid_File_Format );
       goto Exit;
@@ -1487,8 +1503,10 @@
       return FT_THROW( Invalid_Argument );
 
     if ( strike_offset >= face->ebdt_size                          ||
-         face->ebdt_size - strike_offset < 4 + glyph_index * 4 + 8 )
+         face->ebdt_size - strike_offset < 4 + glyph_index * 4 + 8 ) {
+          printf("iff14\n");
       return FT_THROW( Invalid_File_Format );
+    }
 
     if ( FT_STREAM_SEEK( face->ebdt_start  +
                          strike_offset + 4 +
@@ -1505,8 +1523,10 @@
       return FT_THROW( Missing_Bitmap );
     if ( glyph_start > glyph_end                     ||
          glyph_end - glyph_start < 8                 ||
-         face->ebdt_size - strike_offset < glyph_end )
+         face->ebdt_size - strike_offset < glyph_end ) {
+          printf("iff15\n");
       return FT_THROW( Invalid_File_Format );
+    }
 
     if ( FT_STREAM_SEEK( face->ebdt_start + strike_offset + glyph_start ) ||
          FT_FRAME_ENTER( glyph_end - glyph_start )                        )
@@ -1528,6 +1548,7 @@
         recurse_depth++;
         goto retry;
       }
+          printf("iff16\n");
       error = FT_THROW( Invalid_File_Format );
       break;
 
