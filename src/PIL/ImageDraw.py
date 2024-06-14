@@ -545,7 +545,7 @@ class ImageDraw:
                 coord.append(int(xy[i]))
                 start.append(math.modf(xy[i])[0])
             try:
-                mask, offset = font.getmask2(  # type: ignore[union-attr,misc]
+                return font.getmask2(  # type: ignore[union-attr,misc]
                     text,
                     mode,
                     direction=direction,
