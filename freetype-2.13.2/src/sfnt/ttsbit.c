@@ -1540,6 +1540,7 @@
 
     switch ( graphicType )
     {
+    case FT_MAKE_TAG( 'f', 'l', 'i', 'p' ):
     case FT_MAKE_TAG( 'd', 'u', 'p', 'e' ):
       if ( recurse_depth < 4 )
       {
@@ -1552,7 +1553,6 @@
       error = FT_THROW( Invalid_File_Format );
       break;
 
-    case FT_MAKE_TAG( 'f', 'l', 'i', 'p' ):
     case FT_MAKE_TAG( 'p', 'n', 'g', ' ' ):
 #ifdef FT_CONFIG_OPTION_USE_PNG
       printf("png\n");
