@@ -136,6 +136,7 @@ addopts = "-ra --color=yes"
 testpaths = ["Tests"]
 
 [tool.mypy]
+disallow_untyped_defs = true
 python_version = "3.8"
 pretty = true
 disallow_any_generics = true
