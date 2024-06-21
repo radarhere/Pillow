@@ -5,7 +5,8 @@ from typing import TYPE_CHECKING
 
 import pytest
 
-from PIL import Image, _typing
+from PIL import Image
+from PIL._typing import NumpyArray
 
 from .helper import assert_deep_equal, assert_image, hopper, skip_unless_feature
 
@@ -20,6 +21,7 @@ TEST_IMAGE_SIZE = (10, 10)
 
 def test_numpy_to_image() -> None:
     def to_image(dtype: npt.DTypeLike, bands: int = 1, boolean: int = 0) -> Image.Image:
+        a: NumpyArray
         if bands == 1:
             if boolean:
                 data = [0, 255] * 50
@@ -89,7 +91,7 @@ def test_numpy_to_image() -> None:
 # https://stackoverflow.com/questions/10854903/what-is-causing-dimension-dependent-attributeerror-in-pil-fromarray-function
 def test_3d_array() -> None:
     size = (5, TEST_IMAGE_SIZE[0], TEST_IMAGE_SIZE[1])
-    a = numpy.ones(size, dtype=numpy.uint8)
+    a: NumpyArray = numpy.ones(size, dtype=numpy.uint8)
     assert_image(Image.fromarray(a[1, :, :]), "L", TEST_IMAGE_SIZE)
     size = (TEST_IMAGE_SIZE[0], 5, TEST_IMAGE_SIZE[1])
     a = numpy.ones(size, dtype=numpy.uint8)
@@ -100,11 +102,11 @@ def test_3d_array() -> None:
 
 
 def test_1d_array() -> None:
-    a = numpy.ones(5, dtype=numpy.uint8)
+    a: NumpyArray = numpy.ones(5, dtype=numpy.uint8)
     assert_image(Image.fromarray(a), "L", (1, 5))
 
 
-def _test_img_equals_nparray(img: Image.Image, np_img: _typing.NumpyArray) -> None:
+def _test_img_equals_nparray(img: Image.Image, np_img: NumpyArray) -> None:
     assert len(np_img.shape) >= 2
     np_size = np_img.shape[1], np_img.shape[0]
     assert img.size == np_size
@@ -134,7 +136,7 @@ def test_1bit() -> None:
 def test_save_tiff_uint16() -> None:
     # Tests that we're getting the pixel value in the right byte order.
     pixel_value = 0x1234
-    a = numpy.array(
+    a: NumpyArray = numpy.array(
         [pixel_value] * TEST_IMAGE_SIZE[0] * TEST_IMAGE_SIZE[1], dtype=numpy.uint16
     )
     a.shape = TEST_IMAGE_SIZE
@@ -178,11 +180,11 @@ def test_point_lut() -> None:
     # See https://github.com/python-pillow/Pillow/issues/439
 
     data = list(range(256)) * 3
-    lut = numpy.array(data, dtype=numpy.uint8)
+    lut: NumpyArray = numpy.array(data, dtype=numpy.uint8)
 
     im = hopper()
 
-    im.point(lut)
+    im.point(lut)  # type: ignore[arg-type]
 
 
 def test_putdata() -> None:
@@ -190,8 +192,8 @@ def test_putdata() -> None:
     # See https://github.com/python-pillow/Pillow/issues/1008
 
     im = Image.new("F", (150, 100))
-    arr = numpy.zeros((15000,), numpy.float32)
-    im.putdata(arr)
+    arr: NumpyArray = numpy.zeros((15000,), numpy.float32)
+    im.putdata(arr)  # type: ignore[arg-type]
 
     assert len(im.getdata()) == len(arr)
 
@@ -235,7 +237,7 @@ def test_load_first() -> None:
 
 def test_bool() -> None:
     # https://github.com/python-pillow/Pillow/issues/2044
-    a = numpy.zeros((10, 2), dtype=bool)
+    a: NumpyArray = numpy.zeros((10, 2), dtype=bool)
     a[0][0] = True
 
     im2 = Image.fromarray(a)

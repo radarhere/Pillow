@@ -11,14 +11,26 @@ from .helper import assert_image_equal_tofile, assert_image_similar, hopper
 if ImageQt.qt_is_installed:
     from PIL.ImageQt import QPixmap
 
+    QPoint: type
+    QPainter: type
+    QRegion: type
+    QHBoxLayout: type
+    QLabel: type
+    QWidget: type
     if ImageQt.qt_version == "6":
         from PyQt6.QtCore import QPoint
-        from PyQt6.QtGui import QImage, QPainter, QRegion
-        from PyQt6.QtWidgets import QApplication, QHBoxLayout, QLabel, QWidget
+        from PyQt6.QtGui import QImage as PyQt6_QImage
+        from PyQt6.QtGui import QPainter, QRegion
+        from PyQt6.QtGui import QPixmap as PyQt6_QPixmap
+        from PyQt6.QtWidgets import QApplication as PyQt6_QApplication
+        from PyQt6.QtWidgets import QHBoxLayout, QLabel, QWidget
     elif ImageQt.qt_version == "side6":
         from PySide6.QtCore import QPoint
-        from PySide6.QtGui import QImage, QPainter, QRegion
-        from PySide6.QtWidgets import QApplication, QHBoxLayout, QLabel, QWidget
+        from PySide6.QtGui import QImage as PySide6_QImage
+        from PySide6.QtGui import QPainter, QRegion
+        from PySide6.QtGui import QPixmap as PySide6_QPixmap
+        from PySide6.QtWidgets import QApplication as PySide6_QApplication
+        from PySide6.QtWidgets import QHBoxLayout, QLabel, QWidget
 
     class Example(QWidget):
         def __init__(self) -> None:
@@ -28,13 +40,19 @@ if ImageQt.qt_is_installed:
 
             qimage = ImageQt.ImageQt(img)
 
-            pixmap1 = ImageQt.QPixmap.fromImage(qimage)
-
             QHBoxLayout(self)  # hbox
 
             lbl = QLabel(self)
-            # Segfault in the problem
-            lbl.setPixmap(pixmap1.copy())
+            if ImageQt.qt_version == "6":
+                pixmap1 = PyQt6_QPixmap.fromImage(qimage)
+
+                # Test for segfault
+                lbl.setPixmap(pixmap1.copy())
+            elif ImageQt.qt_version == "side6":
+                pixmap2 = PySide6_QPixmap.fromImage(qimage)
+
+                # Test for segfault
+                lbl.setPixmap(pixmap2.copy())
 
 
 def roundtrip(expected: Image.Image) -> None:
@@ -45,40 +63,62 @@ def roundtrip(expected: Image.Image) -> None:
 
 @pytest.mark.skipif(not ImageQt.qt_is_installed, reason="Qt bindings are not installed")
 def test_sanity(tmp_path: Path) -> None:
+    def check_modes() -> None:
+        for mode in ("1", "RGB", "RGBA", "L", "P"):
+            # to QPixmap
+            im = hopper(mode)
+            tempfile = str(tmp_path / f"temp_{mode}.png")
+            if ImageQt.qt_version == "6":
+                data: PyQt6_QPixmap = ImageQt.toqpixmap(im)
+
+                assert isinstance(data, QPixmap)
+                assert not data.isNull()
+
+                # Test saving the file
+                data.save(tempfile)
+            elif ImageQt.qt_version == "side6":
+                data1: PySide6_QPixmap = ImageQt.toqpixmap(im)
+
+                assert isinstance(data1, QPixmap)
+                assert not data1.isNull()
+
+                # Test saving the file
+                data1.save(tempfile)
+
+            # Render the image
+            qimage = ImageQt.ImageQt(im)
+            if ImageQt.qt_version == "6":
+                data = PyQt6_QPixmap.fromImage(qimage)
+                qimage1 = PyQt6_QImage(128, 128, PySide6_QImage.Format.Format_ARGB32)
+            elif ImageQt.qt_version == "side6":
+                data1 = PySide6_QPixmap.fromImage(qimage)
+                qimage1 = PySide6_QImage(128, 128, PySide6_QImage.Format_ARGB32)
+            painter = QPainter(qimage1)
+            image_label = QLabel()
+            image_label.setPixmap(data)
+            image_label.render(painter, QPoint(0, 0), QRegion(0, 0, 128, 128))
+            painter.end()
+            rendered_tempfile = str(tmp_path / f"temp_rendered_{mode}.png")
+            qimage1.save(rendered_tempfile)
+            assert_image_equal_tofile(im.convert("RGBA"), rendered_tempfile)
+
+            # from QPixmap
+            roundtrip(hopper(mode))
+
     # Segfault test
-    app: QApplication | None = QApplication([])
-    ex = Example()
-    assert app  # Silence warning
-    assert ex  # Silence warning
-
-    for mode in ("1", "RGB", "RGBA", "L", "P"):
-        # to QPixmap
-        im = hopper(mode)
-        data = ImageQt.toqpixmap(im)
-
-        assert isinstance(data, QPixmap)
-        assert not data.isNull()
-
-        # Test saving the file
-        tempfile = str(tmp_path / f"temp_{mode}.png")
-        data.save(tempfile)
-
-        # Render the image
-        qimage = ImageQt.ImageQt(im)
-        data = QPixmap.fromImage(qimage)
-        qt_format = QImage.Format if ImageQt.qt_version == "6" else QImage
-        qimage = QImage(128, 128, qt_format.Format_ARGB32)
-        painter = QPainter(qimage)
-        image_label = QLabel()
-        image_label.setPixmap(data)
-        image_label.render(painter, QPoint(0, 0), QRegion(0, 0, 128, 128))
-        painter.end()
-        rendered_tempfile = str(tmp_path / f"temp_rendered_{mode}.png")
-        qimage.save(rendered_tempfile)
-        assert_image_equal_tofile(im.convert("RGBA"), rendered_tempfile)
-
-        # from QPixmap
-        roundtrip(hopper(mode))
-
-    app.quit()
-    app = None
+    if ImageQt.qt_version == "6":
+        app: PyQt6_QApplication | None = PyQt6_QApplication([])
+        assert app is not None
+        ex = Example()
+        assert ex
+        check_modes()
+        app.quit()
+        app = None
+    elif ImageQt.qt_version == "side6":
+        app1: PySide6_QApplication | None = PySide6_QApplication([])
+        assert app1 is not None
+        ex = Example()
+        assert ex
+        check_modes()
+        app1.quit()
+        app1 = None
