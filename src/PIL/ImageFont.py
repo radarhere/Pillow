@@ -138,7 +138,7 @@ class ImageFont:
 
         self.font = Image.core.font(image.im, data)
 
-    def getmask(self, text, mode="", *args, **kwargs):
+    def getmask(self, text: str | bytes, mode="", *args, **kwargs):
         """
         Create a bitmap for the text.
 
@@ -424,7 +424,7 @@ class FreeTypeFont:
 
     def getmask(
         self,
-        text,
+        text: str | bytes,
         mode="",
         direction=None,
         features=None,
@@ -718,13 +718,13 @@ class TransposedFont:
         self.font = font
         self.orientation = orientation  # any 'transpose' argument, or None
 
-    def getmask(self, text, mode="", *args, **kwargs):
+    def getmask(self, text: str | bytes, mode="", *args, **kwargs):
         im = self.font.getmask(text, mode, *args, **kwargs)
         if self.orientation is not None:
             return im.transpose(self.orientation)
         return im
 
-    def getbbox(self, text, *args, **kwargs):
+    def getbbox(self, text: str | bytes, *args, **kwargs):
         # TransposedFont doesn't support getmask2, move top-left point to (0, 0)
         # this has no effect on ImageFont and simulates anchor="lt" for FreeTypeFont
         left, top, right, bottom = self.font.getbbox(text, *args, **kwargs)

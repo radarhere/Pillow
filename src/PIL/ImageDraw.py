@@ -560,7 +560,12 @@ class ImageDraw:
     def _multiline_split(self, text: AnyStr) -> list[AnyStr]:
         return text.split("\n" if isinstance(text, str) else b"\n")
 
-    def _multiline_spacing(self, font, spacing, stroke_width):
+    def _multiline_spacing(
+        self,
+        font: ImageFont.ImageFont | ImageFont.FreeTypeFont | ImageFont.TransposedFont,
+        spacing,
+        stroke_width,
+    ):
         return (
             self.textbbox((0, 0), "A", font, stroke_width=stroke_width)[3]
             + stroke_width
@@ -570,7 +575,7 @@ class ImageDraw:
     def text(
         self,
         xy: tuple[float, float],
-        text: str,
+        text: str | bytes,
         fill=None,
         font: (
             ImageFont.ImageFont
@@ -586,7 +591,7 @@ class ImageDraw:
         language=None,
         stroke_width=0,
         stroke_fill=None,
-        embedded_color=False,
+        embedded_color: bool = False,
         *args,
         **kwargs,
     ) -> None:
@@ -714,7 +719,7 @@ class ImageDraw:
         language=None,
         stroke_width=0,
         stroke_fill=None,
-        embedded_color=False,
+        embedded_color: bool = False,
         *,
         font_size=None,
     ) -> None:
@@ -789,7 +794,7 @@ class ImageDraw:
 
     def textlength(
         self,
-        text: str,
+        text: str | bytes,
         font: (
             ImageFont.ImageFont
             | ImageFont.FreeTypeFont
@@ -799,7 +804,7 @@ class ImageDraw:
         direction=None,
         features=None,
         language=None,
-        embedded_color=False,
+        embedded_color: bool = False,
         *,
         font_size=None,
     ) -> float:
@@ -819,7 +824,7 @@ class ImageDraw:
     def textbbox(
         self,
         xy,
-        text,
+        text: str | bytes,
         font=None,
         anchor=None,
         spacing=4,
@@ -828,7 +833,7 @@ class ImageDraw:
         features=None,
         language=None,
         stroke_width=0,
-        embedded_color=False,
+        embedded_color: bool = False,
         *,
         font_size=None,
     ) -> tuple[int, int, int, int]:
@@ -864,7 +869,7 @@ class ImageDraw:
     def multiline_textbbox(
         self,
         xy,
-        text,
+        text: str | bytes,
         font=None,
         anchor=None,
         spacing=4,
@@ -873,7 +878,7 @@ class ImageDraw:
         features=None,
         language=None,
         stroke_width=0,
-        embedded_color=False,
+        embedded_color: bool = False,
         *,
         font_size=None,
     ) -> tuple[int, int, int, int]:
