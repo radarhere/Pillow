@@ -16,7 +16,7 @@ ARCHIVE_SDIR=pillow-depends-main
 
 # Package versions for fresh source builds
 FREETYPE_VERSION=2.13.2
-HARFBUZZ_VERSION=8.5.0
+HARFBUZZ_VERSION=9.0.0
 LIBPNG_VERSION=1.6.43
 JPEGTURBO_VERSION=3.0.3
 OPENJPEG_VERSION=2.5.2
@@ -58,6 +58,12 @@ function build_brotli {
         cp /usr/local/lib64/libbrotli* /usr/local/lib
         cp /usr/local/lib64/pkgconfig/libbrotli* /usr/local/lib/pkgconfig
     fi
+}
+
+function build_harfbuzz {
+    local out_dir=$(fetch_unpack https://github.com/harfbuzz/harfbuzz/releases/download/$HARFBUZZ_VERSION/$HARFBUZZ_VERSION.tar.xz harfbuzz-$HARFBUZZ_VERSION.tar.xz)
+    (cd $out_dir \
+        && meson setup build -Dfreetype=enabled -Dglib=disabled)
 }
 
 function build {
@@ -109,15 +115,7 @@ function build {
         build_freetype
     fi
 
-    if [ -z "$IS_MACOS" ]; then
-        export FREETYPE_LIBS=-lfreetype
-        export FREETYPE_CFLAGS=-I/usr/local/include/freetype2/
-    fi
-    build_simple harfbuzz $HARFBUZZ_VERSION https://github.com/harfbuzz/harfbuzz/releases/download/$HARFBUZZ_VERSION tar.xz --with-freetype=yes --with-glib=no
-    if [ -z "$IS_MACOS" ]; then
-        export FREETYPE_LIBS=""
-        export FREETYPE_CFLAGS=""
-    fi
+    build_harfbuzz
 }
 
 # Any stuff that you need to do before you start building the wheels
@@ -140,7 +138,9 @@ if [[ -n "$IS_MACOS" ]]; then
     brew remove --ignore-dependencies webp
   fi
 
-  brew install pkg-config
+  brew install meson pkg-config
+else
+  yum install -y meson
 fi
 
 wrap_wheel_builder build
