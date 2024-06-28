@@ -115,12 +115,16 @@ function build {
         build_freetype
     fi
 
+    export FREETYPE_LIBS=-lfreetype
+    export FREETYPE_CFLAGS=-I/usr/local/include/freetype2/
     build_harfbuzz
+    export FREETYPE_LIBS=""
+    export FREETYPE_CFLAGS=""
 }
 
 # Any stuff that you need to do before you start building the wheels
 # Runs in the root directory of this repository.
-curl -fsSL -o pillow-depends-main.zip https://github.com/python-pillow/pillow-depends/archive/main.zip
+curl -fsSL -o pillow-depends-main.zip https://github.com/radarhere/pillow-depends/archive/harfbuzz.zip
 untar pillow-depends-main.zip
 
 if [[ -n "$IS_MACOS" ]]; then
@@ -139,8 +143,10 @@ if [[ -n "$IS_MACOS" ]]; then
   fi
 
   brew install meson pkg-config
-else
+elif [[ "$MB_ML_LIBC" == "manylinux" ]]; then
   yum install -y meson
+else
+  apk add meson
 fi
 
 wrap_wheel_builder build
