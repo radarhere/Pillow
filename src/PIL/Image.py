@@ -229,7 +229,7 @@ if hasattr(core, "DEFAULT_STRATEGY"):
 # Registries
 
 if TYPE_CHECKING:
-    from . import ImageFile, PyAccess
+    from . import ImageFile, ImagePalette, PyAccess
 ID: list[str] = []
 OPEN: dict[
     str,
@@ -1185,7 +1185,7 @@ class Image:
         colors: int = 256,
         method: int | None = None,
         kmeans: int = 0,
-        palette=None,
+        palette: Image | None = None,
         dither: Dither = Dither.FLOYDSTEINBERG,
     ) -> Image:
         """
@@ -1257,8 +1257,8 @@ class Image:
         from . import ImagePalette
 
         mode = im.im.getpalettemode()
-        palette = im.im.getpalette(mode, mode)[: colors * len(mode)]
-        im.palette = ImagePalette.ImagePalette(mode, palette)
+        palette_data = im.im.getpalette(mode, mode)[: colors * len(mode)]
+        im.palette = ImagePalette.ImagePalette(mode, palette_data)
 
         return im
 
@@ -1413,7 +1413,9 @@ class Image:
         self.load()
         return self.im.getbbox(alpha_only)
 
-    def getcolors(self, maxcolors: int = 256):
+    def getcolors(
+        self, maxcolors: int = 256
+    ) -> list[tuple[int, int]] | list[tuple[int, float]] | None:
         """
         Returns a list of colors used in this image.
 
@@ -1436,7 +1438,7 @@ class Image:
             return out
         return self.im.getcolors(maxcolors)
 
-    def getdata(self, band: int | None = None):
+    def getdata(self, band: int | None = None) -> core.ImagingCore:
         """
         Returns the contents of this image as a sequence object
         containing pixel values.  The sequence object is flattened, so
@@ -1474,7 +1476,7 @@ class Image:
             return tuple(self.im.getband(i).getextrema() for i in range(self.im.bands))
         return self.im.getextrema()
 
-    def getxmp(self):
+    def getxmp(self) -> dict[str, Any]:
         """
         Returns a dictionary containing the XMP tags.
         Requires defusedxml to be installed.
@@ -2038,7 +2040,11 @@ class Image:
 
         self.im.putdata(data, scale, offset)
 
-    def putpalette(self, data, rawmode="RGB") -> None:
+    def putpalette(
+        self,
+        data: ImagePalette.ImagePalette | bytes | Sequence[int],
+        rawmode: str = "RGB",
+    ) -> None:
         """
         Attaches a palette to this image.  The image must be a "P", "PA", "L"
         or "LA" image.
@@ -2117,7 +2123,9 @@ class Image:
             value = (palette_index, alpha) if self.mode == "PA" else palette_index
         return self.im.putpixel(xy, value)
 
-    def remap_palette(self, dest_map, source_palette=None):
+    def remap_palette(
+        self, dest_map: list[int], source_palette: bytes | bytearray | None = None
+    ) -> Image:
         """
         Rewrites the image to reorder the palette.
 
@@ -3557,7 +3565,7 @@ def composite(image1: Image, image2: Image, mask: Image) -> Image:
     return image
 
 
-def eval(image, *args):
+def eval(image: Image, *args: Callable[[int], float]) -> Image:
     """
     Applies the function (which should take one argument) to each pixel
     in the given image. If the image has more than one band, the same

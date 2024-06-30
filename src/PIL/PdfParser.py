@@ -99,7 +99,7 @@ class IndirectReference(IndirectReferenceTuple):
         assert isinstance(other, IndirectReference)
         return other.object_id == self.object_id and other.generation == self.generation
 
-    def __ne__(self, other):
+    def __ne__(self, other: object) -> bool:
         return not (self == other)
 
     def __hash__(self) -> int:
@@ -112,13 +112,13 @@ class IndirectObjectDef(IndirectReference):
 
 
 class XrefTable:
-    def __init__(self):
-        self.existing_entries = {}  # object ID => (offset, generation)
-        self.new_entries = {}  # object ID => (offset, generation)
+    def __init__(self) -> None:
+        self.existing_entries: dict[int, tuple[int, int]] = {}  # object ID => (offset, generation)
+        self.new_entries: dict[int, tuple[int, int]] = {}  # object ID => (offset, generation)
         self.deleted_entries = {0: 65536}  # object ID => generation
         self.reading_finished = False
 
-    def __setitem__(self, key, value):
+    def __setitem__(self, key: int, value: tuple[int, int]) -> None:
         if self.reading_finished:
             self.new_entries[key] = value
         else:
@@ -126,13 +126,13 @@ class XrefTable:
         if key in self.deleted_entries:
             del self.deleted_entries[key]
 
-    def __getitem__(self, key):
+    def __getitem__(self, key: int) -> tuple[int, int]:
         try:
             return self.new_entries[key]
         except KeyError:
             return self.existing_entries[key]
 
-    def __delitem__(self, key):
+    def __delitem__(self, key: int) -> None:
         if key in self.new_entries:
             generation = self.new_entries[key][1] + 1
             del self.new_entries[key]
@@ -146,7 +146,7 @@ class XrefTable:
             msg = f"object ID {key} cannot be deleted because it doesn't exist"
             raise IndexError(msg)
 
-    def __contains__(self, key):
+    def __contains__(self, key: int) -> bool:
         return key in self.existing_entries or key in self.new_entries
 
     def __len__(self) -> int:
@@ -202,7 +202,9 @@ class XrefTable:
 
 
 class PdfName:
-    def __init__(self, name):
+    name: bytes
+
+    def __init__(self, name: PdfName | bytes | str) -> None:
         if isinstance(name, PdfName):
             self.name = name.name
         elif isinstance(name, bytes):
@@ -213,7 +215,7 @@ class PdfName:
     def name_as_str(self) -> str:
         return self.name.decode("us-ascii")
 
-    def __eq__(self, other):
+    def __eq__(self, other: object) -> bool:
         return (
             isinstance(other, PdfName) and other.name == self.name
         ) or other == self.name
