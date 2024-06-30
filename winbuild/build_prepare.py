@@ -370,11 +370,7 @@ DEPS = {
         "dir": f"harfbuzz-{V['HARFBUZZ']}",
         "license": "COPYING",
         "build": [
-            *cmds_cmake(
-                "harfbuzz",
-                "-DHB_HAVE_FREETYPE:BOOL=TRUE",
-                '-DCMAKE_CXX_FLAGS="-nologo -d2FH4-"',
-            ),
+            "meson.exe setup build -Dfreetype=enabled",
         ],
         "headers": [r"src\*.h"],
         "libs": [r"*.lib"],
