@@ -113,7 +113,7 @@ V = {
     "BROTLI": "1.1.0",
     "FREETYPE": "2.13.2",
     "FRIBIDI": "1.0.15",
-    "HARFBUZZ": "8.5.0",
+    "HARFBUZZ": "9.0.0",
     "JPEGTURBO": "3.0.3",
     "LCMS2": "2.16",
     "LIBPNG": "1.6.43",
@@ -491,7 +491,7 @@ def extract_dep(url: str, filename: str, prefs: dict[str, str]) -> None:
         # First try our mirror
         mirror_url = (
             f"https://raw.githubusercontent.com/"
-            f"python-pillow/pillow-depends/main/{filename}"
+            f"radarhere/pillow-depends/harfbuzz/{filename}"
         )
         try:
             download_dep(mirror_url, file)
