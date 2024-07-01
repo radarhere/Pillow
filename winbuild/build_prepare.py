@@ -370,7 +370,8 @@ DEPS = {
         "dir": f"harfbuzz-{V['HARFBUZZ']}",
         "license": "COPYING",
         "build": [
-            "meson.exe setup build -Dfreetype=enabled",
+            "meson.exe setup build -Dfreetype=enabled -Dchafa=disabled -Ddocs=disabled",
+            "meson.exe compile -Cbuild"
         ],
         "headers": [r"src\*.h"],
         "libs": [r"*.lib"],
