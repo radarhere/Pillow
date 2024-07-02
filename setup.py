@@ -531,7 +531,7 @@ class pil_build_ext(build_ext):
             # pythonX.Y.dll.a is in the /usr/lib/pythonX.Y/config directory
             msg = f"""
 
-The headers or library files could not be found for {self.compiler.shared_lib_extension}
+The headers or library files could not be found for {self.compiler}
 
 """
             sys.stderr.write(msg)
