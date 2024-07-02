@@ -529,6 +529,14 @@ class pil_build_ext(build_ext):
 
         elif sys.platform == "cygwin":
             # pythonX.Y.dll.a is in the /usr/lib/pythonX.Y/config directory
+            msg = f"""
+
+The headers or library files could not be found for {self.compiler.shared_lib_extension}
+
+"""
+            sys.stderr.write(msg)
+            raise DependencyException(msg)
+
             _add_directory(
                 library_dirs,
                 os.path.join(
