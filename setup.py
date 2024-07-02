@@ -16,9 +16,9 @@ import subprocess
 import sys
 import warnings
 
+import setuptools
 from setuptools import Extension, setup
 from setuptools.command.build_ext import build_ext
-
 
 def get_version():
     version_file = "src/PIL/_version.py"
@@ -1007,30 +1007,14 @@ while sys.argv[-1].startswith("--pillow-configuration="):
     _, key, value = sys.argv.pop().split("=", 2)
     configuration.setdefault(key, []).append(value)
 
-try:
-    setup(
-        cmdclass={"build_ext": pil_build_ext},
-        ext_modules=ext_modules,
-        zip_safe=not (debug_build() or PLATFORM_MINGW),
-    )
-except RequiredDependencyException as err:
-    msg = f"""
+msg = f"""
 
-The headers or library files could not be found for {str(err)},
+The headers or library files could not be found for {setuptools.__version__},
 a required dependency when compiling Pillow from source.
 
 Please see the install instructions at:
    https://pillow.readthedocs.io/en/latest/installation/basic-installation.html
 
 """
-    sys.stderr.write(msg)
-    raise RequiredDependencyException(msg)
-except DependencyException as err:
-    msg = f"""
-
-The headers or library files could not be found for {str(err)},
-which was requested by the option flag --enable-{str(err)}
-
-"""
-    sys.stderr.write(msg)
-    raise DependencyException(msg)
+sys.stderr.write(msg)
+raise RequiredDependencyException(msg)
