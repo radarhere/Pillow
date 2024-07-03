@@ -30,7 +30,7 @@ from ._deprecate import deprecate
 from ._typing import SupportsRead
 
 try:
-    from . import _imagingcms as core
+    from . import _imagingcms2 as core
 except ImportError as ex:
     # Allow error import for doc purposes, but error out when accessing
     # anything in core.

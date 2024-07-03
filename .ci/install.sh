@@ -20,7 +20,7 @@ fi
 set -e
 
 if [[ $(uname) != CYGWIN* ]]; then
-    sudo apt-get -qq install libfreetype6-dev liblcms2-dev python3-tk\
+    sudo apt-get -qq install libfreetype6-dev python3-tk\
                              ghostscript libffi-dev libjpeg-turbo-progs libopenjp2-7-dev\
                              cmake meson imagemagick libharfbuzz-dev libfribidi-dev\
                              sway wl-clipboard libopenblas-dev
