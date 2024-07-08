@@ -57,6 +57,7 @@ jobs:
           CIBW_MANYLINUX_PYPY_X86_64_IMAGE: ${{ matrix.manylinux }}
           CIBW_MANYLINUX_X86_64_IMAGE: ${{ matrix.manylinux }}
           CIBW_PRERELEASE_PYTHONS: True
+          CIBW_FREE_THREADED_SUPPORT: True
           MACOSX_DEPLOYMENT_TARGET: ${{ matrix.macosx_deployment_target }}
 
       - uses: actions/upload-artifact@v4
