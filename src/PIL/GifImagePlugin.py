@@ -597,13 +597,34 @@ def _write_single_frame(
 
 
 def _getbbox(
-    base_im: Image.Image, im_frame: Image.Image
+    base_im: Image.Image, im_frame: Image.Image, debug: bool = False
 ) -> tuple[Image.Image, tuple[int, int, int, int] | None]:
     if _get_palette_bytes(im_frame) != _get_palette_bytes(base_im):
+        #print(im_frame.palette.colors)
+        #print(base_im.palette.colors)
+        if False:
+            for im in (im_frame, base_im):
+                if "transparency" not in im.info:
+                    continue
+                transparency = im.info["transparency"]
+                palette = im.palette.palette
+                transparency_color = palette[transparency: transparency + 3]
+                for i in range(0, len(self.palette), 3):
+                    if i != transparency and im.palette.palette[i : i + 3] == transparency_color:
+                        return im_frame, (0, 0) + im_frame.size
+        if debug:
+            im_frame.copy().save("im_frame.png")
+            base_im.copy().save("base_im.png")
         im_frame = im_frame.convert("RGBA")
         base_im = base_im.convert("RGBA")
+        if debug:
+            im_frame.copy().save("im_frame1.png")
+            base_im.copy().save("base_im1.png")
     delta = ImageChops.subtract_modulo(im_frame, base_im)
-    return delta, delta.getbbox(alpha_only=False)
+    x = delta.getbbox(alpha_only=False)
+    if debug:
+        print("delta", x)
+    return delta, x
 
 
 class _Frame(NamedTuple):
@@ -636,6 +657,7 @@ def _write_multiple_frames(
             if "transparency" in im_frame.info:
                 encoderinfo.setdefault("transparency", im_frame.info["transparency"])
             im_frame = _normalize_palette(im_frame, palette, encoderinfo)
+            print(im_frame.getpixel((0, 0)), im_frame.getpixel((125, 216)))
             if isinstance(duration, (list, tuple)):
                 encoderinfo["duration"] = duration[frame_count]
             elif duration is None and "duration" in im_frame.info:
@@ -647,7 +669,7 @@ def _write_multiple_frames(
             diff_frame = None
             if im_frames and previous_im:
                 # delta frame
-                delta, bbox = _getbbox(previous_im, im_frame)
+                delta, bbox = _getbbox(previous_im, im_frame, len(im_frames) == 1)
                 if not bbox:
                     # This frame is identical to the previous frame
                     if encoderinfo.get("duration"):
@@ -706,6 +728,7 @@ def _write_multiple_frames(
             else:
                 bbox = None
             previous_im = im_frame
+            print("bbox", bbox)
             im_frames.append(_Frame(diff_frame or im_frame, bbox, encoderinfo))
 
     if len(im_frames) == 1:
