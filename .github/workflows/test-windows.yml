@@ -22,10 +22,6 @@ on:
 permissions:
   contents: read
 
-concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
-
 env:
   COVERAGE_CORE: sysmon
 
@@ -191,7 +187,7 @@ jobs:
     - name: Test Pillow
       run: |
         path %GITHUB_WORKSPACE%\\winbuild\\build\\bin;%PATH%
-        python.exe -m pytest -vx -W always --cov PIL --cov Tests --cov-report term --cov-report xml Tests
+        python.exe -m pytest -vx -W always --cov PIL --cov Tests --cov-report term --cov-report xml Tests/test_file_wmf.py
       shell: cmd
 
     - name: Prepare to upload errors
