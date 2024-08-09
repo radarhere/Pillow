@@ -405,8 +405,8 @@ class PyCMSError(Exception):
 
 def profileToProfile(
     im: Image.Image,
-    inputProfile: _CmsProfileCompatible,
-    outputProfile: _CmsProfileCompatible,
+    inputProfile: "_CmsProfileCompatible",
+    outputProfile: "_CmsProfileCompatible",
     renderingIntent: Intent = Intent.PERCEPTUAL,
     outputMode: str | None = None,
     inPlace: bool = False,
@@ -524,8 +524,8 @@ def getOpenProfile(
 
 
 def buildTransform(
-    inputProfile: _CmsProfileCompatible,
-    outputProfile: _CmsProfileCompatible,
+    inputProfile: "_CmsProfileCompatible",
+    outputProfile: "_CmsProfileCompatible",
     inMode: str,
     outMode: str,
     renderingIntent: Intent = Intent.PERCEPTUAL,
@@ -607,9 +607,9 @@ def buildTransform(
 
 
 def buildProofTransform(
-    inputProfile: _CmsProfileCompatible,
-    outputProfile: _CmsProfileCompatible,
-    proofProfile: _CmsProfileCompatible,
+    inputProfile: "_CmsProfileCompatible",
+    outputProfile: "_CmsProfileCompatible",
+    proofProfile: "_CmsProfileCompatible",
     inMode: str,
     outMode: str,
     renderingIntent: Intent = Intent.PERCEPTUAL,
@@ -829,7 +829,7 @@ def createProfile(
         raise PyCMSError(v) from v
 
 
-def getProfileName(profile: _CmsProfileCompatible) -> str:
+def getProfileName(profile: "_CmsProfileCompatible") -> str:
     """
 
     (pyCMS) Gets the internal product name for the given profile.
@@ -871,7 +871,7 @@ def getProfileName(profile: _CmsProfileCompatible) -> str:
         raise PyCMSError(v) from v
 
 
-def getProfileInfo(profile: _CmsProfileCompatible) -> str:
+def getProfileInfo(profile: "_CmsProfileCompatible") -> str:
     """
     (pyCMS) Gets the internal product information for the given profile.
 
@@ -908,7 +908,7 @@ def getProfileInfo(profile: _CmsProfileCompatible) -> str:
         raise PyCMSError(v) from v
 
 
-def getProfileCopyright(profile: _CmsProfileCompatible) -> str:
+def getProfileCopyright(profile: "_CmsProfileCompatible") -> str:
     """
     (pyCMS) Gets the copyright for the given profile.
 
@@ -936,7 +936,7 @@ def getProfileCopyright(profile: _CmsProfileCompatible) -> str:
         raise PyCMSError(v) from v
 
 
-def getProfileManufacturer(profile: _CmsProfileCompatible) -> str:
+def getProfileManufacturer(profile: "_CmsProfileCompatible") -> str:
     """
     (pyCMS) Gets the manufacturer for the given profile.
 
@@ -964,7 +964,7 @@ def getProfileManufacturer(profile: _CmsProfileCompatible) -> str:
         raise PyCMSError(v) from v
 
 
-def getProfileModel(profile: _CmsProfileCompatible) -> str:
+def getProfileModel(profile: "_CmsProfileCompatible") -> str:
     """
     (pyCMS) Gets the model for the given profile.
 
@@ -993,7 +993,7 @@ def getProfileModel(profile: _CmsProfileCompatible) -> str:
         raise PyCMSError(v) from v
 
 
-def getProfileDescription(profile: _CmsProfileCompatible) -> str:
+def getProfileDescription(profile: "_CmsProfileCompatible") -> str:
     """
     (pyCMS) Gets the description for the given profile.
 
@@ -1022,7 +1022,7 @@ def getProfileDescription(profile: _CmsProfileCompatible) -> str:
         raise PyCMSError(v) from v
 
 
-def getDefaultIntent(profile: _CmsProfileCompatible) -> int:
+def getDefaultIntent(profile: "_CmsProfileCompatible") -> int:
     """
     (pyCMS) Gets the default intent name for the given profile.
 
@@ -1062,7 +1062,7 @@ def getDefaultIntent(profile: _CmsProfileCompatible) -> int:
 
 
 def isIntentSupported(
-    profile: _CmsProfileCompatible, intent: Intent, direction: Direction
+    profile: "_CmsProfileCompatible", intent: Intent, direction: Direction
 ) -> Literal[-1, 1]:
     """
     (pyCMS) Checks if a given intent is supported.
