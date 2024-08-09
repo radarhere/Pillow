@@ -20,6 +20,7 @@
 from __future__ import annotations
 
 import operator
+import os
 import sys
 from enum import IntEnum, IntFlag
 from functools import reduce
@@ -391,8 +392,9 @@ def get_display_profile(handle: SupportsInt | None = None) -> ImageCmsProfile | 
 # pyCMS compatible layer
 # --------------------------------------------------------------------.
 
+print(os.environ)
 _CmsProfileCompatible = Union[
-    str, SupportsRead[bytes], ImageCmsProfile
+    str, SupportsRead[bytes], "core.CmsProfile", ImageCmsProfile
 ]
 
 
