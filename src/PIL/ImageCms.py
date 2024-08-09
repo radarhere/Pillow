@@ -44,12 +44,14 @@ except ImportError as ex:
 
     core = DeferredError.new(ex)
 
-    class CmsProfile:
-        pass
+    import os
+    if "DOCUTILSCONFIG" in os.environ:
+        class CmsProfile:
+            pass
 
-    _CmsProfileCompatible = Union[
-        str, SupportsRead[bytes], CmsProfile, "ImageCmsProfile"
-    ]
+        _CmsProfileCompatible = Union[
+            str, SupportsRead[bytes], CmsProfile, "ImageCmsProfile"
+        ]
 
 _DESCRIPTION = """
 pyCMS
