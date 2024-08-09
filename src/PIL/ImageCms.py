@@ -32,10 +32,8 @@ from ._typing import SupportsRead
 try:
     from . import _imagingcms as core
 
-    CmsProfile = core.CmsProfile
-
     _CmsProfileCompatible = Union[
-        str, SupportsRead[bytes], CmsProfile, "ImageCmsProfile"
+        str, SupportsRead[bytes], core.CmsProfile, "ImageCmsProfile"
     ]
 except ImportError as ex:
     # Allow error import for doc purposes, but error out when accessing
