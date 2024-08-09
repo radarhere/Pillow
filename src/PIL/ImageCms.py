@@ -33,7 +33,7 @@ try:
     from . import _imagingcms as core
 
     _CmsProfileCompatible = Union[
-        str, SupportsRead[bytes], core.CmsProfile, "ImageCmsProfile"
+        str, SupportsRead[bytes], "!core.CmsProfile", "ImageCmsProfile"
     ]
 except ImportError as ex:
     # Allow error import for doc purposes, but error out when accessing
