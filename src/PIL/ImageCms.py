@@ -23,7 +23,7 @@ import operator
 import sys
 from enum import IntEnum, IntFlag
 from functools import reduce
-from typing import Any, Literal, SupportsFloat, SupportsInt, Union
+from typing import TYPE_CHECKING, Any, Literal, SupportsFloat, SupportsInt, Union
 
 from . import Image, __version__
 from ._deprecate import deprecate
@@ -31,10 +31,6 @@ from ._typing import SupportsRead
 
 try:
     from . import _imagingcms as core
-
-    _CmsProfileCompatible = Union[
-        str, SupportsRead[bytes], core.CmsProfile, "ImageCmsProfile"
-    ]
 except ImportError as ex:
     # Allow error import for doc purposes, but error out when accessing
     # anything in core.
@@ -394,6 +390,12 @@ def get_display_profile(handle: SupportsInt | None = None) -> ImageCmsProfile | 
 # --------------------------------------------------------------------.
 # pyCMS compatible layer
 # --------------------------------------------------------------------.
+
+
+if TYPE_CHECKING:
+    _CmsProfileCompatible = Union[
+        str, SupportsRead[bytes], core.CmsProfile, ImageCmsProfile
+    ]
 
 
 class PyCMSError(Exception):
