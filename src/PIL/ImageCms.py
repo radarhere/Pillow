@@ -46,9 +46,6 @@ except ImportError as ex:
 
     import os
     if "DOCUTILSCONFIG" in os.environ:
-        class CmsProfile:
-            pass
-
         _CmsProfileCompatible = Union[
             str, SupportsRead[bytes], CmsProfile, "ImageCmsProfile"
         ]
