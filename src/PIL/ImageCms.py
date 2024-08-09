@@ -23,7 +23,7 @@ import operator
 import sys
 from enum import IntEnum, IntFlag
 from functools import reduce
-from typing import TYPE_CHECKING, Any, Literal, SupportsFloat, SupportsInt, Union
+from typing import TYPE_CHECKING, Any, Literal, SupportsFloat, SupportsInt, Union, TypeAlias
 
 from . import Image, __version__
 from ._deprecate import deprecate
@@ -32,7 +32,7 @@ from ._typing import SupportsRead
 try:
     from . import _imagingcms as core
 
-    _CmsProfileCompatible = Union[
+    _CmsProfileCompatible: TypeAlias = Union[
         str, SupportsRead[bytes], core.CmsProfile, "ImageCmsProfile"
     ]
 except ImportError as ex:
@@ -44,9 +44,6 @@ except ImportError as ex:
 
     import os
     if "DOCUTILSCONFIG" in os.environ:
-        class CmsProfile:
-            pass
-
         _CmsProfileCompatible = Union[
             str, SupportsRead[bytes], CmsProfile, "ImageCmsProfile"
         ]
