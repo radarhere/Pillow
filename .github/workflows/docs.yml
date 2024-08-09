@@ -52,4 +52,5 @@ jobs:
 
     - name: Docs
       run: |
+        python3 -c "from PIL import ImageCms"
         make doccheck
