@@ -20,6 +20,7 @@ Cazabon's PyCMS library.
 Constants
 ---------
 
+.. autoclass:: CmsProfile
 .. autoclass:: Intent
     :members:
     :member-order: bysource
