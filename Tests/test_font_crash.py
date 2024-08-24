@@ -19,6 +19,7 @@ class TestFontCrash:
 
     @skip_unless_feature("freetype2")
     def test_segfault(self) -> None:
-        with pytest.raises(OSError):
+        with pytest.raises(OSError) as e:
             font = ImageFont.truetype("Tests/fonts/fuzz_font-5203009437302784")
             self._fuzz_font(font)
+        assert str(e.value) == "Bitmap missing for glyph"
