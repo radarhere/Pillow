@@ -2,30 +2,14 @@ name: CIFuzz
 
 on:
   push:
-    branches:
-      - "**"
-    paths:
-      - ".github/workflows/cifuzz.yml"
-      - "**.c"
-      - "**.h"
   pull_request:
-    paths:
-      - ".github/workflows/cifuzz.yml"
-      - "**.c"
-      - "**.h"
   workflow_dispatch:
 
 permissions:
   contents: read
 
-concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
-
 jobs:
   Fuzzing:
-    # Disabled until google/oss-fuzz#11419 upgrades Python to 3.9+
-    if: false
     runs-on: ubuntu-latest
     steps:
     - name: Build Fuzzers
