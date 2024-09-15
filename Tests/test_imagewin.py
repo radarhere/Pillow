@@ -60,6 +60,16 @@ class TestImageWinDib:
         with pytest.raises(ValueError):
             ImageWin.Dib(mode)
 
+    def test_dib_hwnd(self) -> None:
+        mode = "RGBA"
+        size = (128, 128)
+        wnd = 50
+
+        dib = ImageWin.Dib(mode, size)
+        hwnd = ImageWin.HWND(wnd)
+
+        dib.expose(hwnd)
+
     def test_dib_paste(self) -> None:
         # Arrange
         im = hopper()
