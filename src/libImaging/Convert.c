@@ -311,6 +311,7 @@ rgb2bgr24(UINT8 *out, const UINT8 *in, int xsize) {
 
 static void
 rgb2hsv_row(UINT8 *out, const UINT8 *in) {  // following colorsys.py
+    // Producing a different output in 32-bit
     float h, s, rc, gc, bc, cr;
     UINT8 maxc, minc;
     UINT8 r, g, b;
