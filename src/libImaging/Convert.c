@@ -311,7 +311,10 @@ rgb2bgr24(UINT8 *out, const UINT8 *in, int xsize) {
 
 static void
 rgb2hsv_row(UINT8 *out, const UINT8 *in) {  // following colorsys.py
-    float h, s, rc, gc, bc, cr;
+    float s, rc, gc, bc, cr;
+    double h;
+    // I think a difference in value might just be what is expected in 32 vs 64 bit
+    // Either a different hash for 32-bit, or assert_image_similar
     UINT8 maxc, minc;
     UINT8 r, g, b;
     UINT8 uh, us, uv;
