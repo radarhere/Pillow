@@ -65,9 +65,9 @@ function build_harfbuzz {
 
     local out_dir=$(fetch_unpack https://github.com/harfbuzz/harfbuzz/releases/download/$HARFBUZZ_VERSION/$HARFBUZZ_VERSION.tar.xz harfbuzz-$HARFBUZZ_VERSION.tar.xz)
     (cd $out_dir \
-        && meson setup build --buildtype=release -Dfreetype=enabled -Dglib=disabled)
+        && python3 -m mesonbuild.mesonmain setup build --buildtype=release -Dfreetype=enabled -Dglib=disabled)
     (cd $out_dir/build \
-        && meson install)
+        && python3 -m mesonbuild.mesonmain install)
     if [[ "$MB_ML_LIBC" == "manylinux" ]]; then
         cp /usr/local/lib64/libharfbuzz* /usr/local/lib
     fi
