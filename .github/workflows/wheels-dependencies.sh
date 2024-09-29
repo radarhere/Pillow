@@ -62,9 +62,10 @@ function build_brotli {
 
 function build_harfbuzz {
     python3 -m pip install meson ninja
-    echo "torch start"
-    find / -iname meson
-    echo "torch end"
+    echo "torchthree"
+    ls -la /opt/_internal/tools/bin
+    echo "torchfour"
+    ls -la /opt/_internal/cpython-3.12.6/bin
 
     local out_dir=$(fetch_unpack https://github.com/harfbuzz/harfbuzz/releases/download/$HARFBUZZ_VERSION/$HARFBUZZ_VERSION.tar.xz harfbuzz-$HARFBUZZ_VERSION.tar.xz)
     (cd $out_dir \
