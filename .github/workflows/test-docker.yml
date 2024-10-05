@@ -22,10 +22,6 @@ on:
 permissions:
   contents: read
 
-concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
-
 jobs:
   build:
 
@@ -34,32 +30,10 @@ jobs:
       fail-fast: false
       matrix:
         docker: [
-          # Run slower jobs first to give them a headstart and reduce waiting time
-          ubuntu-22.04-jammy-arm64v8,
-          ubuntu-24.04-noble-ppc64le,
-          ubuntu-24.04-noble-s390x,
-          # Then run the remainder
-          alpine,
-          amazon-2-amd64,
-          amazon-2023-amd64,
-          arch,
-          centos-stream-9-amd64,
           debian-12-bookworm-x86,
           debian-12-bookworm-amd64,
-          fedora-39-amd64,
-          fedora-40-amd64,
-          gentoo,
-          ubuntu-22.04-jammy-amd64,
-          ubuntu-24.04-noble-amd64,
         ]
         dockerTag: [main]
-        include:
-          - docker: "ubuntu-22.04-jammy-arm64v8"
-            qemu-arch: "aarch64"
-          - docker: "ubuntu-24.04-noble-ppc64le"
-            qemu-arch: "ppc64le"
-          - docker: "ubuntu-24.04-noble-s390x"
-            qemu-arch: "s390x"
 
     name: ${{ matrix.docker }}
 
