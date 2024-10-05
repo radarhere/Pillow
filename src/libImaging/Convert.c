@@ -332,6 +332,7 @@ rgb2hsv_row(UINT8 *out, const UINT8 *in) {  // following colorsys.py
         rc = ((float)(maxc - r)) / cr;
         gc = ((float)(maxc - g)) / cr;
         bc = ((float)(maxc - b)) / cr;
+        printf("cr %f rc %f gc %f bc %f\n", cr, rc, gc, bc);
         if (r == maxc) {
             h = bc - gc;
         } else if (g == maxc) {
@@ -339,6 +340,7 @@ rgb2hsv_row(UINT8 *out, const UINT8 *in) {  // following colorsys.py
         } else {
             h = 4.0 + gc - rc;
         }
+        printf("h_start %f\n", h);
         // incorrect hue happens if h/6 is negative.
         h = fmod((h / 6.0 + 1.0), 1.0);
 
