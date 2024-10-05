@@ -311,7 +311,8 @@ rgb2bgr24(UINT8 *out, const UINT8 *in, int xsize) {
 
 static void
 rgb2hsv_row(UINT8 *out, const UINT8 *in) {  // following colorsys.py
-    float h, s, rc, gc, bc, cr;
+    double h, s, cr;
+    double rc, gc, bc;
     UINT8 maxc, minc;
     UINT8 r, g, b;
     UINT8 uh, us, uv;
@@ -327,11 +328,11 @@ rgb2hsv_row(UINT8 *out, const UINT8 *in) {  // following colorsys.py
         us = 0;
     } else {
         printf("maxc %d minc %d r %d g %d b %d\n", maxc, minc, r, g, b);
-        cr = (float)(maxc - minc);
-        s = cr / (float)maxc;
-        rc = ((float)(maxc - r)) / cr;
-        gc = ((float)(maxc - g)) / cr;
-        bc = ((float)(maxc - b)) / cr;
+        cr = (double)(maxc - minc);
+        s = cr / (double)maxc;
+        rc = ((double)(maxc - r)) / cr;
+        gc = ((double)(maxc - g)) / cr;
+        bc = ((double)(maxc - b)) / cr;
         printf("cr %f rc %f gc %f bc %f\n", cr, rc, gc, bc);
         if (r == maxc) {
             h = bc - gc;
@@ -342,7 +343,8 @@ rgb2hsv_row(UINT8 *out, const UINT8 *in) {  // following colorsys.py
         }
         printf("h_start %f\n", h);
         // incorrect hue happens if h/6 is negative.
-        h = fmod((h / 6.0 + 1.0), 1.0);
+        h = h / 6.0;
+        h = h - floor(h);
 
         uh = (UINT8)CLIP8((int)(h * 255.0));
         us = (UINT8)CLIP8((int)(s * 255.0));
