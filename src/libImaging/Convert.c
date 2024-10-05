@@ -326,6 +326,7 @@ rgb2hsv_row(UINT8 *out, const UINT8 *in) {  // following colorsys.py
         uh = 0;
         us = 0;
     } else {
+        printf("maxc %d\n", maxc);
         cr = (float)(maxc - minc);
         s = cr / (float)maxc;
         rc = ((float)(maxc - r)) / cr;
