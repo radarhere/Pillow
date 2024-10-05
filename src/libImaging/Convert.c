@@ -339,7 +339,7 @@ rgb2hsv_row(UINT8 *out, const UINT8 *in) {  // following colorsys.py
             h = 4.0 + gc - rc;
         }
         // incorrect hue happens if h/6 is negative.
-        h = 0;//fmod((h / 6.0 + 1.0), 1.0);
+        h = fmod((h / 6.0 + 1.0), 1.0);
 
         uh = (UINT8)CLIP8((int)(h * 255.0));
         us = (UINT8)CLIP8((int)(s * 255.0));
