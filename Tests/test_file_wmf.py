@@ -33,6 +33,9 @@ def test_load() -> None:
         if hasattr(Image.core, "drawwmf"):
             assert im.load()[0, 0] == (255, 255, 255)
 
+    with Image.open("Tests/images/test_libuemf_ref.emf") as im:
+        im.load()
+
 
 def test_register_handler(tmp_path: Path) -> None:
     class TestHandler(ImageFile.StubHandler):
