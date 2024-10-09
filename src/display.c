@@ -770,7 +770,7 @@ PyImaging_DrawWmf(PyObject *self, PyObject *args) {
     info.bmiHeader.biWidth = 14030;
     info.bmiHeader.biHeight = 9920;
     info.bmiHeader.biPlanes = 1;
-    info.bmiHeader.biBitCount = 24;
+    info.bmiHeader.biBitCount = 32;
     info.bmiHeader.biCompression = BI_RGB;
 
     void *ptr;
