@@ -778,6 +778,11 @@ PyImaging_DrawWmf(PyObject *self, PyObject *args) {
     SelectObject(dc, bitmap);
 
     HENHMETAFILE hemf = GetEnhMetaFile("test.emf");
+    if (hemf == NULL) {
+        printf("getenh fail\n");
+    } else {
+        printf("getenh pass\n");
+    }
 
     RECT rect;
     rect.left = 0;
