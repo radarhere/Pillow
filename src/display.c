@@ -749,18 +749,22 @@ PyImaging_DrawWmf(PyObject *self, PyObject *args) {
 
     if (datasize > 22 && GET32(data, 0) == 0x9ac6cdd7) {
         /* placeable windows metafile (22-byte aldus header) */
+        printf("torch1\n");
         meta = SetWinMetaFileBits(datasize - 22, data + 22, NULL, NULL);
 
     } else if (datasize > 80 && GET32(data, 0) == 1 && GET32(data, 40) == 0x464d4520) {
         /* enhanced metafile */
+        printf("torch2\n");
         meta = SetEnhMetaFileBits(datasize, data);
 
     } else {
+        printf("torch3\n");
         /* unknown meta format */
         meta = NULL;
     }
 
     if (!meta) {
+        printf("torch\n");
         PyErr_SetString(PyExc_OSError, "cannot load metafile");
         return NULL;
     }
@@ -792,11 +796,14 @@ PyImaging_DrawWmf(PyObject *self, PyObject *args) {
     rect.left = rect.top = 0;
     rect.right = width;
     rect.bottom = height;
+    printf("width %d\n", width);
+    printf("height %d\n", height);
 
     /* FIXME: make background transparent? configurable? */
     FillRect(dc, &rect, GetStockObject(WHITE_BRUSH));
 
     if (!PlayEnhMetaFile(dc, meta, &rect)) {
+        printf("hit\n");
         PyErr_SetString(PyExc_OSError, "cannot render metafile");
         goto error;
     }
