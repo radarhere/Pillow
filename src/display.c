@@ -786,7 +786,9 @@ PyImaging_DrawWmf(PyObject *self, PyObject *args) {
     rect.bottom = 9920;
 
     if (!PlayEnhMetaFile(dc, hemf, &rect)) {
+        printf("error %d\n", GetLastError());
         printf("hit\n");
+
         PyErr_SetString(PyExc_OSError, "cannot render metafile");
         goto error;
     }
