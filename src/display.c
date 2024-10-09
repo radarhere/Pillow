@@ -720,11 +720,7 @@ PyObject *
 PyImaging_DrawWmf(PyObject *self, PyObject *args) {
     HBITMAP bitmap;
     HENHMETAFILE meta;
-    BITMAPCOREHEADER core;
-    HDC dc;
-    RECT rect;
     PyObject *buffer = NULL;
-    void *ptr;
 
     char *data;
     Py_ssize_t datasize;
@@ -749,64 +745,54 @@ PyImaging_DrawWmf(PyObject *self, PyObject *args) {
 
     if (datasize > 22 && GET32(data, 0) == 0x9ac6cdd7) {
         /* placeable windows metafile (22-byte aldus header) */
-        printf("torch1\n");
         meta = SetWinMetaFileBits(datasize - 22, data + 22, NULL, NULL);
 
     } else if (datasize > 80 && GET32(data, 0) == 1 && GET32(data, 40) == 0x464d4520) {
         /* enhanced metafile */
-        printf("torch2\n");
         meta = SetEnhMetaFileBits(datasize, data);
 
     } else {
-        printf("torch3\n");
         /* unknown meta format */
         meta = NULL;
     }
 
     if (!meta) {
-        printf("torch\n");
         PyErr_SetString(PyExc_OSError, "cannot load metafile");
         return NULL;
     }
 
     /* step 2: create bitmap */
+    HDC dc = CreateCompatibleDC(NULL);
 
-    core.bcSize = sizeof(core);
-    core.bcWidth = width;
-    core.bcHeight = height;
-    core.bcPlanes = 1;
-    core.bcBitCount = 24;
+    BITMAPINFO info;
+    memset(&info, 0, sizeof(BITMAPINFO));
+    info.bmiHeader.biSize = sizeof(BITMAPINFOHEADER);
+    info.bmiHeader.biWidth = 14030;
+    info.bmiHeader.biHeight = 9920;
+    info.bmiHeader.biPlanes = 1;
+    info.bmiHeader.biBitCount = 24;
+    info.bmiHeader.biCompression = BI_RGB;
 
-    dc = CreateCompatibleDC(NULL);
+    void *ptr;
+    bitmap = CreateDIBSection(dc, &info, DIB_RGB_COLORS, &ptr, NULL, 0);
+    SelectObject(dc, bitmap);
 
-    bitmap = CreateDIBSection(dc, (BITMAPINFO *)&core, DIB_RGB_COLORS, &ptr, NULL, 0);
+    HENHMETAFILE hemf = GetEnhMetaFile("test.emf");
 
-    if (!bitmap) {
-        PyErr_SetString(PyExc_OSError, "cannot create bitmap");
-        goto error;
-    }
+    RECT rect;
+    rect.left = 0;
+    rect.top = 0;
+    rect.right = 14030;
+    rect.bottom = 9920;
 
-    if (!SelectObject(dc, bitmap)) {
-        PyErr_SetString(PyExc_OSError, "cannot select bitmap");
-        goto error;
-    }
-
-    /* step 3: render metafile into bitmap */
-
-    rect.left = rect.top = 0;
-    rect.right = width;
-    rect.bottom = height;
-    printf("width %d\n", width);
-    printf("height %d\n", height);
-
-    /* FIXME: make background transparent? configurable? */
-    FillRect(dc, &rect, GetStockObject(WHITE_BRUSH));
-
-    if (!PlayEnhMetaFile(dc, meta, &rect)) {
+    if (!PlayEnhMetaFile(dc, hemf, &rect)) {
         printf("hit\n");
         PyErr_SetString(PyExc_OSError, "cannot render metafile");
         goto error;
     }
+
+    COLORREF color = GetPixel(dc, 200, 200);
+    printf("rgb %d %d %d\n", GetRValue(color), GetGValue(color), GetBValue(color));
 
     /* step 4: extract bits from bitmap */
 
