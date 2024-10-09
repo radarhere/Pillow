@@ -720,7 +720,11 @@ PyObject *
 PyImaging_DrawWmf(PyObject *self, PyObject *args) {
     HBITMAP bitmap;
     HENHMETAFILE meta;
+    BITMAPCOREHEADER core;
+    HDC dc;
+    RECT rect;
     PyObject *buffer = NULL;
+    void *ptr;
 
     char *data;
     Py_ssize_t datasize;
@@ -762,33 +766,40 @@ PyImaging_DrawWmf(PyObject *self, PyObject *args) {
     }
 
     /* step 2: create bitmap */
-    HDC dc = CreateCompatibleDC(NULL);
 
-    BITMAPINFO info;
-    memset(&info, 0, sizeof(BITMAPINFO));
-    info.bmiHeader.biSize = sizeof(BITMAPINFOHEADER);
-    info.bmiHeader.biWidth = 857;
-    info.bmiHeader.biHeight = 687;
-    info.bmiHeader.biPlanes = 1;
-    info.bmiHeader.biBitCount = 24;
-    info.bmiHeader.biCompression = BI_RGB;
+    core.bcSize = sizeof(core);
+    core.bcWidth = width;
+    core.bcHeight = height;
+    core.bcPlanes = 1;
+    core.bcBitCount = 24;
 
-    void *ptr;
-    bitmap = CreateDIBSection(dc, &info, DIB_RGB_COLORS, &ptr, NULL, 0);
-    SelectObject(dc, bitmap);
+    dc = CreateCompatibleDC(NULL);
 
-    HENHMETAFILE hemf = GetEnhMetaFile("test.emf");
+    bitmap = CreateDIBSection(dc, (BITMAPINFO *)&core, DIB_RGB_COLORS, &ptr, NULL, 0);
 
-    RECT rect;
-    rect.left = 0;
-    rect.top = 0;
-    rect.right = 857;
-    rect.bottom = 687;
+    if (!bitmap) {
+        PyErr_SetString(PyExc_OSError, "cannot create bitmap");
+        goto error;
+    }
 
-    PlayEnhMetaFile(dc, hemf, &rect);
+    if (!SelectObject(dc, bitmap)) {
+        PyErr_SetString(PyExc_OSError, "cannot select bitmap");
+        goto error;
+    }
 
-    COLORREF color = GetPixel(dc, 200, 200);
-    printf("rgb %d %d %d\n", GetRValue(color), GetGValue(color), GetBValue(color));
+    /* step 3: render metafile into bitmap */
+
+    rect.left = rect.top = 0;
+    rect.right = width;
+    rect.bottom = height;
+
+    /* FIXME: make background transparent? configurable? */
+    FillRect(dc, &rect, GetStockObject(WHITE_BRUSH));
+
+    if (!PlayEnhMetaFile(dc, meta, &rect)) {
+        PyErr_SetString(PyExc_OSError, "cannot render metafile");
+        goto error;
+    }
 
     /* step 4: extract bits from bitmap */
 
