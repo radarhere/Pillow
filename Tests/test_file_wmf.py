@@ -33,7 +33,7 @@ def test_load() -> None:
         if hasattr(Image.core, "drawwmf"):
             assert im.load()[0, 0] == (255, 255, 255)
 
-    with Image.open("Tests/images/test_libuemf_ref.emf") as im:
+    with Image.open("Tests/images/60638_shape2.emf") as im:
         im.load()
 
 
