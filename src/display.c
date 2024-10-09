@@ -775,29 +775,43 @@ PyImaging_DrawWmf(PyObject *self, PyObject *args) {
 
     void *ptr;
     bitmap = CreateDIBSection(dc, &info, DIB_RGB_COLORS, &ptr, NULL, 0);
-    SelectObject(dc, bitmap);
 
-    HENHMETAFILE hemf = GetEnhMetaFile("test.emf");
-    if (hemf == NULL) {
-        printf("getenh fail\n");
-    } else {
-        printf("getenh pass\n");
+    HENHMETAFILE hEmf = GetEnhMetaFile("test.emf");
+    if (hEmf)
+    {
+        ENHMETAHEADER pEmfHeader;
+        if (GetEnhMetaFileHeader(hEmf, sizeof(pEmfHeader), &pEmfHeader) != 0)
+        {
+            // For test
+            RECT rcBounds;
+            rcBounds.left = MulDiv(pEmfHeader.rclFrame.left, pEmfHeader.szlDevice.cx, pEmfHeader.szlMillimeters.cx * 100);
+            rcBounds.top = MulDiv(pEmfHeader.rclFrame.top, pEmfHeader.szlDevice.cy, pEmfHeader.szlMillimeters.cy * 100);
+            rcBounds.right = MulDiv(pEmfHeader.rclFrame.right, pEmfHeader.szlDevice.cx, pEmfHeader.szlMillimeters.cx * 100);
+            rcBounds.bottom = MulDiv(pEmfHeader.rclFrame.bottom, pEmfHeader.szlDevice.cy, pEmfHeader.szlMillimeters.cy * 100);
+            int nWidth = rcBounds.right - rcBounds.left;
+            int nHeight = rcBounds.bottom - rcBounds.top;
+
+            BITMAPINFO BitmapInfo;
+            ZeroMemory(&BitmapInfo, sizeof(BITMAPINFO));
+            BitmapInfo.bmiHeader.biSize = sizeof(BITMAPINFOHEADER);
+            BitmapInfo.bmiHeader.biWidth = nWidth;
+            BitmapInfo.bmiHeader.biHeight = nHeight;
+            BitmapInfo.bmiHeader.biPlanes = 1;
+            BitmapInfo.bmiHeader.biBitCount = 32;
+            BitmapInfo.bmiHeader.biCompression = BI_RGB;
+            RECT rect;
+            rect.left = 0;
+            rect.top = 0;
+            rect.right = 14030;
+            rect.bottom = 9920;
+            SelectObject(dc, bitmap);
+            if (!PlayEnhMetaFile(dc, hEmf, &rect)) {
+            printf("failit\n");
+            } else {
+            printf("passit\n");
+            }
+        }
     }
-
-    RECT rect;
-    rect.left = 0;
-    rect.top = 0;
-    rect.right = 14030;
-    rect.bottom = 9920;
-
-    if (!PlayEnhMetaFile(dc, hemf, &rect)) {
-        printf("error %d\n", GetLastError());
-        printf("hit\n");
-
-        PyErr_SetString(PyExc_OSError, "cannot render metafile");
-        goto error;
-    }
-
     COLORREF color = GetPixel(dc, 200, 200);
     printf("rgb %d %d %d\n", GetRValue(color), GetGValue(color), GetBValue(color));
 
