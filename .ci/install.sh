@@ -34,6 +34,7 @@ python3 -m pip install ipython
 python3 -m pip install olefile
 python3 -m pip install -U pytest
 python3 -m pip install -U pytest-cov
+python3 -m pip install -U pytest-freethreaded
 python3 -m pip install -U pytest-timeout
 python3 -m pip install pyroma
 
