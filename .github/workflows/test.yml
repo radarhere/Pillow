@@ -83,42 +83,9 @@ jobs:
       run: |
         echo "PYTHON_GIL=0" >> $GITHUB_ENV
 
-    - name: Build system information
-      run: python3 .github/workflows/system-info.py
-
-    - name: Cache libimagequant
-      if: startsWith(matrix.os, 'ubuntu')
-      uses: actions/cache@v4
-      id: cache-libimagequant
-      with:
-        path: ~/cache-libimagequant
-        key: ${{ runner.os }}-libimagequant-${{ hashFiles('depends/install_imagequant.sh') }}
-
-    - name: Install Linux dependencies
-      if: startsWith(matrix.os, 'ubuntu')
-      run: |
-        .ci/install.sh
-      env:
-        GHA_PYTHON_VERSION: ${{ matrix.python-version }}
-        GHA_LIBIMAGEQUANT_CACHE_HIT: ${{ steps.cache-libimagequant.outputs.cache-hit }}
-
-    - name: Install macOS dependencies
-      if: startsWith(matrix.os, 'macOS')
-      run: |
-        .github/workflows/macos-install.sh
-      env:
-        GHA_PYTHON_VERSION: ${{ matrix.python-version }}
-
-    - name: Register gcc problem matcher
-      if: "matrix.os == 'ubuntu-latest' && matrix.python-version == '3.12'"
-      run: echo "::add-matcher::.github/problem-matchers/gcc.json"
-
-    - name: Build
-      run: |
-        .ci/build.sh
-
     - name: Test
       run: |
+        python3 -m pip install Pillow
         python3 demo.py
       env:
         PYTHONOPTIMIZE: ${{ matrix.PYTHONOPTIMIZE }}
