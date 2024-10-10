@@ -8,7 +8,7 @@ def test():
 
 threads = []
 
-for i in range(32):
+for i in range(64):
     t = threading.Thread(target=test, daemon=True)
     t.start()
     threads.append(t)
