@@ -85,6 +85,7 @@ struct {
 
 typedef struct {
     PyObject_HEAD FT_Face face;
+    PyThreadState *threadstate;
     unsigned char *font_bytes;
     int layout_engine;
 } FontObject;
@@ -181,6 +182,7 @@ getfont(PyObject *self_, PyObject *args, PyObject *kw) {
 
     self->font_bytes = NULL;
     FT_New_Face(library, filename, index, &self->face);
+    self->threadstate = PyEval_SaveThread();
 
     return (PyObject *)self;
 }
@@ -1380,6 +1382,7 @@ font_setvaraxes(FontObject *self, PyObject *args) {
 static void
 font_dealloc(FontObject *self) {
     if (self->face) {
+        PyEval_RestoreThread(self->threadstate);
         FT_Done_Face(self->face);
     }
 }
