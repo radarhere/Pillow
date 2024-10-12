@@ -80,3 +80,13 @@ def test_save(ext: str, tmp_path: Path) -> None:
     tmpfile = str(tmp_path / ("temp" + ext))
     with pytest.raises(OSError):
         im.save(tmpfile)
+
+
+def test_6980() -> None:
+    with Image.open("test.emf") as im:
+        im.save("out.png")
+
+
+def test_69802() -> None:
+    with Image.open("test2.emf") as im:
+        im.save("out2.png")
