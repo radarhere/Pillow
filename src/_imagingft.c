@@ -85,6 +85,7 @@ struct {
 
 typedef struct {
     PyObject_HEAD FT_Face face;
+    PyThreadState *threadstate;
     unsigned char *font_bytes;
     int layout_engine;
 } FontObject;
@@ -208,6 +209,10 @@ getfont(PyObject *self_, PyObject *args, PyObject *kw) {
     }
 
     if (!error) {
+        PyGILState_STATE gstate = PyGILState_Ensure();
+        self->threadstate = PyThreadState_Get();
+        PyGILState_Release(gstate);
+
         width = size * 64;
         req.type = FT_SIZE_REQUEST_TYPE_NOMINAL;
         req.width = width;
@@ -1433,7 +1438,9 @@ font_setvaraxes(FontObject *self, PyObject *args) {
 static void
 font_dealloc(FontObject *self) {
     if (self->face) {
+        PyThreadState *threadstate = PyThreadState_Swap(self->threadstate);
         FT_Done_Face(self->face);
+        PyThreadState_Swap(threadstate);
     }
     if (self->font_bytes) {
         PyMem_Free(self->font_bytes);
