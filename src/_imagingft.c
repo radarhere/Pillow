@@ -1383,13 +1383,6 @@ font_setvaraxes(FontObject *self, PyObject *args) {
 
 static void
 font_dealloc(FontObject *self) {
-    if (self->face) {
-        printf("torchrestore1\n");
-        PyEval_RestoreThread(self->threadstate);
-        printf("torchrestore2\n");
-        FT_Done_Face(self->face);
-        printf("torchdone\n");
-    }
 }
 
 static PyMethodDef font_methods[] = {
