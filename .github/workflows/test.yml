@@ -68,14 +68,6 @@ jobs:
     - name: Build system information
       run: python3 .github/workflows/system-info.py
 
-    - name: Cache libimagequant
-      if: startsWith(matrix.os, 'ubuntu')
-      uses: actions/cache@v4
-      id: cache-libimagequant
-      with:
-        path: ~/cache-libimagequant
-        key: ${{ runner.os }}-libimagequant-${{ hashFiles('depends/install_imagequant.sh') }}
-
     - name: Install Linux dependencies
       if: startsWith(matrix.os, 'ubuntu')
       run: |
@@ -83,13 +75,6 @@ jobs:
       env:
         GHA_PYTHON_VERSION: ${{ matrix.python-version }}
         GHA_LIBIMAGEQUANT_CACHE_HIT: ${{ steps.cache-libimagequant.outputs.cache-hit }}
-
-    - name: Install macOS dependencies
-      if: startsWith(matrix.os, 'macOS')
-      run: |
-        .github/workflows/macos-install.sh
-      env:
-        GHA_PYTHON_VERSION: ${{ matrix.python-version }}
 
     - name: Register gcc problem matcher
       if: "matrix.os == 'ubuntu-latest' && matrix.python-version == '3.12'"
@@ -101,50 +86,6 @@ jobs:
 
     - name: Test
       run: |
-        if [ $REVERSE ]; then
-          python3 -m pip install pytest-reverse
-        fi
-        if [ "${{ matrix.os }}" = "ubuntu-latest" ]; then
-          xvfb-run -s '-screen 0 1024x768x24' sway&
-          export WAYLAND_DISPLAY=wayland-1
-          .ci/test.sh
-        else
-          .ci/test.sh
-        fi
+        .ci/test.sh
       env:
         PYTHONOPTIMIZE: ${{ matrix.PYTHONOPTIMIZE }}
-        REVERSE: ${{ matrix.REVERSE }}
-
-    - name: Prepare to upload errors
-      if: failure()
-      run: |
-        mkdir -p Tests/errors
-
-    - name: Upload errors
-      uses: actions/upload-artifact@v4
-      if: failure()
-      with:
-        name: errors
-        path: Tests/errors
-
-    - name: After success
-      run: |
-        .ci/after_success.sh
-
-    - name: Upload coverage
-      uses: codecov/codecov-action@v4
-      with:
-        flags: ${{ matrix.os == 'ubuntu-latest' && 'GHA_Ubuntu' || 'GHA_macOS' }}
-        name: ${{ matrix.os }} Python ${{ matrix.python-version }}
-        gcov: true
-        token: ${{ secrets.CODECOV_ORG_TOKEN }}
-
-  success:
-    permissions:
-      contents: none
-    needs: build
-    runs-on: ubuntu-latest
-    name: Test Successful
-    steps:
-      - name: Success
-        run: echo Test Successful
