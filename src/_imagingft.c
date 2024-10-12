@@ -182,9 +182,9 @@ getfont(PyObject *self_, PyObject *args, PyObject *kw) {
 
     self->font_bytes = NULL;
     printf("torchsave1\n");
-    PyGILState_Ensure();
-    printf("torchsave1b\n");
-    self->threadstate = PyEval_SaveThread();
+    PyGILState_STATE gstate = PyGILState_Ensure();
+    self->threadstate = PyThreadState_Get();
+    PyGILState_Release(gstate);
     printf("torchsave2\n");
     FT_New_Face(library, filename, index, &self->face);
     printf("torchsave3\n");
