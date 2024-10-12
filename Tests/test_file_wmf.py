@@ -80,3 +80,7 @@ def test_save(ext: str, tmp_path: Path) -> None:
     tmpfile = str(tmp_path / ("temp" + ext))
     with pytest.raises(OSError):
         im.save(tmpfile)
+
+
+def test_6980() -> None:
+    pass
