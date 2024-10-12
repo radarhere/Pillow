@@ -182,7 +182,9 @@ getfont(PyObject *self_, PyObject *args, PyObject *kw) {
 
     self->font_bytes = NULL;
     FT_New_Face(library, filename, index, &self->face);
+    printf("torchsave1\n");
     self->threadstate = PyEval_SaveThread();
+    printf("torchsave2\n");
 
     return (PyObject *)self;
 }
@@ -1382,8 +1384,11 @@ font_setvaraxes(FontObject *self, PyObject *args) {
 static void
 font_dealloc(FontObject *self) {
     if (self->face) {
+        printf("torchrestore1\n");
         PyEval_RestoreThread(self->threadstate);
+        printf("torchrestore2\n");
         FT_Done_Face(self->face);
+        printf("torchdone\n");
     }
 }
 
