@@ -1388,7 +1388,6 @@ font_dealloc(FontObject *self) {
         PyThreadState *threadstate = PyThreadState_Swap(self->threadstate);
         printf("torchrestore2\n");
         FT_Done_Face(self->face);
-        PyEval_RestoreThread(threadstate);
         printf("torchdone\n");
     }
 }
