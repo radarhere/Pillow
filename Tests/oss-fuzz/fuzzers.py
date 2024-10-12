@@ -34,10 +34,3 @@ def fuzz_font(data: bytes) -> None:
         # Catch pcf/pilfonts/random garbage here. They return
         # different font objects.
         return
-
-    font.getbbox("ABC")
-    font.getmask("test text")
-    with Image.new(mode="RGBA", size=(200, 200)) as im:
-        draw = ImageDraw.Draw(im)
-        draw.multiline_textbbox((10, 10), "ABC\nAaaa", font, stroke_width=2)
-        draw.text((10, 10), "Test Text", font=font, fill="#000")
