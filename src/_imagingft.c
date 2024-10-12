@@ -181,10 +181,11 @@ getfont(PyObject *self_, PyObject *args, PyObject *kw) {
     self->layout_engine = layout_engine;
 
     self->font_bytes = NULL;
-    FT_New_Face(library, filename, index, &self->face);
     printf("torchsave1\n");
-    self->threadstate = PyEval_SaveThread();
+    self->threadstate = PyThreadState_Swap(NULL);
     printf("torchsave2\n");
+    FT_New_Face(library, filename, index, &self->face);
+    printf("torchsave3\n");
 
     return (PyObject *)self;
 }
