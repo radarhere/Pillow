@@ -175,65 +175,12 @@ getfont(PyObject *self_, PyObject *args, PyObject *kw) {
 #endif
 
     self = PyObject_New(FontObject, &Font_Type);
-    if (!self) {
-        if (filename) {
-            PyMem_Free(filename);
-        }
-        return NULL;
-    }
 
     self->face = NULL;
     self->layout_engine = layout_engine;
 
-    if (filename && font_bytes_size <= 0) {
-        self->font_bytes = NULL;
-        error = FT_New_Face(library, filename, index, &self->face);
-    } else {
-        /* need to have allocated storage for font_bytes for the life of the object.*/
-        /* Don't free this before FT_Done_Face */
-        self->font_bytes = PyMem_Malloc(font_bytes_size);
-        if (!self->font_bytes) {
-            error = FT_Err_Out_Of_Memory;
-        }
-        if (!error) {
-            memcpy(self->font_bytes, font_bytes, (size_t)font_bytes_size);
-            error = FT_New_Memory_Face(
-                library,
-                (FT_Byte *)self->font_bytes,
-                font_bytes_size,
-                index,
-                &self->face
-            );
-        }
-    }
-
-    if (!error) {
-        width = size * 64;
-        req.type = FT_SIZE_REQUEST_TYPE_NOMINAL;
-        req.width = width;
-        req.height = width;
-        req.horiResolution = 0;
-        req.vertResolution = 0;
-        error = FT_Request_Size(self->face, &req);
-    }
-
-    if (!error && encoding && strlen((char *)encoding) == 4) {
-        FT_Encoding encoding_tag =
-            FT_MAKE_TAG(encoding[0], encoding[1], encoding[2], encoding[3]);
-        error = FT_Select_Charmap(self->face, encoding_tag);
-    }
-    if (filename) {
-        PyMem_Free(filename);
-    }
-
-    if (error) {
-        if (self->font_bytes) {
-            PyMem_Free(self->font_bytes);
-            self->font_bytes = NULL;
-        }
-        Py_DECREF(self);
-        return geterror(error);
-    }
+    self->font_bytes = NULL;
+    FT_New_Face(library, filename, index, &self->face);
 
     return (PyObject *)self;
 }
@@ -1435,10 +1382,6 @@ font_dealloc(FontObject *self) {
     if (self->face) {
         FT_Done_Face(self->face);
     }
-    if (self->font_bytes) {
-        PyMem_Free(self->font_bytes);
-    }
-    PyObject_Del(self);
 }
 
 static PyMethodDef font_methods[] = {

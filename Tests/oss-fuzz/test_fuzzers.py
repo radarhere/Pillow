@@ -22,10 +22,14 @@ if libjpeg_turbo_version is not None:
 
 
 @skip_unless_feature("freetype2")
-def test_fuzz_fonts() -> None:
-    with open("Tests/fonts/NotoSans-Regular.ttf", "rb") as f:
-        try:
-            fuzzers.fuzz_font(f.read())
-        except (Image.DecompressionBombError, Image.DecompressionBombWarning, OSError):
-            pass
-        assert True
+@pytest.mark.parametrize(
+    "path", subprocess.check_output("find Tests/fonts -type f", shell=True).split(b"\n")
+)
+def test_fuzz_fonts(path: str) -> None:
+    if not path:
+        return
+    try:
+        fuzzers.fuzz_font(path)
+    except (Image.DecompressionBombError, Image.DecompressionBombWarning, OSError):
+        pass
+    assert True

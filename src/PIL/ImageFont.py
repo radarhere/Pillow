@@ -263,29 +263,11 @@ class FreeTypeFont:
 
         self.layout_engine = layout_engine
 
-        def load_from_bytes(f: IO[bytes]) -> None:
-            self.font_bytes = f.read()
-            self.font = core.getfont(
-                "", size, index, encoding, self.font_bytes, layout_engine
-            )
-
         if is_path(font):
             font = os.path.realpath(os.fspath(font))
-            if sys.platform == "win32":
-                font_bytes_path = font if isinstance(font, bytes) else font.encode()
-                try:
-                    font_bytes_path.decode("ascii")
-                except UnicodeDecodeError:
-                    # FreeType cannot load fonts with non-ASCII characters on Windows
-                    # So load it into memory first
-                    with open(font, "rb") as f:
-                        load_from_bytes(f)
-                    return
             self.font = core.getfont(
                 font, size, index, encoding, layout_engine=layout_engine
             )
-        else:
-            load_from_bytes(cast(IO[bytes], font))
 
     def __getstate__(self) -> list[Any]:
         return [self.path, self.size, self.index, self.encoding, self.layout_engine]
@@ -872,63 +854,7 @@ def truetype(
     :exception ValueError: If the font size is not greater than zero.
     """
 
-    def freetype(font: StrOrBytesPath | BinaryIO) -> FreeTypeFont:
-        return FreeTypeFont(font, size, index, encoding, layout_engine)
-
-    try:
-        return freetype(font)
-    except OSError:
-        if not is_path(font):
-            raise
-        ttf_filename = os.path.basename(font)
-
-        dirs = []
-        if sys.platform == "win32":
-            # check the windows font repository
-            # NOTE: must use uppercase WINDIR, to work around bugs in
-            # 1.5.2's os.environ.get()
-            windir = os.environ.get("WINDIR")
-            if windir:
-                dirs.append(os.path.join(windir, "fonts"))
-        elif sys.platform in ("linux", "linux2"):
-            data_home = os.environ.get("XDG_DATA_HOME")
-            if not data_home:
-                # The freedesktop spec defines the following default directory for
-                # when XDG_DATA_HOME is unset or empty. This user-level directory
-                # takes precedence over system-level directories.
-                data_home = os.path.expanduser("~/.local/share")
-            xdg_dirs = [data_home]
-
-            data_dirs = os.environ.get("XDG_DATA_DIRS")
-            if not data_dirs:
-                # Similarly, defaults are defined for the system-level directories
-                data_dirs = "/usr/local/share:/usr/share"
-            xdg_dirs += data_dirs.split(":")
-
-            dirs += [os.path.join(xdg_dir, "fonts") for xdg_dir in xdg_dirs]
-        elif sys.platform == "darwin":
-            dirs += [
-                "/Library/Fonts",
-                "/System/Library/Fonts",
-                os.path.expanduser("~/Library/Fonts"),
-            ]
-
-        ext = os.path.splitext(ttf_filename)[1]
-        first_font_with_a_different_extension = None
-        for directory in dirs:
-            for walkroot, walkdir, walkfilenames in os.walk(directory):
-                for walkfilename in walkfilenames:
-                    if ext and walkfilename == ttf_filename:
-                        return freetype(os.path.join(walkroot, walkfilename))
-                    elif not ext and os.path.splitext(walkfilename)[0] == ttf_filename:
-                        fontpath = os.path.join(walkroot, walkfilename)
-                        if os.path.splitext(fontpath)[1] == ".ttf":
-                            return freetype(fontpath)
-                        if not ext and first_font_with_a_different_extension is None:
-                            first_font_with_a_different_extension = fontpath
-        if first_font_with_a_different_extension:
-            return freetype(first_font_with_a_different_extension)
-        raise
+    return FreeTypeFont(font, size, index, encoding, layout_engine)
 
 
 def load_path(filename: str | bytes) -> ImageFont:
