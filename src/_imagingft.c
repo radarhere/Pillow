@@ -1388,8 +1388,13 @@ font_dealloc(FontObject *self) {
         PyThreadState *threadstate = PyThreadState_Swap(self->threadstate);
         printf("torchrestore2\n");
         FT_Done_Face(self->face);
+        PyThreadState_Swap(threadstate);
         printf("torchdone\n");
     }
+    if (self->font_bytes) {
+        PyMem_Free(self->font_bytes);
+    }
+    PyObject_Del(self);
 }
 
 static PyMethodDef font_methods[] = {
