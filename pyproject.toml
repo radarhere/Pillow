@@ -165,6 +165,7 @@ testpaths = [
 ]
 
 [tool.mypy]
+disallow_untyped_defs = true
 python_version = "3.9"
 pretty = true
 disallow_any_generics = true
