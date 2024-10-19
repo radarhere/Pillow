@@ -47,12 +47,6 @@ jobs:
         repository: python-pillow/pillow-depends
         path: winbuild\depends
 
-    - name: Checkout extra test images
-      uses: actions/checkout@v4
-      with:
-        repository: python-pillow/test-images
-        path: Tests\test-images
-
     # sets env: pythonLocation
     - name: Set up Python
       uses: actions/setup-python@v5
@@ -61,9 +55,6 @@ jobs:
         allow-prereleases: true
         cache: pip
         cache-dependency-path: ".github/workflows/test-windows.yml"
-
-    - name: Print build system information
-      run: python3 .github/workflows/system-info.py
 
     - name: Install Python dependencies
       run: >
@@ -77,9 +68,6 @@ jobs:
       run: |
         choco install nasm --no-progress
         echo "C:\Program Files\NASM" >> $env:GITHUB_PATH
-
-        # Install extra test images
-        xcopy /S /Y Tests\test-images\* Tests\images
 
         # make cache key depend on VS version
         & "C:\Program Files (x86)\Microsoft Visual Studio\Installer\vswhere.exe" `

@@ -122,9 +122,12 @@ class WmfStubImageFile(ImageFile.StubImageFile):
             y0 = _long(s, 12)
             x1 = _long(s, 16)
             y1 = _long(s, 20)
+            print("s", s)
+            print("coords", x0, y0, x1, y1)
 
             # get frame (in 0.01 millimeter units)
             frame = _long(s, 24), _long(s, 28), _long(s, 32), _long(s, 36)
+            print("frame", frame)
 
             size = x1 - x0, y1 - y0
 
