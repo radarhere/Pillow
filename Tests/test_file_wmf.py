@@ -83,4 +83,5 @@ def test_save(ext: str, tmp_path: Path) -> None:
 
 
 def test_6980() -> None:
-    pass
+    with Image.open("test.emf") as im:
+        im.load()
