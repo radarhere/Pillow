@@ -22,10 +22,6 @@ on:
 permissions:
   contents: read
 
-concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
-
 env:
   COVERAGE_CORE: sysmon
 
@@ -35,7 +31,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python-version: ["pypy3.10", "3.9", "3.10", "3.11", "3.12", "3.13"]
+        python-version: ["3.10"]
 
     timeout-minutes: 30
 
@@ -119,55 +115,6 @@ jobs:
     - name: Build dependencies / zlib
       if: steps.build-cache.outputs.cache-hit != 'true'
       run: "& winbuild\\build\\build_dep_zlib.cmd"
-
-    - name: Build dependencies / xz
-      if: steps.build-cache.outputs.cache-hit != 'true'
-      run: "& winbuild\\build\\build_dep_xz.cmd"
-
-    - name: Build dependencies / WebP
-      if: steps.build-cache.outputs.cache-hit != 'true'
-      run: "& winbuild\\build\\build_dep_libwebp.cmd"
-
-    - name: Build dependencies / LibTiff
-      if: steps.build-cache.outputs.cache-hit != 'true'
-      run: "& winbuild\\build\\build_dep_libtiff.cmd"
-
-    # for FreeType CBDT/SBIX font support
-    - name: Build dependencies / libpng
-      if: steps.build-cache.outputs.cache-hit != 'true'
-      run: "& winbuild\\build\\build_dep_libpng.cmd"
-
-    # for FreeType WOFF2 font support
-    - name: Build dependencies / brotli
-      if: steps.build-cache.outputs.cache-hit != 'true'
-      run: "& winbuild\\build\\build_dep_brotli.cmd"
-
-    - name: Build dependencies / FreeType
-      if: steps.build-cache.outputs.cache-hit != 'true'
-      run: "& winbuild\\build\\build_dep_freetype.cmd"
-
-    - name: Build dependencies / LCMS2
-      if: steps.build-cache.outputs.cache-hit != 'true'
-      run: "& winbuild\\build\\build_dep_lcms2.cmd"
-
-    - name: Build dependencies / OpenJPEG
-      if: steps.build-cache.outputs.cache-hit != 'true'
-      run: "& winbuild\\build\\build_dep_openjpeg.cmd"
-
-    # GPL licensed
-    - name: Build dependencies / libimagequant
-      if: steps.build-cache.outputs.cache-hit != 'true'
-      run: "& winbuild\\build\\build_dep_libimagequant.cmd"
-
-    # Raqm dependencies
-    - name: Build dependencies / HarfBuzz
-      if: steps.build-cache.outputs.cache-hit != 'true'
-      run: "& winbuild\\build\\build_dep_harfbuzz.cmd"
-
-    # Raqm dependencies
-    - name: Build dependencies / FriBidi
-      if: steps.build-cache.outputs.cache-hit != 'true'
-      run: "& winbuild\\build\\build_dep_fribidi.cmd"
 
     # trim ~150MB for each job
     - name: Optimize build cache
