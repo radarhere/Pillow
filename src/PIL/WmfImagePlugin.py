@@ -114,6 +114,7 @@ class WmfStubImageFile(ImageFile.StubImageFile):
                 raise SyntaxError(msg)
 
         elif s[:4] == b"\x01\x00\x00\x00" and s[40:44] == b" EMF":
+            print("emf")
             # enhanced metafile
 
             # get bounding box
