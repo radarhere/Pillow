@@ -1,4 +1,4 @@
 from glob import glob
 
-for filename in glob('c:/**/*fribidi*', recursive=True):
+for filename in glob('/**/*fribidi*', recursive=True):
     print(filename)
