@@ -123,6 +123,13 @@ jobs:
       run: rmdir /S /Q winbuild\build\src
       shell: cmd
 
+    - name: Build Pillow
+      run: |
+        $FLAGS="-C raqm=vendor -C fribidi=vendor"
+        cmd /c "winbuild\build\build_env.cmd && $env:pythonLocation\python.exe -m pip install -v $FLAGS ."
+        & $env:pythonLocation\python.exe selftest.py --installed
+      shell: pwsh
+
     - name: Test Pillow
       run: |
         path %GITHUB_WORKSPACE%\winbuild\build\bin;%PATH%
