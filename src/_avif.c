@@ -306,23 +306,23 @@ AvifEncoderNew(PyObject *self_, PyObject *args) {
     AvifEncoderObject *self = NULL;
     avifEncoder *encoder = NULL;
 
-    char *subsampling = "4:2:0";
-    int qmin = AVIF_QUANTIZER_BEST_QUALITY;  // =0
-    int qmax = 10;                           // "High Quality", but not lossless
-    int quality = 75;
-    int speed = 8;
-    int exif_orientation = 0;
-    int max_threads = default_max_threads;
+    char *subsampling;
+    int qmin;
+    int qmax;
+    int quality;
+    int speed;
+    int exif_orientation;
+    int max_threads;
     PyObject *icc_bytes;
     PyObject *exif_bytes;
     PyObject *xmp_bytes;
-    PyObject *alpha_premultiplied = NULL;
-    PyObject *autotiling = NULL;
-    int tile_rows_log2 = 0;
-    int tile_cols_log2 = 0;
+    PyObject *alpha_premultiplied;
+    PyObject *autotiling;
+    int tile_rows_log2;
+    int tile_cols_log2;
 
-    char *codec = "auto";
-    char *range = "full";
+    char *codec;
+    char *range;
 
     PyObject *advanced;
 
@@ -730,7 +730,7 @@ AvifDecoderNew(PyObject *self_, PyObject *args) {
     char *codec_str;
     avifCodecChoice codec;
     avifChromaUpsampling upsampling;
-    int max_threads = 0;
+    int max_threads;
 
     avifResult result;
 
