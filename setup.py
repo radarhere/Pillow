@@ -646,6 +646,8 @@ class pil_build_ext(build_ext):
         # standard locations
         if not self.disable_platform_guessing:
             _add_directory(library_dirs, "/usr/local/lib")
+            if struct.calcsize("l") == 8:
+                _add_directory(library_dirs, "/usr/local/lib64")
             _add_directory(include_dirs, "/usr/local/include")
 
             _add_directory(library_dirs, "/usr/lib")
