@@ -114,9 +114,7 @@ function build {
 
     build_harfbuzz
 
-    echo "torch find"
-    find / -iname libjpeg.so.62
-    echo "torch done"
+    cp /usr/local/lib64/libjpeg.so.62 /usr/local/lib
 }
 
 # Any stuff that you need to do before you start building the wheels
