@@ -38,6 +38,11 @@ BZIP2_VERSION=1.0.8
 LIBXCB_VERSION=1.17.0
 BROTLI_VERSION=1.1.0
 
+function install_delocate {
+    check_pip
+    python3 -m pip install git+https://github.com/radarhere/delocate.git
+}
+
 function build_brotli {
     local cmake=$(get_modern_cmake)
     local out_dir=$(fetch_unpack https://github.com/google/brotli/archive/v$BROTLI_VERSION.tar.gz brotli-$BROTLI_VERSION.tar.gz)
