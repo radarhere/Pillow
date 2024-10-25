@@ -40,7 +40,7 @@ BROTLI_VERSION=1.1.0
 
 function install_delocate {
     check_pip
-    python3 -m pip install git+https://github.com/radarhere/delocate.git
+    python3 -m pip install git+https://github.com/radarhere/delocate.git@lib64
 }
 
 function build_brotli {
