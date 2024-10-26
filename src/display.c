@@ -804,7 +804,7 @@ PyImaging_DrawWmf(PyObject *self, PyObject *args) {
     /* FIXME: make background transparent? configurable? */
     FillRect(dc, &rect, GetStockObject(WHITE_BRUSH));
 
-    EnumEnhMetaFile(dc, meta, enhMetaFileProc, NULL, &rect);
+    EnumEnhMetaFile(dc, meta, (ENHMFENUMPROC)enhMetaFileProc, NULL, &rect);
 
     /* step 4: extract bits from bitmap */
 
