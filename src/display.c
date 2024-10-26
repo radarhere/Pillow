@@ -718,7 +718,7 @@ PyImaging_EventLoopWin32(PyObject *self, PyObject *args) {
 
 int
 enhMetaFileProc(
-    HDC hdc, HANDLETABLE FAR *lpht, CONST ENHMETARECORD *lpmr, int nHandles, LPARAM data
+    HDC hdc, HANDLETABLE *lpht, CONST ENHMETARECORD *lpmr, int nHandles, LPARAM data
 ) {
     PlayEnhMetaFileRecord(hdc, lpht, lpmr, nHandles);
     return 1;
