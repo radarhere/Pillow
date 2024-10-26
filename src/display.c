@@ -716,12 +716,12 @@ PyImaging_EventLoopWin32(PyObject *self, PyObject *args) {
 
 #define GET32(p, o) ((DWORD *)(p + o))[0]
 
-BOOL
+int
 enhMetaFileProc(
     HDC hdc, HANDLETABLE FAR *lpht, CONST ENHMETARECORD *lpmr, int nHandles, LPARAM data
 ) {
     PlayEnhMetaFileRecord(hdc, lpht, lpmr, nHandles);
-    return TRUE;
+    return 1;
 }
 
 PyObject *
