@@ -320,8 +320,8 @@ typedef HANDLE(__stdcall *Func_SetThreadDpiAwarenessContext)(HANDLE);
 
 PyObject *
 PyImaging_GrabScreenWin32(PyObject *self, PyObject *args) {
-    int x = 0, y = 0, width, height;
-    int includeLayeredWindows = 0, all_screens = 0;
+    int x = 0, y = 0, width = -1, height;
+    int includeLayeredWindows = 0, screens = 0;
     HBITMAP bitmap;
     BITMAPCOREHEADER core;
     HDC screen, screen_copy;
@@ -331,14 +331,16 @@ PyImaging_GrabScreenWin32(PyObject *self, PyObject *args) {
     HMODULE user32;
     Func_SetThreadDpiAwarenessContext SetThreadDpiAwarenessContext_function;
 
-    if (!PyArg_ParseTuple(args, "|ii", &includeLayeredWindows, &all_screens)) {
+    if (!PyArg_ParseTuple(args, "|ii" F_HANDLE, &includeLayeredWindows, &screens, &screen)) {
         return NULL;
     }
 
     /* step 1: create a memory DC large enough to hold the
        entire screen */
 
-    screen = CreateDC("DISPLAY", NULL, NULL, NULL);
+    if (screens != -1) {
+        screen = CreateDC("DISPLAY", NULL, NULL, NULL);
+    }
     screen_copy = CreateCompatibleDC(screen);
 
     // added in Windows 10 (1607)
@@ -351,11 +353,18 @@ PyImaging_GrabScreenWin32(PyObject *self, PyObject *args) {
         dpiAwareness = SetThreadDpiAwarenessContext_function((HANDLE)-3);
     }
 
-    if (all_screens) {
+    if (screens == 1) {
         x = GetSystemMetrics(SM_XVIRTUALSCREEN);
         y = GetSystemMetrics(SM_YVIRTUALSCREEN);
         width = GetSystemMetrics(SM_CXVIRTUALSCREEN);
         height = GetSystemMetrics(SM_CYVIRTUALSCREEN);
+    } else if (screens == -1) {
+        RECT rect;
+        HWND hwnd = WindowFromDC(screen);
+        if (hwnd != NULL && GetClientRect(hwnd, &rect)) {
+            width = rect.right;
+            height = rect.bottom;
+        }
     } else {
         width = GetDeviceCaps(screen, HORZRES);
         height = GetDeviceCaps(screen, VERTRES);
@@ -366,6 +375,10 @@ PyImaging_GrabScreenWin32(PyObject *self, PyObject *args) {
     }
 
     FreeLibrary(user32);
+
+    if (width == -1) {
+        goto error;
+    }
 
     bitmap = CreateCompatibleBitmap(screen, width, height);
     if (!bitmap) {
