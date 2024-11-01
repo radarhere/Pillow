@@ -4,6 +4,7 @@ Helper functions.
 
 from __future__ import annotations
 
+import inspect
 import logging
 import os
 import shutil
@@ -28,6 +29,8 @@ if os.environ.get("SHOW_ERRORS"):
     uploader = "show"
 elif "GITHUB_ACTIONS" in os.environ:
     uploader = "github_actions"
+
+already_running = []
 
 
 def upload(a: Image.Image, b: Image.Image) -> str | None:
@@ -163,6 +166,16 @@ def assert_tuple_approx_equal(
     for i, target in enumerate(targets):
         if not (target - threshold <= actuals[i] <= target + threshold):
             pytest.fail(msg + ": " + repr(actuals) + " != " + repr(targets))
+
+
+def only_run_single_threaded() -> None:
+    frameInfo = inspect.stack()[1]
+    identifier = (
+        frameInfo.filename + ":" + frameInfo.function + ":" + str(frameInfo.lineno)
+    )
+    if identifier in already_running:
+        pytest.skip("Do not run multi-threaded")
+    already_running.append(identifier)
 
 
 def skip_unless_feature(feature: str) -> pytest.MarkDecorator:

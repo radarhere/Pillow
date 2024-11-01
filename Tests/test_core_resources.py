@@ -6,7 +6,7 @@ import pytest
 
 from PIL import Image
 
-from .helper import is_pypy
+from .helper import only_run_single_threaded, is_pypy
 
 
 class TestCoreMemory:
@@ -18,6 +18,8 @@ class TestCoreMemory:
         Image.core.clear_cache()
 
     def test_set_alignment(self) -> None:
+        only_run_single_threaded()
+        print("torch only once")
         for i in [1, 2, 4, 8, 16, 32]:
             Image.core.set_alignment(i)
             alignment = Image.core.get_alignment()
