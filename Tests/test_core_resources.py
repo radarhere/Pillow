@@ -21,7 +21,6 @@ class TestCoreMemory:
         if running_in_another_thread():
             return
         print("torch only once")
-        assert False
         for i in [1, 2, 4, 8, 16, 32]:
             Image.core.set_alignment(i)
             alignment = Image.core.get_alignment()
