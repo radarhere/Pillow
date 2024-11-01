@@ -168,14 +168,16 @@ def assert_tuple_approx_equal(
             pytest.fail(msg + ": " + repr(actuals) + " != " + repr(targets))
 
 
-def only_run_single_threaded() -> None:
+def running_in_another_thread() -> bool:
     frameInfo = inspect.stack()[1]
     identifier = (
         frameInfo.filename + ":" + frameInfo.function + ":" + str(frameInfo.lineno)
     )
     if identifier in already_running:
-        pytest.skip("Do not run multi-threaded")
+        return True
+
     already_running.append(identifier)
+    return False
 
 
 def skip_unless_feature(feature: str) -> pytest.MarkDecorator:
