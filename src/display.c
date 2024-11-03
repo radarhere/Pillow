@@ -325,20 +325,27 @@ PyImaging_GrabScreenWin32(PyObject *self, PyObject *args) {
     HBITMAP bitmap;
     BITMAPCOREHEADER core;
     HDC screen, screen_copy;
+    HWND wnd;
     DWORD rop;
     PyObject *buffer;
     HANDLE dpiAwareness;
     HMODULE user32;
     Func_SetThreadDpiAwarenessContext SetThreadDpiAwarenessContext_function;
 
-    if (!PyArg_ParseTuple(args, "|ii" F_HANDLE, &includeLayeredWindows, &screens, &screen)) {
+    if (!PyArg_ParseTuple(args, "|ii" F_HANDLE, &includeLayeredWindows, &screens, &wnd)) {
         return NULL;
     }
 
     /* step 1: create a memory DC large enough to hold the
        entire screen */
 
-    if (screens != -1) {
+    if (screens == -1) {
+        screen = GetDC(wnd);
+        if (screen == NULL) {
+            PyErr_SetString(PyExc_OSError, "unable to get device context for handle");
+            return NULL;
+        }
+    } else {
         screen = CreateDC("DISPLAY", NULL, NULL, NULL);
     }
     screen_copy = CreateCompatibleDC(screen);
@@ -360,8 +367,7 @@ PyImaging_GrabScreenWin32(PyObject *self, PyObject *args) {
         height = GetSystemMetrics(SM_CYVIRTUALSCREEN);
     } else if (screens == -1) {
         RECT rect;
-        HWND hwnd = WindowFromDC(screen);
-        if (hwnd != NULL && GetClientRect(hwnd, &rect)) {
+        if (GetClientRect(wnd, &rect)) {
             width = rect.right;
             height = rect.bottom;
         }
@@ -433,7 +439,11 @@ error:
     PyErr_SetString(PyExc_OSError, "screen grab failed");
 
     DeleteDC(screen_copy);
-    DeleteDC(screen);
+    if (screens == -1) {
+        ReleaseDC(wnd, screen);
+    } else {
+        DeleteDC(screen);
+    }
 
     return NULL;
 }
