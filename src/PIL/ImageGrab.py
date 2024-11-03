@@ -35,7 +35,7 @@ def grab(
     include_layered_windows: bool = False,
     all_screens: bool = False,
     xdisplay: str | None = None,
-    handle: int | ImageWin.HDC | ImageWin.HWND | None = None,
+    handle: int | ImageWin.HWND | None = None,
 ) -> Image.Image:
     im: Image.Image
     if xdisplay is None:

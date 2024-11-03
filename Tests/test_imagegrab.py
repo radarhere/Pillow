@@ -26,6 +26,4 @@ class TestImageGrab:
 
         x = win32gui.FindWindow(None, "Administrator: C:\\actions\\runner-provisioner-Windows\\provisioner.exe")
         print("findwindow", x)
-        x = win32gui.GetDC(x)
-        print("findwindow", x)
         ImageGrab.grab(handle=x).save("out.png")
