@@ -553,6 +553,9 @@ class pil_build_ext(build_ext):
         if self.disable_platform_guessing:
             pass
 
+        elif PLATFORM_MINGW:
+            _add_directory(include_dirs, "C:/msys64/mingw64/include")
+
         elif sys.platform == "cygwin":
             # pythonX.Y.dll.a is in the /usr/lib/pythonX.Y/config directory
             self.compiler.shared_lib_extension = ".dll.a"
