@@ -73,7 +73,7 @@ jobs:
           pushd depends && ./install_extra_test_images.sh && popd
 
       - name: Build Pillow
-        run: SETUPTOOLS_USE_DISTUTILS="stdlib" CFLAGS="-coverage" /vpy3/bin/python3 -m pip install .
+        run: CFLAGS="-coverage" /vpy3/bin/python3 -m pip install .
 
       - name: Test Pillow
         run: |
