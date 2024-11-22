@@ -183,6 +183,7 @@ if [[ -n "$IS_MACOS" ]]; then
     build_pkg_config
     # Ensure cmake is available
     python3 -m pip install cmake
+    touch cmake-stamp
 fi
 
 wrap_wheel_builder build
