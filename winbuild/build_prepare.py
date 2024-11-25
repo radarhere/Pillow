@@ -163,18 +163,13 @@ DEPS: dict[str, dict[str, Any]] = {
         "filename": f"zlib-ng-{V['ZLIBNG']}.zip",
         "dir": f"zlib-ng-{V['ZLIBNG']}",
         "license": "LICENSE.md",
-        "patch": {
-            r"CMakeLists.txt": {
-                "set_target_properties(zlib PROPERTIES OUTPUT_NAME zlibstatic${{SUFFIX}})": "set_target_properties(zlib PROPERTIES OUTPUT_NAME zlib)",  # noqa: E501
-            },
-        },
         "build": [
             *cmds_cmake(
                 "zlib", "-DBUILD_SHARED_LIBS:BOOL=OFF", "-DZLIB_COMPAT:BOOL=ON"
             ),
         ],
         "headers": [r"z*.h"],
-        "libs": [r"zlib.lib"],
+        "libs": [r"zlibstatic.lib"],
     },
     "xz": {
         "url": f"https://github.com/tukaani-project/xz/releases/download/v{V['XZ']}/FILENAME",
@@ -285,7 +280,7 @@ DEPS: dict[str, dict[str, Any]] = {
                 "<UserDefines></UserDefines>": "<UserDefines>FT_CONFIG_OPTION_SYSTEM_ZLIB;FT_CONFIG_OPTION_USE_PNG;FT_CONFIG_OPTION_USE_HARFBUZZ;FT_CONFIG_OPTION_USE_BROTLI</UserDefines>",  # noqa: E501
                 "<UserIncludeDirectories></UserIncludeDirectories>": r"<UserIncludeDirectories>{dir_harfbuzz}\src;{inc_dir}</UserIncludeDirectories>",  # noqa: E501
                 "<UserLibraryDirectories></UserLibraryDirectories>": "<UserLibraryDirectories>{lib_dir}</UserLibraryDirectories>",  # noqa: E501
-                "<UserDependencies></UserDependencies>": f"<UserDependencies>zlib.lib;libpng{V['LIBPNG_XY']}.lib;brotlicommon.lib;brotlidec.lib</UserDependencies>",  # noqa: E501
+                "<UserDependencies></UserDependencies>": f"<UserDependencies>zlibstatic.lib;libpng{V['LIBPNG_XY']}.lib;brotlicommon.lib;brotlidec.lib</UserDependencies>",  # noqa: E501
             },
             r"src/autofit/afshaper.c": {
                 # link against harfbuzz.lib
