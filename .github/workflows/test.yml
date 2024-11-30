@@ -27,7 +27,7 @@ jobs:
       with:
         usesh: true
         prepare: |
-          pkg install -y python3 jpeg-turbo tiff webp libraqm lcms2 freetype2 openjpeg harfbuzz fribidi libxcb
+          pkg install -y python3 jpeg-turbo tiff webp lcms2 freetype2 openjpeg harfbuzz fribidi libxcb
 
         run: |
           python3 -m ensurepip
