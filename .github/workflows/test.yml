@@ -34,3 +34,7 @@ jobs:
           python3 -m pip install --upgrade pip
           python3 -m pip install --upgrade Pillow --no-binary :all:
           python3 -m PIL
+
+          python3 -m pip install pytest
+          python3 -m pytest
+
