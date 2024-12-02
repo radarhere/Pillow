@@ -555,6 +555,14 @@ class pil_build_ext(build_ext):
             (sys.prefix == sys.base_prefix and sysconfig.get_config_var("INCLUDEDIR"))
             or os.path.join(sys.prefix, "include"),
         )
+        print("torch", sys.prefix, sys.base_prefix)
+        print("a", sysconfig.get_config_var("INCLUDEDIR"))
+        print("b", os.path.join(sys.prefix, "include"))
+        print(
+            "final",
+            (sys.prefix == sys.base_prefix and sysconfig.get_config_var("INCLUDEDIR"))
+            or os.path.join(sys.prefix, "include"),
+        )
 
         #
         # add platform directories
