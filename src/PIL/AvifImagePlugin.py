@@ -169,7 +169,6 @@ def _save(
 
     icc_profile = info.get("icc_profile", im.info.get("icc_profile"))
     exif = info.get("exif", im.info.get("exif"))
-    exif_orientation = 0
     if exif:
         if isinstance(exif, Image.Exif):
             exif_data = exif
@@ -177,7 +176,9 @@ def _save(
         else:
             exif_data = Image.Exif()
             exif_data.load(exif)
-        exif_orientation = exif_data.get(ExifTags.Base.Orientation, 0)
+        exif_orientation = exif_data.pop(ExifTags.Base.Orientation, 1)
+    else:
+        exif_orientation = 1
 
     xmp = info.get("xmp", im.info.get("xmp") or im.info.get("XML:com.adobe.xmp"))
 
