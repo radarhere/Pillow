@@ -86,7 +86,7 @@ class AvifImageFile(ImageFile.ImageFile):
         )
 
         # Get info from decoder
-        width, height, n_frames, mode, icc, exif, xmp = self._decoder.get_info()
+        width, height, n_frames, mode, icc, exif, exif_orientation, xmp = self._decoder.get_info()
         self._size = width, height
         self.n_frames = n_frames
         self.is_animated = self.n_frames > 1
@@ -94,8 +94,17 @@ class AvifImageFile(ImageFile.ImageFile):
 
         if icc:
             self.info["icc_profile"] = icc
-        if exif:
-            self.info["exif"] = exif
+        if exif or exif_orientation != 1:
+            if exif:
+                self.info["exif"] = exif
+
+            exif_data = self.getexif()
+            if exif_orientation != 1:
+                exif_data[ExifTags.Base.Orientation] = exif_orientation
+                self.info["exif"] = exif_data.tobytes()
+            elif exif_data.get(ExifTags.Base.Orientation, 1) != 1:
+                del exif_data[ExifTags.Base.Orientation]
+                self.info["exif"] = exif_data.tobytes()
         if xmp:
             self.info["xmp"] = xmp
 

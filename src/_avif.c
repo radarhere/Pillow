@@ -789,6 +789,7 @@ _decoder_get_info(AvifDecoderObject *self) {
 
     PyObject *icc = NULL;
     PyObject *exif = NULL;
+    int exif_orientation = 1;
     PyObject *xmp = NULL;
     PyObject *ret = NULL;
 
@@ -801,18 +802,37 @@ _decoder_get_info(AvifDecoderObject *self) {
             PyBytes_FromStringAndSize((const char *)image->exif.data, image->exif.size);
     }
 
+    if (image->transformFlags & AVIF_TRANSFORM_IROT) {
+        printf("irot %d\n", image->irot.angle);
+        if (image->irot.angle == 2) {
+            exif_orientation = 3;
+        }
+    } else {
+        printf("no irot\n");
+    }
+    if (image->transformFlags & AVIF_TRANSFORM_IMIR) {
+#if AVIF_VERSION_MAJOR >= 1
+        printf("imir1 %d\n", image->imir.axis);
+#else
+        printf("imir2 %d\n", image->imir.mode);
+#endif
+    } else {
+        printf("no imir\n");
+    }
+
     if (image->icc.size) {
         icc = PyBytes_FromStringAndSize((const char *)image->icc.data, image->icc.size);
     }
 
     ret = Py_BuildValue(
-        "IIIsSSS",
+        "IIIsSSiS",
         image->width,
         image->height,
         decoder->imageCount,
         self->mode,
         NULL == icc ? Py_None : icc,
         NULL == exif ? Py_None : exif,
+        exif_orientation,
         NULL == xmp ? Py_None : xmp
     );
 
