@@ -353,7 +353,7 @@ class TestFileAvif:
     def test_exif_invalid(self, tmp_path: Path) -> None:
         with Image.open(TEST_AVIF_FILE) as im:
             test_file = str(tmp_path / "temp.avif")
-            with pytest.raises(ValueError):
+            with pytest.raises(SyntaxError):
                 im.save(test_file, exif=b"invalid")
 
     def test_xmp(self) -> None:
