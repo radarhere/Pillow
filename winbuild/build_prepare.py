@@ -428,9 +428,7 @@ DEPS: dict[str, dict[str, Any]] = {
                     "-S .",
                 ]
             ),
-            cmd_cd("build.pillow"),
-            "ninja -v",
-            cmd_cd(".."),
+            f'{{cmake}} --build "build.pillow" --clean-first --parallel --target avif',
             cmd_xcopy("include", "{inc_dir}"),
         ],
         "libs": [r"build.pillow\avif.lib"],
