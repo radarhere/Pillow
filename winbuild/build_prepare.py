@@ -420,7 +420,6 @@ DEPS: dict[str, dict[str, Any]] = {
                     "-DAVIF_LIBYUV=LOCAL",
                     "-DAVIF_LIBSHARPYUV=LOCAL",
                     "-DAVIF_CODEC_RAV1E=LOCAL",
-                    "-DCMAKE_MODULE_PATH={winbuild_dir_cmake}",
                     "-DAVIF_CODEC_DAV1D=LOCAL",
                     "-DAVIF_CODEC_SVT=LOCAL",
                     '-G "{cmake_generator}"',
@@ -794,7 +793,6 @@ def main() -> None:
         **arch_prefs,
         # Pillow paths
         "winbuild_dir": winbuild_dir,
-        "winbuild_dir_cmake": winbuild_dir.replace("\\", "/"),
         # Build paths
         "bin_dir": bin_dir,
         "build_dir": args.build_dir,
