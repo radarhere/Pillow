@@ -423,7 +423,7 @@ DEPS: dict[str, dict[str, Any]] = {
                     "-DCMAKE_MODULE_PATH={winbuild_dir_cmake}",
                     "-DAVIF_CODEC_DAV1D=LOCAL",
                     "-DAVIF_CODEC_SVT=LOCAL",
-                        '-G "{cmake_generator}"',
+                    '-G "{cmake_generator}"',
                     f'-B "build.pillow"',
                     "-S .",
                 ]
