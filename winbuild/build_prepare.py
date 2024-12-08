@@ -405,35 +405,19 @@ DEPS: dict[str, dict[str, Any]] = {
         "dir": f"libavif-{V['LIBAVIF']}",
         "license": "LICENSE",
         "build": [
-            " ".join(
-                [
-                    "{cmake}",
-                    "-DCMAKE_BUILD_TYPE=Release",
-                    "-DCMAKE_VERBOSE_MAKEFILE=ON",
-                    "-DCMAKE_RULE_MESSAGES:BOOL=OFF",
-                    "-DCMAKE_C_COMPILER=cl.exe",
-                    "-DCMAKE_CXX_COMPILER=cl.exe",
-                    "-DCMAKE_C_FLAGS=-nologo",
-                    "-DCMAKE_CXX_FLAGS=-nologo",
-                    "-DBUILD_SHARED_LIBS=OFF",
-                    "-DAVIF_CODEC_AOM=LOCAL",
-                    "-DAVIF_LIBYUV=LOCAL",
-                    "-DAVIF_LIBSHARPYUV=LOCAL",
-                    "-DAVIF_CODEC_RAV1E=LOCAL",
-                    "-DCMAKE_MODULE_PATH={winbuild_dir_cmake}",
-                    "-DAVIF_CODEC_DAV1D=LOCAL",
-                    "-DAVIF_CODEC_SVT=LOCAL",
-                    '-G "{cmake_generator}"',
-                    f'-B "build.pillow"',
-                    "-S .",
-                ]
+            *cmds_cmake(
+                "avif",
+                "-DBUILD_SHARED_LIBS=OFF",
+                "-DAVIF_CODEC_AOM=LOCAL",
+                "-DAVIF_LIBYUV=LOCAL",
+                "-DAVIF_LIBSHARPYUV=LOCAL",
+                "-DAVIF_CODEC_RAV1E=LOCAL",
+                "-DAVIF_CODEC_DAV1D=LOCAL",
+                "-DAVIF_CODEC_SVT=LOCAL",
             ),
-            cmd_cd("build.pillow"),
-            "ninja -v",
-            cmd_cd(".."),
             cmd_xcopy("include", "{inc_dir}"),
         ],
-        "libs": [r"build.pillow\avif.lib"],
+        "libs": ["avif.lib"],
     },
 }
 
@@ -796,7 +780,6 @@ def main() -> None:
         **arch_prefs,
         # Pillow paths
         "winbuild_dir": winbuild_dir,
-        "winbuild_dir_cmake": winbuild_dir.replace("\\", "/"),
         # Build paths
         "bin_dir": bin_dir,
         "build_dir": args.build_dir,
