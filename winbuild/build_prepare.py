@@ -405,7 +405,6 @@ DEPS: dict[str, dict[str, Any]] = {
         "dir": f"libavif-{V['LIBAVIF']}",
         "license": "LICENSE",
         "build": [
-            cmd_mkdir("build.pillow"),
             " ".join(
                 [
                     "{cmake}",
