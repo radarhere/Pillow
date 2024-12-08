@@ -424,14 +424,14 @@ DEPS: dict[str, dict[str, Any]] = {
                     "-DAVIF_CODEC_DAV1D=LOCAL",
                     "-DAVIF_CODEC_SVT=LOCAL",
                     '-G "{cmake_generator}"',
-                    f'-B "build.pillow"',
+                    f'-B "."',
                     "-S .",
                 ]
             ),
-            f'{{cmake}} --build "build.pillow" --clean-first --parallel --target avif',
+            f'{{cmake}} --build "." --clean-first --parallel --target avif',
             cmd_xcopy("include", "{inc_dir}"),
         ],
-        "libs": [r"build.pillow\avif.lib"],
+        "libs": [r"avif.lib"],
     },
 }
 
