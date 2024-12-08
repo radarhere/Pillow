@@ -429,6 +429,7 @@ DEPS: dict[str, dict[str, Any]] = {
                     "-S .",
                 ]
             ),
+            cmd_cd("build.pillow"),
             "ninja -v",
             cmd_cd(".."),
             cmd_xcopy("include", "{inc_dir}"),
