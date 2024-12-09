@@ -407,7 +407,6 @@ DEPS: dict[str, dict[str, Any]] = {
         "build": [
             *cmds_cmake(
                 "avif",
-                "-DBUILD_SHARED_LIBS=OFF",
                 "-DAVIF_CODEC_AOM=LOCAL",
                 "-DAVIF_LIBYUV=LOCAL",
                 "-DAVIF_LIBSHARPYUV=LOCAL",
