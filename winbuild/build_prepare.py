@@ -406,7 +406,8 @@ DEPS: dict[str, dict[str, Any]] = {
         "license": "LICENSE",
         "build": [
             *cmds_cmake(
-                "avif_static",
+                "avif",
+                "-DBUILD_SHARED_LIBS=OFF",
                 "-DAVIF_CODEC_AOM=LOCAL",
                 "-DAVIF_LIBYUV=LOCAL",
                 "-DAVIF_LIBSHARPYUV=LOCAL",
