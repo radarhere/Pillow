@@ -31,5 +31,11 @@ EXTRA_DIR = "Tests/images/jpeg2000"
 pytestmark = skip_unless_feature("jpg_2000")
 
 
-def test_8062() -> None:
-    Image.open("cmyk.tif").save("out.jp2")
+@pytest.mark.skipif(
+    not os.path.exists(EXTRA_DIR), reason="Extra image files not installed"
+)
+@skip_unless_feature_version("jpg_2000", "2.5.1")
+def test_cmyk() -> None:
+    with Image.open(f"{EXTRA_DIR}/issue205.jp2") as im:
+        assert im.mode == "CMYK"
+        assert im.getpixel((0, 0)) == (185, 134, 0, 0)
