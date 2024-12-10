@@ -39,3 +39,5 @@ def test_cmyk() -> None:
     with Image.open(f"{EXTRA_DIR}/issue205.jp2") as im:
         assert im.mode == "CMYK"
         assert im.getpixel((0, 0)) == (185, 134, 0, 0)
+
+        im.save("out.jp2")
