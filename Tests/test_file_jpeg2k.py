@@ -328,7 +328,6 @@ def test_cmyk() -> None:
 @pytest.mark.skipif(
     not os.path.exists(EXTRA_DIR), reason="Extra image files not installed"
 )
-@skip_unless_feature_version("jpg_2000", "2.5.3")
 def test_cmyk_save() -> None:
     with Image.open(f"{EXTRA_DIR}/issue205.jp2") as jp2:
         im = roundtrip(jp2)
