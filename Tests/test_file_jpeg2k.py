@@ -28,10 +28,5 @@ from .helper import (
 )
 
 def test_9bit() -> None:
-    start = time.time()
-    try:
-        with Image.open("image") as im:
-            im.load()
-    except:
-        pass
-    print("Time taken:", time.time() - start)
+    with Image.open("image") as im:
+        im.load()
