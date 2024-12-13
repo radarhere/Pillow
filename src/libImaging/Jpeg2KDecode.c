@@ -930,29 +930,64 @@ quick_exit:
     return -1;
 }
 
+static OPJ_SIZE_T
+j2k_read2(void *p_buffer, OPJ_SIZE_T p_nb_bytes, void *p_user_data) {
+    FILE *f = fopen("clusterfuzz-testcase-minimized-fuzz_pillow-5015640213159936", "rb");
+    fread(p_buffer, 1, 83, f);
+    return 83;
+}
+
 int
 ImagingJpeg2KDecode(Imaging im, ImagingCodecState state, UINT8 *buf, Py_ssize_t bytes) {
-    if (bytes) {
-        state->errcode = IMAGING_CODEC_BROKEN;
-        state->state = J2K_STATE_FAILED;
-        return -1;
-    }
+    opj_stream_t *stream = NULL;
+    opj_image_t *image = NULL;
+    opj_codec_t *codec = NULL;
+    opj_dparameters_t params;
 
-    if (state->state == J2K_STATE_DONE || state->state == J2K_STATE_FAILED) {
-        return -1;
-    }
+    stream = opj_stream_create(OPJ_J2K_STREAM_CHUNK_SIZE, OPJ_TRUE);
 
-    if (state->state == J2K_STATE_START) {
-        state->state = J2K_STATE_DECODING;
+    opj_stream_set_read_function(stream, j2k_read2);
 
-        return j2k_decode_entry(im, state);
-    }
+    opj_stream_set_user_data(stream, state, NULL);
 
-    if (state->state == J2K_STATE_DECODING) {
-        state->errcode = IMAGING_CODEC_BROKEN;
-        state->state = J2K_STATE_FAILED;
-        return -1;
-    }
+    opj_stream_set_user_data_length(stream, 83);
+
+    opj_set_default_decoder_parameters(&params);
+    params.cp_reduce = 0;
+    params.cp_layer = 0;
+
+    codec = opj_create_decompress(OPJ_CODEC_J2K);
+
+    opj_setup_decoder(codec, &params);
+
+    opj_read_header(stream, codec, &image);
+    JPEG2KTILEINFO tile_info;
+    OPJ_BOOL should_continue;
+
+    opj_read_tile_header(
+            codec,
+            stream,
+            &tile_info.tile_index,
+            &tile_info.data_size,
+            &tile_info.x0,
+            &tile_info.y0,
+            &tile_info.x1,
+            &tile_info.y1,
+            &tile_info.nb_comps,
+            &should_continue);
+
+    state->buffer = malloc(tile_info.data_size);
+
+    clock_t begin = clock();
+    opj_decode_tile_data(
+        codec,
+        tile_info.tile_index,
+        (OPJ_BYTE *)state->buffer,
+        tile_info.data_size,
+        stream);
+    clock_t end = clock();
+    double time_spent = (double)(end - begin) / CLOCKS_PER_SEC;
+    printf("Time spent on opj_decode_tile_data %f\n", time_spent);
     return -1;
 }
 
