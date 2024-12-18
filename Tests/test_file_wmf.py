@@ -43,7 +43,6 @@ def test_load_zero_inch() -> None:
             pass
 
 
-@pytest.mark.skipif(sys.maxsize <= 2**32, reason="Requires 64-bit system")
 def test_render() -> None:
     with open("Tests/images/drawing.emf", "rb") as fp:
         data = fp.read()
