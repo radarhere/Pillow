@@ -716,7 +716,7 @@ PyImaging_EventLoopWin32(PyObject *self, PyObject *args) {
 
 #define GET32(p, o) ((DWORD *)(p + o))[0]
 
-static int CALLBACK
+static int CALLBACK* ENHMFENUMPROC
 enhMetaFileProc(
     HDC hdc, HANDLETABLE FAR *lpht, const ENHMETARECORD *lpmr, int nHandles, LPARAM data
 ) {
