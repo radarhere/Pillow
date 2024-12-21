@@ -146,6 +146,7 @@ class TestFileAvif:
 
             # generated with:
             # avifdec hopper.avif hopper_avif_write.png
+            image.save("out.png")
             assert_image_similar_tofile(
                 image, "Tests/images/avif/hopper_avif_write.png", 11.5
             )
