@@ -147,7 +147,7 @@ class TestFileAvif:
             # generated with:
             # avifdec hopper.avif hopper_avif_write.png
             assert_image_similar_tofile(
-                image, "Tests/images/avif/hopper_avif_write.png", 11.5
+                image, "Tests/images/hopper.png", 0.01
             )
 
     def _roundtrip(self, tmp_path: Path, mode: str, epsilon: float) -> None:
