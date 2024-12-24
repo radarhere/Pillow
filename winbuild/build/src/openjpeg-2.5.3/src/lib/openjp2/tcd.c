@@ -865,6 +865,9 @@ static INLINE OPJ_BOOL opj_tcd_init_tile(opj_tcd_t *p_tcd, OPJ_UINT32 p_tile_no,
     /*fprintf(stderr, "Tile border = %d,%d,%d,%d\n", l_tile->x0, l_tile->y0,l_tile->x1,l_tile->y1);*/
 
     /*tile->numcomps = image->numcomps; */
+    printf("numcomps %d\n", l_tile->numcomps);
+    printf("numresolutions %d\n", l_tilec->numresolutions);
+    printf("numbands %d\n", l_res->numbands);
     for (compno = 0; compno < l_tile->numcomps; ++compno) {
         /*fprintf(stderr, "compno = %d/%d\n", compno, l_tile->numcomps);*/
         l_image_comp->resno_decoded = 0;
@@ -1168,6 +1171,7 @@ static INLINE OPJ_BOOL opj_tcd_init_tile(opj_tcd_t *p_tcd, OPJ_UINT32 p_tile_no,
                     l_nb_code_blocks_size = l_nb_code_blocks * (OPJ_UINT32)sizeof_block;
 
                     if (!l_current_precinct->cblks.blocks && (l_nb_code_blocks > 0U)) {
+                        // 88
                         l_current_precinct->cblks.blocks = opj_malloc(l_nb_code_blocks_size);
                         if (! l_current_precinct->cblks.blocks) {
                             return OPJ_FALSE;
