@@ -865,7 +865,6 @@ static INLINE OPJ_BOOL opj_tcd_init_tile(opj_tcd_t *p_tcd, OPJ_UINT32 p_tile_no,
     /*fprintf(stderr, "Tile border = %d,%d,%d,%d\n", l_tile->x0, l_tile->y0,l_tile->x1,l_tile->y1);*/
 
     /*tile->numcomps = image->numcomps; */
-    printf("numcomps %d\n", l_tile->numcomps);
     for (compno = 0; compno < l_tile->numcomps; ++compno) {
         /*fprintf(stderr, "compno = %d/%d\n", compno, l_tile->numcomps);*/
         l_image_comp->resno_decoded = 0;
@@ -948,7 +947,6 @@ static INLINE OPJ_BOOL opj_tcd_init_tile(opj_tcd_t *p_tcd, OPJ_UINT32 p_tile_no,
         l_step_size = l_tccp->stepsizes;
         /*fprintf(stderr, "\tlevel_no=%d\n",l_level_no);*/
 
-        printf("numresolutions %d\n", l_tilec->numresolutions);
         for (resno = 0; resno < l_tilec->numresolutions; ++resno) {
             /*fprintf(stderr, "\t\tresno = %d/%d\n", resno, l_tilec->numresolutions);*/
             OPJ_INT32 tlcbgxstart, tlcbgystart /*, brcbgxend, brcbgyend*/;
@@ -1001,6 +999,11 @@ static INLINE OPJ_BOOL opj_tcd_init_tile(opj_tcd_t *p_tcd, OPJ_UINT32 p_tile_no,
                 opj_event_msg(manager, EVT_ERROR, "Size of tile data exceeds system limits\n");
                 return OPJ_FALSE;
             }
+            printf("x1 %d\n", l_br_prc_x_end);
+            printf("x2 %d\n", l_tl_prc_x_start);
+            printf("xd %d\n", l_pdx);
+            printf("pw %d\n", l_res->pw);
+            printf("ph %d\n", l_res->ph);
             l_nb_precincts = l_res->pw * l_res->ph;
 
             if ((((OPJ_UINT32) - 1) / (OPJ_UINT32)sizeof(opj_tcd_precinct_t)) <
@@ -1032,7 +1035,6 @@ static INLINE OPJ_BOOL opj_tcd_init_tile(opj_tcd_t *p_tcd, OPJ_UINT32 p_tile_no,
             cblkheightexpn = opj_uint_min(l_tccp->cblkh, cbgheightexpn);
             l_band = l_res->bands;
 
-            printf("numbands %d\n", l_res->numbands);
             for (bandno = 0; bandno < l_res->numbands; ++bandno, ++l_band, ++l_step_size) {
                 /*fprintf(stderr, "\t\t\tband_no=%d/%d\n", bandno, l_res->numbands );*/
 
