@@ -1244,11 +1244,6 @@ static INLINE OPJ_BOOL opj_tcd_init_tile(opj_tcd_t *p_tcd, OPJ_UINT32 p_tile_no,
                             if (! opj_tcd_code_block_dec_allocate(l_code_block)) {
                                 return OPJ_FALSE;
                             }
-                            /* code-block size (global) */
-                            l_code_block->x0 = opj_int_max(cblkxstart, l_current_precinct->x0);
-                            l_code_block->y0 = opj_int_max(cblkystart, l_current_precinct->y0);
-                            l_code_block->x1 = opj_int_min(cblkxend, l_current_precinct->x1);
-                            l_code_block->y1 = opj_int_min(cblkyend, l_current_precinct->y1);
                         }
                     }
                     ++l_current_precinct;
