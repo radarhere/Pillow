@@ -948,9 +948,9 @@ static INLINE OPJ_BOOL opj_tcd_init_tile(opj_tcd_t *p_tcd, OPJ_UINT32 p_tile_no,
         l_step_size = l_tccp->stepsizes;
         /*fprintf(stderr, "\tlevel_no=%d\n",l_level_no);*/
 
+        printf("numresolutions %d\n", l_tilec->numresolutions);
         for (resno = 0; resno < l_tilec->numresolutions; ++resno) {
             /*fprintf(stderr, "\t\tresno = %d/%d\n", resno, l_tilec->numresolutions);*/
-            printf("never\n");
             OPJ_INT32 tlcbgxstart, tlcbgystart /*, brcbgxend, brcbgyend*/;
             OPJ_UINT32 cbgwidthexpn, cbgheightexpn;
             OPJ_UINT32 cblkwidthexpn, cblkheightexpn;
@@ -1032,6 +1032,7 @@ static INLINE OPJ_BOOL opj_tcd_init_tile(opj_tcd_t *p_tcd, OPJ_UINT32 p_tile_no,
             cblkheightexpn = opj_uint_min(l_tccp->cblkh, cbgheightexpn);
             l_band = l_res->bands;
 
+            printf("numbands %d\n", l_res->numbands);
             for (bandno = 0; bandno < l_res->numbands; ++bandno, ++l_band, ++l_step_size) {
                 /*fprintf(stderr, "\t\t\tband_no=%d/%d\n", bandno, l_res->numbands );*/
 
