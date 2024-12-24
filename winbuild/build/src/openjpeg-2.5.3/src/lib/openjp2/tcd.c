@@ -1214,21 +1214,6 @@ static INLINE OPJ_BOOL opj_tcd_init_tile(opj_tcd_t *p_tcd, OPJ_UINT32 p_tile_no,
                         l_current_precinct->imsbtree = opj_tgt_init(l_current_precinct->imsbtree,
                                                        l_current_precinct->cw, l_current_precinct->ch, manager);
                     }
-
-                    for (cblkno = 0; cblkno < l_nb_code_blocks; ++cblkno) {
-                        OPJ_INT32 cblkxstart = tlcblkxstart + (OPJ_INT32)(cblkno %
-                                               l_current_precinct->cw) * (1 << cblkwidthexpn);
-                        OPJ_INT32 cblkystart = tlcblkystart + (OPJ_INT32)(cblkno /
-                                               l_current_precinct->cw) * (1 << cblkheightexpn);
-                        OPJ_INT32 cblkxend = cblkxstart + (1 << cblkwidthexpn);
-                        OPJ_INT32 cblkyend = cblkystart + (1 << cblkheightexpn);
-
-                        if (isEncoder) {
-                            opj_tcd_cblk_enc_t* l_code_block = l_current_precinct->cblks.enc + cblkno;
-                        } else {
-                            opj_tcd_cblk_dec_t* l_code_block = l_current_precinct->cblks.dec + cblkno;
-                        }
-                    }
                     ++l_current_precinct;
                 } /* precno */
             } /* bandno */
