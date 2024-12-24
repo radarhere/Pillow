@@ -1240,10 +1240,6 @@ static INLINE OPJ_BOOL opj_tcd_init_tile(opj_tcd_t *p_tcd, OPJ_UINT32 p_tile_no,
                             }
                         } else {
                             opj_tcd_cblk_dec_t* l_code_block = l_current_precinct->cblks.dec + cblkno;
-
-                            if (! opj_tcd_code_block_dec_allocate(l_code_block)) {
-                                return OPJ_FALSE;
-                            }
                         }
                     }
                     ++l_current_precinct;
