@@ -1169,20 +1169,9 @@ static INLINE OPJ_BOOL opj_tcd_init_tile(opj_tcd_t *p_tcd, OPJ_UINT32 p_tile_no,
 
                     if (!l_current_precinct->cblks.blocks && (l_nb_code_blocks > 0U)) {
                         l_current_precinct->cblks.blocks = opj_malloc(l_nb_code_blocks_size);
-                        if (! l_current_precinct->cblks.blocks) {
-                            return OPJ_FALSE;
-                        }
                     } else if (l_nb_code_blocks_size > l_current_precinct->block_size) {
                         void *new_blocks = opj_realloc(l_current_precinct->cblks.blocks,
                                                        l_nb_code_blocks_size);
-                        if (! new_blocks) {
-                            opj_free(l_current_precinct->cblks.blocks);
-                            l_current_precinct->cblks.blocks = NULL;
-                            l_current_precinct->block_size = 0;
-                            opj_event_msg(manager, EVT_ERROR,
-                                          "Not enough memory for current precinct codeblock element\n");
-                            return OPJ_FALSE;
-                        }
                     }
                     ++l_current_precinct;
                 } /* precno */
