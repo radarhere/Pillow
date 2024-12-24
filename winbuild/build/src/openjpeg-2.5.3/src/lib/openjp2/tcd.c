@@ -867,7 +867,6 @@ static INLINE OPJ_BOOL opj_tcd_init_tile(opj_tcd_t *p_tcd, OPJ_UINT32 p_tile_no,
     /*tile->numcomps = image->numcomps; */
     printf("numcomps %d\n", l_tile->numcomps);
     printf("numresolutions %d\n", l_tilec->numresolutions);
-    printf("numbands %d\n", l_res->numbands);
     for (compno = 0; compno < l_tile->numcomps; ++compno) {
         /*fprintf(stderr, "compno = %d/%d\n", compno, l_tile->numcomps);*/
         l_image_comp->resno_decoded = 0;
