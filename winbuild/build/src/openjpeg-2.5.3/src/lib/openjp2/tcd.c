@@ -1123,6 +1123,7 @@ static INLINE OPJ_BOOL opj_tcd_init_tile(opj_tcd_t *p_tcd, OPJ_UINT32 p_tile_no,
                 }
 
                 l_current_precinct = l_band->precincts;
+                printf("prec %d\n", l_nb_precincts);
                 for (precno = 0; precno < l_nb_precincts; ++precno) {
                     OPJ_INT32 tlcblkxstart, tlcblkystart, brcblkxend, brcblkyend;
                     OPJ_INT32 cbgxstart = tlcbgxstart + (OPJ_INT32)(precno % l_res->pw) *
