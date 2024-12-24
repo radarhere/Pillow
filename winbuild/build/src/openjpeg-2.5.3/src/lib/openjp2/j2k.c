@@ -10085,27 +10085,6 @@ OPJ_BOOL opj_j2k_read_tile_header(opj_j2k_t * p_j2k,
         return OPJ_FALSE;
     }
 
-    opj_event_msg(p_manager, EVT_INFO, "Header of tile %d / %d has been read.\n",
-                  p_j2k->m_current_tile_number + 1, (p_j2k->m_cp.th * p_j2k->m_cp.tw));
-
-    *p_tile_index = p_j2k->m_current_tile_number;
-    *p_go_on = OPJ_TRUE;
-    if (p_data_size) {
-        /* For internal use in j2k.c, we don't need this */
-        /* This is just needed for folks using the opj_read_tile_header() / opj_decode_tile_data() combo */
-        *p_data_size = opj_tcd_get_decoded_tile_size(p_j2k->m_tcd, OPJ_FALSE);
-        if (*p_data_size == UINT_MAX) {
-            return OPJ_FALSE;
-        }
-    }
-    *p_tile_x0 = p_j2k->m_tcd->tcd_image->tiles->x0;
-    *p_tile_y0 = p_j2k->m_tcd->tcd_image->tiles->y0;
-    *p_tile_x1 = p_j2k->m_tcd->tcd_image->tiles->x1;
-    *p_tile_y1 = p_j2k->m_tcd->tcd_image->tiles->y1;
-    *p_nb_comps = p_j2k->m_tcd->tcd_image->tiles->numcomps;
-
-    p_j2k->m_specific_param.m_decoder.m_state |= J2K_STATE_DATA;
-
     return OPJ_TRUE;
 }
 
