@@ -101,12 +101,26 @@ function build_harfbuzz {
     touch harfbuzz-stamp
 }
 
+function build_openjpeg {
+    if [ -e openjpeg-stamp ]; then return; fi
+    build_zlib
+    build_libpng
+    build_tiff
+    build_lcms2
+    (cd /src/Pillow/winbuild/build/src/openjpeg-2.5.3 \
+        && cmake -DCMAKE_INSTALL_PREFIX=$BUILD_PREFIX -DCMAKE_INSTALL_LIBDIR=$BUILD_PREFIX/lib -DCMAKE_INSTALL_NAME_DIR=$BUILD_PREFIX/lib $HOST_CMAKE_FLAGS . \
+        && make install)
+    touch openjpeg-stamp
+}
+
 function build {
     build_xz
     if [ -z "$IS_ALPINE" ] && [ -z "$IS_MACOS" ]; then
         yum remove -y zlib-devel
     fi
     build_zlib_ng
+    build_libjpeg_turbo
+    build_openjpeg
 
     build_simple xcb-proto 1.17.0 https://xorg.freedesktop.org/archive/individual/proto
     if [ -n "$IS_MACOS" ]; then
@@ -117,9 +131,6 @@ function build {
         sed s/\${pc_sysrootdir\}// $BUILD_PREFIX/share/pkgconfig/xcb-proto.pc > $BUILD_PREFIX/lib/pkgconfig/xcb-proto.pc
     fi
     build_simple libxcb $LIBXCB_VERSION https://www.x.org/releases/individual/lib
-
-    build_libjpeg_turbo
-    build_openjpeg
 }
 
 # Perform all dependency builds in the build subfolder.

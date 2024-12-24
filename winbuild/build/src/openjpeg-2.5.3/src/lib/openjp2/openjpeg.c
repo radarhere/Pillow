@@ -564,6 +564,7 @@ OPJ_BOOL OPJ_CALLCONV opj_read_tile_header(opj_codec_t *p_codec,
         OPJ_UINT32 * p_nb_comps,
         OPJ_BOOL * p_should_go_on)
 {
+    printf("torchinside\n");
     if (p_codec && p_stream && p_data_size && p_tile_index) {
         opj_codec_private_t * l_codec = (opj_codec_private_t *) p_codec;
         opj_stream_private_t * l_stream = (opj_stream_private_t *) p_stream;

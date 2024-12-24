@@ -9706,6 +9706,7 @@ OPJ_BOOL opj_j2k_read_tile_header(opj_j2k_t * p_j2k,
                                   opj_stream_private_t *p_stream,
                                   opj_event_mgr_t * p_manager)
 {
+    printf("a\n");
     OPJ_UINT32 l_current_marker = J2K_MS_SOT;
     OPJ_UINT32 l_marker_size;
     const opj_dec_memory_marker_handler_t * l_marker_handler = 00;
