@@ -23,6 +23,8 @@ with instrument_imports():
 
 
 def TestOneInput(data: bytes) -> None:
+    from PIL import features
+    features.pilinfo()
     try:
         fuzzers.fuzz_image(data)
     except Exception:

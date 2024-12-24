@@ -119,40 +119,7 @@ function build {
     build_simple libxcb $LIBXCB_VERSION https://www.x.org/releases/individual/lib
 
     build_libjpeg_turbo
-    if [ -n "$IS_MACOS" ]; then
-        # Custom tiff build to include jpeg; by default, configure won't include
-        # headers/libs in the custom macOS prefix. Explicitly disable webp,
-        # libdeflate and zstd, because on x86_64 macs, it will pick up the
-        # Homebrew versions of those libraries from /usr/local.
-        build_simple tiff $TIFF_VERSION https://download.osgeo.org/libtiff tar.gz \
-            --with-jpeg-include-dir=$BUILD_PREFIX/include --with-jpeg-lib-dir=$BUILD_PREFIX/lib \
-            --disable-webp --disable-libdeflate --disable-zstd
-    else
-        build_tiff
-    fi
-
-    build_libpng
-    build_lcms2
     build_openjpeg
-
-    ORIGINAL_CFLAGS=$CFLAGS
-    CFLAGS="$CFLAGS -O3 -DNDEBUG"
-    if [[ -n "$IS_MACOS" ]]; then
-        CFLAGS="$CFLAGS -Wl,-headerpad_max_install_names"
-    fi
-    build_libwebp
-    CFLAGS=$ORIGINAL_CFLAGS
-
-    build_brotli
-
-    if [ -n "$IS_MACOS" ]; then
-        # Custom freetype build
-        build_simple freetype $FREETYPE_VERSION https://download.savannah.gnu.org/releases/freetype tar.gz --with-harfbuzz=no
-    else
-        build_freetype
-    fi
-
-    build_harfbuzz
 }
 
 # Perform all dependency builds in the build subfolder.
