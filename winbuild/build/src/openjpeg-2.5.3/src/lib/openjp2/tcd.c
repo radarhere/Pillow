@@ -1168,6 +1168,7 @@ static INLINE OPJ_BOOL opj_tcd_init_tile(opj_tcd_t *p_tcd, OPJ_UINT32 p_tile_no,
                     l_nb_code_blocks_size = l_nb_code_blocks * (OPJ_UINT32)sizeof_block;
 
                     if (!l_current_precinct->cblks.blocks && (l_nb_code_blocks > 0U)) {
+                        printf("torchA\n");
                         l_current_precinct->cblks.blocks = opj_malloc(l_nb_code_blocks_size);
                         if (! l_current_precinct->cblks.blocks) {
                             return OPJ_FALSE;
@@ -1175,9 +1176,8 @@ static INLINE OPJ_BOOL opj_tcd_init_tile(opj_tcd_t *p_tcd, OPJ_UINT32 p_tile_no,
                         /*fprintf(stderr, "\t\t\t\tAllocate cblks of a precinct (opj_tcd_cblk_dec_t): %d\n",l_nb_code_blocks_size);*/
 
                         memset(l_current_precinct->cblks.blocks, 0, l_nb_code_blocks_size);
-
-                        l_current_precinct->block_size = l_nb_code_blocks_size;
                     } else if (l_nb_code_blocks_size > l_current_precinct->block_size) {
+                        printf("torchB\n");
                         void *new_blocks = opj_realloc(l_current_precinct->cblks.blocks,
                                                        l_nb_code_blocks_size);
                         if (! new_blocks) {
@@ -1195,8 +1195,6 @@ static INLINE OPJ_BOOL opj_tcd_init_tile(opj_tcd_t *p_tcd, OPJ_UINT32 p_tile_no,
                                l_current_precinct->block_size
                                , 0
                                , l_nb_code_blocks_size - l_current_precinct->block_size);
-
-                        l_current_precinct->block_size = l_nb_code_blocks_size;
                     }
                     ++l_current_precinct;
                 } /* precno */
