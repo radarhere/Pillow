@@ -652,7 +652,6 @@ j2k_decode_entry(Imaging im, ImagingCodecState state) {
     opj_read_header(stream, codec, &image);
     JPEG2KTILEINFO tile_info;
     OPJ_BOOL should_continue;
-    printf("tile_info x1 %d\n", &tile_info.x1);
 
     opj_read_tile_header(
         codec,
