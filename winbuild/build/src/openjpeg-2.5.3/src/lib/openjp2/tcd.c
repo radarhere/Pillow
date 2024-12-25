@@ -840,6 +840,7 @@ static INLINE OPJ_BOOL opj_tcd_init_tile(opj_tcd_t *p_tcd, OPJ_UINT32 p_tile_no,
     l_tile->x0 = (OPJ_INT32)opj_uint_max(l_tx0, l_image->x0);
     l_tile->x1 = (OPJ_INT32)opj_uint_min(opj_uint_adds(l_tx0, l_cp->tdx),
                                          l_image->x1);
+    printf("l_tile x1 %d\n", l_tile->x1);
     /* all those OPJ_UINT32 are casted to OPJ_INT32, let's do some sanity check */
     if ((l_tile->x0 < 0) || (l_tile->x1 <= l_tile->x0)) {
         opj_event_msg(manager, EVT_ERROR, "Tile X coordinates are not supported\n");
