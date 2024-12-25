@@ -821,6 +821,9 @@ static INLINE OPJ_BOOL opj_tcd_init_tile(opj_tcd_t *p_tcd, OPJ_UINT32 p_tile_no,
     OPJ_UINT32 l_nb_code_blocks_size;
     /* size of data for a tile */
     OPJ_UINT32 l_data_size;
+    printf("l_tile->main_head_start %d\n", l_tile->main_head_start);
+    printf("l_tile->main_head_end %d\n", l_tile->main_head_end);
+    printf("l_tile->codestream_size %d\n", l_tile->codestream_size);
 
     l_cp = p_tcd->cp;
     l_tcp = &(l_cp->tcps[p_tile_no]);
