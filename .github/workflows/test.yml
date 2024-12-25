@@ -86,4 +86,4 @@ jobs:
     - name: Test
       run: |
         python3 -m pip install psutil
-        python3 -c "import psutil;process = psutil.Process();from PIL import Image;im = Image.open('clusterfuzz-testcase-minimized-fuzz_pillow-5015640213159936');print('memory1', process.memory_info().rss);im.load();print('memory2', process.memory_info().rss)"
+        python3 -c "import psutil;process = psutil.Process();from PIL import Image;im = Image.open('clusterfuzz-testcase-minimized-fuzz_pillow-5015640213159936');print(im);print('memory1', process.memory_info().rss);im.load();print('memory2', process.memory_info().rss)"

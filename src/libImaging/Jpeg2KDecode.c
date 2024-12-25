@@ -47,6 +47,7 @@ j2k_read(void *p_buffer, OPJ_SIZE_T p_nb_bytes, void *p_user_data) {
     ImagingCodecState state = (ImagingCodecState)p_user_data;
 
     size_t len = _imaging_read_pyFd(state->fd, p_buffer, p_nb_bytes);
+    printf("len %zu\n", len);
 
     return len ? len : (OPJ_SIZE_T)-1;
 }
@@ -692,6 +693,7 @@ j2k_decode_entry(Imaging im, ImagingCodecState state) {
     opj_setup_decoder(codec, &params);
 
     if (!opj_read_header(stream, codec, &image)) {
+        printf("exit5\n");
         state->errcode = IMAGING_CODEC_BROKEN;
         state->state = J2K_STATE_FAILED;
         goto quick_exit;
@@ -699,6 +701,7 @@ j2k_decode_entry(Imaging im, ImagingCodecState state) {
 
     /* Check that this image is something we can handle */
     if (image->numcomps < 1 || image->numcomps > 4) {
+        printf("exit6\n");
         state->errcode = IMAGING_CODEC_BROKEN;
         state->state = J2K_STATE_FAILED;
         goto quick_exit;
@@ -801,6 +804,7 @@ j2k_decode_entry(Imaging im, ImagingCodecState state) {
                 &tile_info.nb_comps,
                 &should_continue
             )) {
+            printf("exit7\n");
             state->errcode = IMAGING_CODEC_BROKEN;
             state->state = J2K_STATE_FAILED;
             goto quick_exit;
@@ -826,12 +830,14 @@ j2k_decode_entry(Imaging im, ImagingCodecState state) {
             (OPJ_UINT32)tile_info.y0 < image->y0 ||
             (OPJ_INT32)(tile_info.x1 - image->x0) > im->xsize ||
             (OPJ_INT32)(tile_info.y1 - image->y0) > im->ysize) {
+            printf("exit8\n");
             state->errcode = IMAGING_CODEC_BROKEN;
             state->state = J2K_STATE_FAILED;
             goto quick_exit;
         }
 
         if (tile_info.nb_comps != image->numcomps) {
+            printf("exit8b\n");
             state->errcode = IMAGING_CODEC_BROKEN;
             state->state = J2K_STATE_FAILED;
             goto quick_exit;
@@ -859,6 +865,7 @@ j2k_decode_entry(Imaging im, ImagingCodecState state) {
             (tile_height > UINT_MAX / total_component_width) ||
             (tile_width > UINT_MAX / (tile_height * total_component_width)) ||
             (tile_height > UINT_MAX / (tile_width * total_component_width))) {
+            printf("exit9\n");
             state->errcode = IMAGING_CODEC_BROKEN;
             state->state = J2K_STATE_FAILED;
             goto quick_exit;
@@ -893,6 +900,7 @@ j2k_decode_entry(Imaging im, ImagingCodecState state) {
                 tile_info.data_size,
                 stream
             )) {
+            printf("exit10\n");
             state->errcode = IMAGING_CODEC_BROKEN;
             state->state = J2K_STATE_FAILED;
             goto quick_exit;
@@ -902,6 +910,7 @@ j2k_decode_entry(Imaging im, ImagingCodecState state) {
     }
 
     if (!opj_end_decompress(codec, stream)) {
+        printf("exit11\n");
         state->errcode = IMAGING_CODEC_BROKEN;
         state->state = J2K_STATE_FAILED;
         goto quick_exit;

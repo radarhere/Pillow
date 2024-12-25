@@ -1574,7 +1574,7 @@ OPJ_BOOL opj_tcd_decode_tile(opj_tcd_t *p_tcd,
         OPJ_BOOL* used_component = (OPJ_BOOL*) opj_calloc(sizeof(OPJ_BOOL),
                                    p_tcd->image->numcomps);
         if (used_component == NULL) {
-            return OPJ_FALSE;
+            printf("here3a\n");return OPJ_FALSE;
         }
         for (compno = 0; compno < numcomps_to_decode; compno++) {
             used_component[ comps_indices[compno] ] = OPJ_TRUE;
@@ -1613,14 +1613,14 @@ OPJ_BOOL opj_tcd_decode_tile(opj_tcd_t *p_tcd,
             if (res_h > 0 && res_w > SIZE_MAX / res_h) {
                 opj_event_msg(p_manager, EVT_ERROR,
                               "Size of tile data exceeds system limits\n");
-                return OPJ_FALSE;
+                printf("here3b\n");return OPJ_FALSE;
             }
             l_data_size = res_w * res_h;
 
             if (SIZE_MAX / sizeof(OPJ_UINT32) < l_data_size) {
                 opj_event_msg(p_manager, EVT_ERROR,
                               "Size of tile data exceeds system limits\n");
-                return OPJ_FALSE;
+                printf("here3c\n");return OPJ_FALSE;
             }
             l_data_size *= sizeof(OPJ_UINT32);
 
@@ -1629,7 +1629,7 @@ OPJ_BOOL opj_tcd_decode_tile(opj_tcd_t *p_tcd,
             if (!opj_alloc_tile_component_data(tilec)) {
                 opj_event_msg(p_manager, EVT_ERROR,
                               "Size of tile data exceeds system limits\n");
-                return OPJ_FALSE;
+                printf("here3d\n");return OPJ_FALSE;
             }
         }
     } else {
@@ -1666,7 +1666,7 @@ OPJ_BOOL opj_tcd_decode_tile(opj_tcd_t *p_tcd,
                 /* Upper level logic should not even try to decode that tile */
                 opj_event_msg(p_manager, EVT_ERROR,
                               "Invalid tilec->win_xxx values\n");
-                return OPJ_FALSE;
+                printf("here3e\n");return OPJ_FALSE;
             }
 
             for (resno = 0; resno < tilec->numresolutions; ++resno) {
@@ -1712,7 +1712,7 @@ OPJ_BOOL opj_tcd_decode_tile(opj_tcd_t *p_tcd,
     l_data_read = 0;
     if (! opj_tcd_t2_decode(p_tcd, p_src, &l_data_read, p_max_length, p_cstr_index,
                             p_manager)) {
-        return OPJ_FALSE;
+        printf("here3f\n");return OPJ_FALSE;
     }
     /* FIXME _ProfStop(PGROUP_T2); */
 
@@ -1720,7 +1720,7 @@ OPJ_BOOL opj_tcd_decode_tile(opj_tcd_t *p_tcd,
 
     /* FIXME _ProfStart(PGROUP_T1); */
     if (! opj_tcd_t1_decode(p_tcd, p_manager)) {
-        return OPJ_FALSE;
+        printf("here3g\n");return OPJ_FALSE;
     }
     /* FIXME _ProfStop(PGROUP_T1); */
 
@@ -1747,13 +1747,13 @@ OPJ_BOOL opj_tcd_decode_tile(opj_tcd_t *p_tcd,
                 if (w > SIZE_MAX / h) {
                     opj_event_msg(p_manager, EVT_ERROR,
                                   "Size of tile data exceeds system limits\n");
-                    return OPJ_FALSE;
+                    printf("here3h\n");return OPJ_FALSE;
                 }
                 l_data_size = w * h;
                 if (l_data_size > SIZE_MAX / sizeof(OPJ_INT32)) {
                     opj_event_msg(p_manager, EVT_ERROR,
                                   "Size of tile data exceeds system limits\n");
-                    return OPJ_FALSE;
+                    printf("here3i\n");return OPJ_FALSE;
                 }
                 l_data_size *= sizeof(OPJ_INT32);
 
@@ -1761,7 +1761,7 @@ OPJ_BOOL opj_tcd_decode_tile(opj_tcd_t *p_tcd,
                 if (tilec->data_win == NULL) {
                     opj_event_msg(p_manager, EVT_ERROR,
                                   "Size of tile data exceeds system limits\n");
-                    return OPJ_FALSE;
+                    printf("here3j\n");return OPJ_FALSE;
                 }
             }
         }
@@ -1772,7 +1772,7 @@ OPJ_BOOL opj_tcd_decode_tile(opj_tcd_t *p_tcd,
     /* FIXME _ProfStart(PGROUP_DWT); */
     if
     (! opj_tcd_dwt_decode(p_tcd)) {
-        return OPJ_FALSE;
+        printf("here3k\n");return OPJ_FALSE;
     }
     /* FIXME _ProfStop(PGROUP_DWT); */
 
@@ -1780,14 +1780,14 @@ OPJ_BOOL opj_tcd_decode_tile(opj_tcd_t *p_tcd,
     /* FIXME _ProfStart(PGROUP_MCT); */
     if
     (! opj_tcd_mct_decode(p_tcd, p_manager)) {
-        return OPJ_FALSE;
+        printf("here3l\n");return OPJ_FALSE;
     }
     /* FIXME _ProfStop(PGROUP_MCT); */
 
     /* FIXME _ProfStart(PGROUP_DC_SHIFT); */
     if
     (! opj_tcd_dc_level_shift_decode(p_tcd)) {
-        return OPJ_FALSE;
+        printf("here3m\n");return OPJ_FALSE;
     }
     /* FIXME _ProfStop(PGROUP_DC_SHIFT); */
 
@@ -2018,7 +2018,7 @@ static OPJ_BOOL opj_tcd_t2_decode(opj_tcd_t *p_tcd,
 
     l_t2 = opj_t2_create(p_tcd->image, p_tcd->cp);
     if (l_t2 == 00) {
-        return OPJ_FALSE;
+        printf("here3f\1n");return OPJ_FALSE;
     }
 
     if (! opj_t2_decode_packets(
@@ -2032,7 +2032,7 @@ static OPJ_BOOL opj_tcd_t2_decode(opj_tcd_t *p_tcd,
                 p_cstr_index,
                 p_manager)) {
         opj_t2_destroy(l_t2);
-        return OPJ_FALSE;
+        printf("here3f2\n");return OPJ_FALSE;
     }
 
     opj_t2_destroy(l_t2);

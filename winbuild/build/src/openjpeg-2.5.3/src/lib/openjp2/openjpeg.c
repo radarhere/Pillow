@@ -599,6 +599,7 @@ OPJ_BOOL OPJ_CALLCONV opj_decode_tile_data(opj_codec_t *p_codec,
         opj_stream_private_t * l_stream = (opj_stream_private_t *) p_stream;
 
         if (! l_codec->is_decompressor) {
+            printf("inside51\n");
             return OPJ_FALSE;
         }
 
@@ -610,6 +611,7 @@ OPJ_BOOL OPJ_CALLCONV opj_decode_tile_data(opj_codec_t *p_codec,
                    l_stream,
                    &(l_codec->m_event_mgr));
     }
+    printf("inside52\n");
     return OPJ_FALSE;
 }
 

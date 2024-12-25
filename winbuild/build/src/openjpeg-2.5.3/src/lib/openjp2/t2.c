@@ -427,7 +427,7 @@ OPJ_BOOL opj_t2_decode_packets(opj_tcd_t* tcd,
     /* create a packet iterator */
     l_pi = opj_pi_create_decode(l_image, l_cp, p_tile_no, p_manager);
     if (!l_pi) {
-        return OPJ_FALSE;
+        printf("what1\n");return OPJ_FALSE;
     }
 
 
@@ -445,13 +445,13 @@ OPJ_BOOL opj_t2_decode_packets(opj_tcd_t* tcd,
         if (l_current_pi->poc.prg == OPJ_PROG_UNKNOWN) {
             /* TODO ADE : add an error */
             opj_pi_destroy(l_pi, l_nb_pocs);
-            return OPJ_FALSE;
+            printf("what2\n");return OPJ_FALSE;
         }
 
         first_pass_failed = (OPJ_BOOL*)opj_malloc(l_image->numcomps * sizeof(OPJ_BOOL));
         if (!first_pass_failed) {
             opj_pi_destroy(l_pi, l_nb_pocs);
-            return OPJ_FALSE;
+            printf("what3\n");return OPJ_FALSE;
         }
         memset(first_pass_failed, OPJ_TRUE, l_image->numcomps * sizeof(OPJ_BOOL));
 
@@ -511,7 +511,7 @@ OPJ_BOOL opj_t2_decode_packets(opj_tcd_t* tcd,
                                            &l_nb_bytes_read, p_max_len, l_pack_info, p_manager)) {
                     opj_pi_destroy(l_pi, l_nb_pocs);
                     opj_free(first_pass_failed);
-                    return OPJ_FALSE;
+                    printf("what4\n");return OPJ_FALSE;
                 }
 
                 l_img_comp = &(l_image->comps[l_current_pi->compno]);
@@ -523,7 +523,7 @@ OPJ_BOOL opj_t2_decode_packets(opj_tcd_t* tcd,
                                          &l_nb_bytes_read, p_max_len, l_pack_info, p_manager)) {
                     opj_pi_destroy(l_pi, l_nb_pocs);
                     opj_free(first_pass_failed);
-                    return OPJ_FALSE;
+                    printf("what5\n");return OPJ_FALSE;
                 }
             }
 

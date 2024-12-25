@@ -10128,12 +10128,14 @@ OPJ_BOOL opj_j2k_decode_tile(opj_j2k_t * p_j2k,
 
     if (!(p_j2k->m_specific_param.m_decoder.m_state & J2K_STATE_DATA)
             || (p_tile_index != p_j2k->m_current_tile_number)) {
+        printf("here1\n");
         return OPJ_FALSE;
     }
 
     l_tcp = &(p_j2k->m_cp.tcps[p_tile_index]);
     if (! l_tcp->m_data) {
         opj_j2k_tcp_destroy(l_tcp);
+        printf("here2\n");
         return OPJ_FALSE;
     }
 
@@ -10158,6 +10160,7 @@ OPJ_BOOL opj_j2k_decode_tile(opj_j2k_t * p_j2k,
         opj_j2k_tcp_destroy(l_tcp);
         p_j2k->m_specific_param.m_decoder.m_state |= J2K_STATE_ERR;
         opj_event_msg(p_manager, EVT_ERROR, "Failed to decode.\n");
+        printf("here3\n");
         return OPJ_FALSE;
     }
 
@@ -10166,6 +10169,7 @@ OPJ_BOOL opj_j2k_decode_tile(opj_j2k_t * p_j2k,
     /* tile decoding optimization. */
     if (p_data != NULL) {
         if (! opj_tcd_update_tile_data(p_j2k->m_tcd, p_data, p_data_size)) {
+            printf("here4\n");
             return OPJ_FALSE;
         }
 
@@ -10188,6 +10192,7 @@ OPJ_BOOL opj_j2k_decode_tile(opj_j2k_t * p_j2k,
         if (opj_stream_read_data(p_stream, l_data, 2, p_manager) != 2) {
             opj_event_msg(p_manager, p_j2k->m_cp.strict ? EVT_ERROR : EVT_WARNING,
                           "Stream too short\n");
+            printf("here5\n");
             return p_j2k->m_cp.strict ? OPJ_FALSE : OPJ_TRUE;
         }
         opj_read_bytes(l_data, &l_current_marker, 2);
@@ -10202,6 +10207,7 @@ OPJ_BOOL opj_j2k_decode_tile(opj_j2k_t * p_j2k,
                 return OPJ_TRUE;
             }
             opj_event_msg(p_manager, EVT_ERROR, "Stream too short, expected SOT\n");
+            printf("here6\n");
             return OPJ_FALSE;
         }
     }

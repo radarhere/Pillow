@@ -285,6 +285,9 @@ class Jpeg2KImageFile(ImageFile.ImageFile):
                 self.fp.seek(pos)
             except Exception:
                 length = -1
+        print("codec", self.codec)
+        print("tell", self.fp.tell())
+        print("length", length)
 
         self.tile = [
             ImageFile._Tile(
