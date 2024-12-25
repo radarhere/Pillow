@@ -2,7 +2,7 @@
  * The copyright in this software is being made available under the 2-clauses
  * BSD License, included below. This software may be subject to other third
  * party and contributor rights, including patent rights, and no such rights
- * are granted under this license.
+ * are granted under this license. I think the image is just that large. I don't think there are any offsets to consider. Last idea is to parse all the 87 byes for info by hand and see if anything doesn't make sense.
  *
  * Copyright (c) 2005, Herve Drolon, FreeImage Team
  * Copyright (c) 2008, 2011-2012, Centre National d'Etudes Spatiales (CNES), FR
