@@ -5001,12 +5001,15 @@ static OPJ_BOOL opj_j2k_read_sod(opj_j2k_t *p_j2k,
         // a file with a single tile part of more than 4 GB...*/
         p_j2k->m_specific_param.m_decoder.m_sot_length = (OPJ_UINT32)(
                     opj_stream_get_number_byte_left(p_stream) - 2);
+        printf("last %d\n", p_j2k->m_specific_param.m_decoder.m_sot_length);
     } else {
         /* Check to avoid pass the limit of OPJ_UINT32 */
         if (p_j2k->m_specific_param.m_decoder.m_sot_length >= 2) {
             p_j2k->m_specific_param.m_decoder.m_sot_length -= 2;
+            printf("last2 %d\n", p_j2k->m_specific_param.m_decoder.m_sot_length);
         } else {
             /* MSD: case commented to support empty SOT marker (PHR data) */
+            printf("empty\n");
         }
     }
 
@@ -5017,6 +5020,7 @@ static OPJ_BOOL opj_j2k_read_sod(opj_j2k_t *p_j2k,
     if (p_j2k->m_specific_param.m_decoder.m_sot_length) {
         /* If we are here, we'll try to read the data after allocation */
         /* Check enough bytes left in stream before allocation */
+        printf("left %d %d\n", (OPJ_OFF_T)p_j2k->m_specific_param.m_decoder.m_sot_length, opj_stream_get_number_byte_left(p_stream));
         if ((OPJ_OFF_T)p_j2k->m_specific_param.m_decoder.m_sot_length >
                 opj_stream_get_number_byte_left(p_stream)) {
             if (p_j2k->m_cp.strict) {
@@ -5112,6 +5116,7 @@ static OPJ_BOOL opj_j2k_read_sod(opj_j2k_t *p_j2k,
         l_current_read_size = 0;
     }
 
+    printf("sizehere %d %d\n", l_current_read_size, p_j2k->m_specific_param.m_decoder.m_sot_length);
     if (l_current_read_size != p_j2k->m_specific_param.m_decoder.m_sot_length) {
         if (l_current_read_size == (OPJ_SIZE_T)(-1)) {
             /* Avoid issue of https://github.com/uclouvain/openjpeg/issues/1533 */
@@ -9770,6 +9775,7 @@ OPJ_BOOL opj_j2k_read_tile_header(opj_j2k_t * p_j2k,
         /* Try to read until the Start Of Data is detected */
         while (l_current_marker != J2K_MS_SOD) {
 
+            printf("alt %d\n", opj_stream_get_number_byte_left(p_stream));
             if (opj_stream_get_number_byte_left(p_stream) == 0) {
                 p_j2k->m_specific_param.m_decoder.m_state = J2K_STATE_NEOC;
                 break;
@@ -9793,6 +9799,9 @@ OPJ_BOOL opj_j2k_read_tile_header(opj_j2k_t * p_j2k,
             }
 
             /* cf. https://code.google.com/p/openjpeg/issues/detail?id=226 */
+            if (l_current_marker == 0x8080) {
+                printf("maybe\n");
+            }
             if (l_current_marker == 0x8080 &&
                     opj_stream_get_number_byte_left(p_stream) == 0) {
                 p_j2k->m_specific_param.m_decoder.m_state = J2K_STATE_NEOC;
@@ -9906,6 +9915,9 @@ OPJ_BOOL opj_j2k_read_tile_header(opj_j2k_t * p_j2k,
             }
         }
         printf("sod %d\n", opj_stream_get_number_byte_left(p_stream));
+        if (p_j2k->m_specific_param.m_decoder.m_state == J2K_STATE_NEOC) {
+            printf("neoc\n");
+        }
         if (opj_stream_get_number_byte_left(p_stream) == 0
                 && p_j2k->m_specific_param.m_decoder.m_state == J2K_STATE_NEOC) {
             break;
@@ -9913,6 +9925,7 @@ OPJ_BOOL opj_j2k_read_tile_header(opj_j2k_t * p_j2k,
 
         /* If we didn't skip data before, we need to read the SOD marker*/
         if (! p_j2k->m_specific_param.m_decoder.m_skip_data) {
+            printf("this %d\n", opj_stream_get_number_byte_left(p_stream));
             /* Try to read the SOD marker and skip data ? FIXME */
             if (! opj_j2k_read_sod(p_j2k, p_stream, p_manager)) {
                 return OPJ_FALSE;
@@ -10023,6 +10036,7 @@ OPJ_BOOL opj_j2k_read_tile_header(opj_j2k_t * p_j2k,
                 /* Deal with likely non conformant SPOT6 files, where the last */
                 /* row of tiles have TPsot == 0 and TNsot == 0, and missing EOC, */
                 /* but no other tile-parts were found. */
+                printf("uhhhh\n");
                 if (p_j2k->m_current_tile_number + 1 == l_nb_tiles) {
                     OPJ_UINT32 l_tile_no;
                     for (l_tile_no = 0U; l_tile_no < l_nb_tiles; ++l_tile_no) {
@@ -10097,6 +10111,7 @@ OPJ_BOOL opj_j2k_read_tile_header(opj_j2k_t * p_j2k,
     if (p_data_size) {
         /* For internal use in j2k.c, we don't need this */
         /* This is just needed for folks using the opj_read_tile_header() / opj_decode_tile_data() combo */
+        printf("getsize\n");
         *p_data_size = opj_tcd_get_decoded_tile_size(p_j2k->m_tcd, OPJ_FALSE);
         if (*p_data_size == UINT_MAX) {
             return OPJ_FALSE;
@@ -10185,10 +10200,12 @@ OPJ_BOOL opj_j2k_decode_tile(opj_j2k_t * p_j2k,
 
     if (opj_stream_get_number_byte_left(p_stream) == 0
             && p_j2k->m_specific_param.m_decoder.m_state == J2K_STATE_NEOC) {
+        printf("early\n");
         return OPJ_TRUE;
     }
 
     if (p_j2k->m_specific_param.m_decoder.m_state != J2K_STATE_EOC) {
+        printf("read\n");
         if (opj_stream_read_data(p_stream, l_data, 2, p_manager) != 2) {
             opj_event_msg(p_manager, p_j2k->m_cp.strict ? EVT_ERROR : EVT_WARNING,
                           "Stream too short\n");
@@ -10202,6 +10219,7 @@ OPJ_BOOL opj_j2k_decode_tile(opj_j2k_t * p_j2k,
         } else if (l_current_marker != J2K_MS_SOT) {
             if (opj_stream_get_number_byte_left(p_stream) == 0) {
                 p_j2k->m_specific_param.m_decoder.m_state = J2K_STATE_NEOC;
+                printf("no eoc warning\n");
                 opj_event_msg(p_manager, EVT_WARNING, "Stream does not end with EOC\n");
                 return OPJ_TRUE;
             }
