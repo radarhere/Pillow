@@ -252,6 +252,7 @@ class Jpeg2KImageFile(ImageFile.ImageFile):
         if sig == b"\xff\x4f\xff\x51":
             self.codec = "j2k"
             self._size, self._mode = _parse_codestream(self.fp)
+            self._parse_comment()
         else:
             sig = sig + self.fp.read(8)
 
@@ -300,13 +301,18 @@ class Jpeg2KImageFile(ImageFile.ImageFile):
 
     def _parse_comment(self) -> None:
         hdr = self.fp.read(2)
+        print("hdr", hdr)
+        hdr = self.fp.read(2)
         length = _binary.i16be(hdr)
+        print("hdr", hdr, "marker length", length)
         self.fp.seek(length - 2, os.SEEK_CUR)
 
         while True:
             marker = self.fp.read(2)
             if not marker:
+                print("nomarker")
                 break
+            print("marker", marker)
             typ = marker[1]
             if typ in (0x90, 0xD9):
                 # Start of tile or end of codestream

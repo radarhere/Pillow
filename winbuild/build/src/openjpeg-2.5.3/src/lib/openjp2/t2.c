@@ -633,8 +633,10 @@ static OPJ_BOOL opj_t2_decode_packet(opj_t2_t* p_t2,
 
     *p_data_read = 0;
 
+    printf("packet1\n");
     if (! opj_t2_read_packet_header(p_t2, p_tile, p_tcp, p_pi, &l_read_data, p_src,
                                     &l_nb_bytes_read, p_max_length, p_pack_info, p_manager)) {
+        printf("packet2\n");
         return OPJ_FALSE;
     }
 
@@ -648,6 +650,7 @@ static OPJ_BOOL opj_t2_decode_packet(opj_t2_t* p_t2,
 
         if (! opj_t2_read_packet_data(p_t2, p_tile, p_pi, p_src, &l_nb_bytes_read,
                                       p_max_length, p_pack_info, p_manager)) {
+            printf("packet3\n");
             return OPJ_FALSE;
         }
 
@@ -1060,6 +1063,7 @@ static OPJ_BOOL opj_t2_read_packet_header(opj_t2_t* p_t2,
 
 {
     /* loop */
+    printf("read packet header\n");
     OPJ_UINT32 bandno, cblkno;
     OPJ_UINT32 l_nb_code_blocks;
     OPJ_UINT32 l_remaining_length;
@@ -1088,6 +1092,7 @@ static OPJ_BOOL opj_t2_read_packet_header(opj_t2_t* p_t2,
                 if (!(p_pi->precno < (l_band->precincts_data_size / sizeof(
                                           opj_tcd_precinct_t)))) {
                     opj_event_msg(p_manager, EVT_ERROR, "Invalid precinct\n");
+                    printf("invalid precinct\n");
                     return OPJ_FALSE;
                 }
 
@@ -1133,6 +1138,7 @@ static OPJ_BOOL opj_t2_read_packet_header(opj_t2_t* p_t2,
 
     l_bio = opj_bio_create();
     if (! l_bio) {
+        printf("no bio\n");
         return OPJ_FALSE;
     }
 
@@ -1169,9 +1175,11 @@ static OPJ_BOOL opj_t2_read_packet_header(opj_t2_t* p_t2,
                     *l_header_data_start)) < 2U) {
                 opj_event_msg(p_manager, EVT_ERROR,
                               "Not enough space for required EPH marker\n");
+                printf("no space\n");
                 return OPJ_FALSE;
             } else if ((*l_header_data) != 0xff || (*(l_header_data + 1) != 0x92)) {
                 opj_event_msg(p_manager, EVT_ERROR, "Expected EPH marker\n");
+                printf("eph\n");
                 return OPJ_FALSE;
             } else {
                 l_header_data += 2;
@@ -1258,6 +1266,7 @@ static OPJ_BOOL opj_t2_read_packet_header(opj_t2_t* p_t2,
             if (!l_cblk->numsegs) {
                 if (! opj_t2_init_seg(l_cblk, l_segno, p_tcp->tccps[p_pi->compno].cblksty, 1)) {
                     opj_bio_destroy(l_bio);
+                    printf("yeah1\n");
                     return OPJ_FALSE;
                 }
             } else {
@@ -1266,6 +1275,7 @@ static OPJ_BOOL opj_t2_read_packet_header(opj_t2_t* p_t2,
                     ++l_segno;
                     if (! opj_t2_init_seg(l_cblk, l_segno, p_tcp->tccps[p_pi->compno].cblksty, 0)) {
                         opj_bio_destroy(l_bio);
+                        printf("yeah2\n");
                         return OPJ_FALSE;
                     }
                 }
@@ -1283,6 +1293,7 @@ static OPJ_BOOL opj_t2_read_packet_header(opj_t2_t* p_t2,
                                       "Invalid bit number %d in opj_t2_read_packet_header()\n",
                                       bit_number);
                         opj_bio_destroy(l_bio);
+                        printf("yeah3\n");
                         return OPJ_FALSE;
                     }
                     l_cblk->segs[l_segno].newlen = opj_bio_read(l_bio, bit_number);
@@ -1296,6 +1307,7 @@ static OPJ_BOOL opj_t2_read_packet_header(opj_t2_t* p_t2,
 
                         if (! opj_t2_init_seg(l_cblk, l_segno, p_tcp->tccps[p_pi->compno].cblksty, 0)) {
                             opj_bio_destroy(l_bio);
+                            printf("yeah4\n");
                             return OPJ_FALSE;
                         }
                     }
@@ -1312,6 +1324,7 @@ static OPJ_BOOL opj_t2_read_packet_header(opj_t2_t* p_t2,
                                       "Invalid bit number %d in opj_t2_read_packet_header()\n",
                                       bit_number);
                         opj_bio_destroy(l_bio);
+                        printf("yeah5\n");
                         return OPJ_FALSE;
                     }
                     l_cblk->segs[l_segno].newlen = opj_bio_read(l_bio, bit_number);
@@ -1325,6 +1338,7 @@ static OPJ_BOOL opj_t2_read_packet_header(opj_t2_t* p_t2,
 
                         if (! opj_t2_init_seg(l_cblk, l_segno, p_tcp->tccps[p_pi->compno].cblksty, 0)) {
                             opj_bio_destroy(l_bio);
+                            printf("yeah6\n");
                             return OPJ_FALSE;
                         }
                     }
@@ -1336,6 +1350,7 @@ static OPJ_BOOL opj_t2_read_packet_header(opj_t2_t* p_t2,
 
     if (!opj_bio_inalign(l_bio)) {
         opj_bio_destroy(l_bio);
+        printf("yeah7\n");
         return OPJ_FALSE;
     }
 
@@ -1349,9 +1364,11 @@ static OPJ_BOOL opj_t2_read_packet_header(opj_t2_t* p_t2,
                 *l_header_data_start)) < 2U) {
             opj_event_msg(p_manager, EVT_ERROR,
                           "Not enough space for required EPH marker\n");
+            printf("yeah8\n");
             return OPJ_FALSE;
         } else if ((*l_header_data) != 0xff || (*(l_header_data + 1) != 0x92)) {
             opj_event_msg(p_manager, EVT_ERROR, "Expected EPH marker\n");
+            printf("yeah9\n");
             return OPJ_FALSE;
         } else {
             l_header_data += 2;
@@ -1361,6 +1378,7 @@ static OPJ_BOOL opj_t2_read_packet_header(opj_t2_t* p_t2,
     l_header_length = (OPJ_UINT32)(l_header_data - *l_header_data_start);
     JAS_FPRINTF(stderr, "hdrlen=%d \n", l_header_length);
     if (!l_header_length) {
+        printf("yeah10\n");
         return OPJ_FALSE;
     }
     JAS_FPRINTF(stderr, "packet body\n");
