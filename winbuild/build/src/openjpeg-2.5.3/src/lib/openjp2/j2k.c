@@ -9712,6 +9712,7 @@ OPJ_BOOL opj_j2k_read_tile_header(opj_j2k_t * p_j2k,
     const opj_dec_memory_marker_handler_t * l_marker_handler = 00;
     opj_tcp_t * l_tcp = NULL;
     const OPJ_UINT32 l_nb_tiles = p_j2k->m_cp.tw * p_j2k->m_cp.th;
+    printf("l_nb_tiles %d\n", l_nb_tiles);
 
     /* preconditions */
     assert(p_stream != 00);
@@ -9762,6 +9763,8 @@ OPJ_BOOL opj_j2k_read_tile_header(opj_j2k_t * p_j2k,
                 opj_event_msg(p_manager, EVT_ERROR, "Did not get expected SOT marker\n");
                 return OPJ_FALSE;
             }
+
+            printf("sot\n");
         }
 
         /* Try to read until the Start Of Data is detected */
@@ -9902,6 +9905,7 @@ OPJ_BOOL opj_j2k_read_tile_header(opj_j2k_t * p_j2k,
                                &l_current_marker, 2);
             }
         }
+        printf("sod %d\n", opj_stream_get_number_byte_left(p_stream));
         if (opj_stream_get_number_byte_left(p_stream) == 0
                 && p_j2k->m_specific_param.m_decoder.m_state == J2K_STATE_NEOC) {
             break;
