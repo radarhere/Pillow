@@ -302,6 +302,7 @@ class Jpeg2KImageFile(ImageFile.ImageFile):
     def _parse_comment(self) -> None:
         while True:
             marker = self.fp.read(2)
+            print("marker", marker)
             if not marker:
                 break
             typ = marker[1]
