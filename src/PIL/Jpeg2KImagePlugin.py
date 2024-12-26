@@ -308,6 +308,7 @@ class Jpeg2KImageFile(ImageFile.ImageFile):
             typ = marker[1]
             if typ in (0x90, 0xD9):
                 # Start of tile or end of codestream
+                print("pos", self.fp.tell())
                 break
             hdr = self.fp.read(2)
             length = _binary.i16be(hdr)
