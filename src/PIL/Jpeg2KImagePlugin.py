@@ -302,13 +302,21 @@ class Jpeg2KImageFile(ImageFile.ImageFile):
     def _parse_comment(self) -> None:
         while True:
             marker = self.fp.read(2)
-            print("marker", marker)
+            #print("marker", marker)
             if not marker:
                 break
             typ = marker[1]
-            if typ in (0x90, 0xD9):
-                # Start of tile or end of codestream
-                print("pos", self.fp.tell())
+            if typ == 0x90:
+                # Start of tile
+                print([
+                    self.fp.read(2),
+                    self.fp.read(2),
+                    self.fp.read(2)
+                ])
+                break
+            elif typ == 0xD9:
+                # End of codestream
+                print("torch")
                 break
             hdr = self.fp.read(2)
             length = _binary.i16be(hdr)
