@@ -665,6 +665,7 @@ j2k_decode_entry(Imaging im, ImagingCodecState state) {
         &tile_info.nb_comps,
         &should_continue
     );
+    printf("data size %d\n", tile_info.data_size);
 
     return -1;
 }

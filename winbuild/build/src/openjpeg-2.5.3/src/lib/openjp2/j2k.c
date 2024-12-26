@@ -4446,6 +4446,7 @@ static OPJ_BOOL opj_j2k_read_sot(opj_j2k_t *p_j2k,
                                  OPJ_UINT32 p_header_size,
                                  opj_event_mgr_t * p_manager)
 {
+    printf("readsot\n");
     opj_cp_t *l_cp = 00;
     opj_tcp_t *l_tcp = 00;
     OPJ_UINT32 l_tot_len, l_num_parts = 0;
@@ -4463,10 +4464,8 @@ static OPJ_BOOL opj_j2k_read_sot(opj_j2k_t *p_j2k,
         opj_event_msg(p_manager, EVT_ERROR, "Error reading SOT marker\n");
         return OPJ_FALSE;
     }
-#ifdef DEBUG_VERBOSE
-    fprintf(stderr, "SOT %d %d %d %d\n",
+    printf("SOT %d %d %d %d\n",
             p_j2k->m_current_tile_number, l_tot_len, l_current_part, l_num_parts);
-#endif
 
     l_cp = &(p_j2k->m_cp);
 
@@ -4539,9 +4538,11 @@ static OPJ_BOOL opj_j2k_read_sot(opj_j2k_t *p_j2k,
     /* since the time taken by this function can only grow at the time */
 
     /* PSot should be equal to zero or >=14 or <= 2^32-1 */
+    printf("l_tot_len %d\n", l_tot_len);
     if ((l_tot_len != 0) && (l_tot_len < 14)) {
         if (l_tot_len ==
                 12) { /* MSD: Special case for the PHR data which are read by kakadu*/
+            printf("emptysot\n");
             opj_event_msg(p_manager, EVT_WARNING, "Empty SOT marker detected: Psot=%d.\n",
                           l_tot_len);
         } else {
@@ -4630,9 +4631,11 @@ static OPJ_BOOL opj_j2k_read_sot(opj_j2k_t *p_j2k,
         /* Keep the size of data to skip after this marker */
         p_j2k->m_specific_param.m_decoder.m_sot_length = l_tot_len -
                 12; /* SOT_marker_size = 12 */
+        printf("m_sot last %d\n", p_j2k->m_specific_param.m_decoder.m_sot_length);
     } else {
         /* FIXME: need to be computed from the number of bytes remaining in the codestream */
         p_j2k->m_specific_param.m_decoder.m_sot_length = 0;
+        printf("fixme\n");
     }
 
     p_j2k->m_specific_param.m_decoder.m_state = J2K_STATE_TPH;
@@ -9898,6 +9901,7 @@ OPJ_BOOL opj_j2k_read_tile_header(opj_j2k_t * p_j2k,
 
             if (p_j2k->m_specific_param.m_decoder.m_skip_data) {
                 /* Skip the rest of the tile part header*/
+                printf("skip\n");
                 if (opj_stream_skip(p_stream, p_j2k->m_specific_param.m_decoder.m_sot_length,
                                     p_manager) != p_j2k->m_specific_param.m_decoder.m_sot_length) {
                     opj_event_msg(p_manager, EVT_ERROR, "Stream too short\n");
@@ -9905,6 +9909,7 @@ OPJ_BOOL opj_j2k_read_tile_header(opj_j2k_t * p_j2k,
                 }
                 l_current_marker = J2K_MS_SOD; /* Normally we reached a SOD */
             } else {
+                printf("read %d\n", opj_stream_get_number_byte_left(p_stream));
                 /* Try to read 2 bytes (the next marker ID) from stream and copy them into the buffer*/
                 if (opj_stream_read_data(p_stream,
                                          p_j2k->m_specific_param.m_decoder.m_header_data, 2, p_manager) != 2) {
