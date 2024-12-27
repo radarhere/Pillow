@@ -10098,7 +10098,9 @@ OPJ_BOOL opj_j2k_read_tile_header(opj_j2k_t * p_j2k,
     if (p_data_size) {
         /* For internal use in j2k.c, we don't need this */
         /* This is just needed for folks using the opj_read_tile_header() / opj_decode_tile_data() combo */
+        printf("b1\n");
         *p_data_size = opj_tcd_get_decoded_tile_size(p_j2k->m_tcd, OPJ_FALSE);
+        printf("b2\n");
         if (*p_data_size == UINT_MAX) {
             return OPJ_FALSE;
         }
