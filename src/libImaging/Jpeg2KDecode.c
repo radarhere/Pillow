@@ -630,7 +630,6 @@ j2k_decode_entry(Imaging im, ImagingCodecState state) {
     opj_image_t *image = NULL;
     opj_codec_t *codec = NULL;
     opj_dparameters_t params;
-    printf("start\n");
     struct State *state2 = malloc(sizeof(struct State));
 
     stream = opj_stream_create(OPJ_J2K_STREAM_CHUNK_SIZE, OPJ_TRUE);

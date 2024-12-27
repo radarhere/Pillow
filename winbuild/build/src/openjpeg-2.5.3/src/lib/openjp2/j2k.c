@@ -9706,7 +9706,6 @@ OPJ_BOOL opj_j2k_read_tile_header(opj_j2k_t * p_j2k,
                                   opj_stream_private_t *p_stream,
                                   opj_event_mgr_t * p_manager)
 {
-    printf("a\n");
     OPJ_UINT32 l_current_marker = J2K_MS_SOT;
     OPJ_UINT32 l_marker_size;
     const opj_dec_memory_marker_handler_t * l_marker_handler = 00;
@@ -9902,10 +9901,12 @@ OPJ_BOOL opj_j2k_read_tile_header(opj_j2k_t * p_j2k,
                                &l_current_marker, 2);
             }
         }
-        if (opj_stream_get_number_byte_left(p_stream) == 0
+        const OPJ_OFF_T number_byte_left = opj_stream_get_number_byte_left(p_stream);
+        if (number_byte_left == 0
                 && p_j2k->m_specific_param.m_decoder.m_state == J2K_STATE_NEOC) {
             break;
         }
+        printf("torch %d\n", number_byte_left);
 
         /* If we didn't skip data before, we need to read the SOD marker*/
         if (! p_j2k->m_specific_param.m_decoder.m_skip_data) {
