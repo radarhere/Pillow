@@ -10109,6 +10109,7 @@ OPJ_BOOL opj_j2k_read_tile_header(opj_j2k_t * p_j2k,
         opj_image_t *l_image = 00;
         OPJ_UINT32 l_tx0, l_ty0;
         l_cp = p_tcd->cp;
+        l_image = p_tcd->image;
         p = p_tile_no % l_cp->tw;       /* tile coordinates */
         q = p_tile_no / l_cp->tw;
         /*fprintf(stderr, "Tile coordinate = %d,%d\n", p, q);*/
