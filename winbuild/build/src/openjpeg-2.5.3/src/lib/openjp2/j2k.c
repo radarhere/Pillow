@@ -10095,12 +10095,6 @@ OPJ_BOOL opj_j2k_read_tile_header(opj_j2k_t * p_j2k,
         printf(p_j2k->m_cp.strict ? "strict\n" : "notstrict\n");
         */
     }
-    if (! opj_tcd_init_decode_tile(p_j2k->m_tcd, p_j2k->m_current_tile_number,
-                                   p_manager)) {
-        opj_event_msg(p_manager, EVT_ERROR, "Cannot decode tile, memory error\n");
-        return OPJ_FALSE;
-    }
-
     if (p_data_size) {
         /* For internal use in j2k.c, we don't need this */
         /* This is just needed for folks using the opj_read_tile_header() / opj_decode_tile_data() combo */
@@ -10109,6 +10103,12 @@ OPJ_BOOL opj_j2k_read_tile_header(opj_j2k_t * p_j2k,
             return OPJ_FALSE;
         }
     }
+    if (! opj_tcd_init_decode_tile(p_j2k->m_tcd, p_j2k->m_current_tile_number,
+                                   p_manager)) {
+        opj_event_msg(p_manager, EVT_ERROR, "Cannot decode tile, memory error\n");
+        return OPJ_FALSE;
+    }
+
     opj_event_msg(p_manager, EVT_INFO, "Header of tile %d / %d has been read.\n",
                   p_j2k->m_current_tile_number + 1, (p_j2k->m_cp.th * p_j2k->m_cp.tw));
 
