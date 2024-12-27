@@ -10100,10 +10100,13 @@ OPJ_BOOL opj_j2k_read_tile_header(opj_j2k_t * p_j2k,
         /* This is just needed for folks using the opj_read_tile_header() / opj_decode_tile_data() combo */
         printf("b1\n");
         opj_tcd_t *p_tcd = p_j2k->m_tcd;
+        OPJ_UINT32 p_tile_no = p_j2k->m_current_tile_number;
         //
 
         OPJ_UINT32 p, q;
         opj_cp_t * l_cp = 00;
+        opj_tcd_tile_t * l_tile = 00;
+        opj_image_t *l_image = 00;
         OPJ_UINT32 l_tx0, l_ty0;
         l_cp = p_tcd->cp;
         p = p_tile_no % l_cp->tw;       /* tile coordinates */
@@ -10118,7 +10121,7 @@ OPJ_BOOL opj_j2k_read_tile_header(opj_j2k_t * p_j2k,
                                              l_image->x1);
         /* all those OPJ_UINT32 are casted to OPJ_INT32, let's do some sanity check */
         if ((l_tile->x0 < 0) || (l_tile->x1 <= l_tile->x0)) {
-            opj_event_msg(manager, EVT_ERROR, "Tile X coordinates are not supported\n");
+            opj_event_msg(p_manager, EVT_ERROR, "Tile X coordinates are not supported\n");
             return OPJ_FALSE;
         }
         l_ty0 = l_cp->ty0 + q *
@@ -10128,7 +10131,7 @@ OPJ_BOOL opj_j2k_read_tile_header(opj_j2k_t * p_j2k,
                                              l_image->y1);
         /* all those OPJ_UINT32 are casted to OPJ_INT32, let's do some sanity check */
         if ((l_tile->y0 < 0) || (l_tile->y1 <= l_tile->y0)) {
-            opj_event_msg(manager, EVT_ERROR, "Tile Y coordinates are not supported\n");
+            opj_event_msg(p_manager, EVT_ERROR, "Tile Y coordinates are not supported\n");
             return OPJ_FALSE;
         }
     }
