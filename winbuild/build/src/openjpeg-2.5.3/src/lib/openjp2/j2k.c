@@ -10099,9 +10099,36 @@ OPJ_BOOL opj_j2k_read_tile_header(opj_j2k_t * p_j2k,
         /* For internal use in j2k.c, we don't need this */
         /* This is just needed for folks using the opj_read_tile_header() / opj_decode_tile_data() combo */
         printf("b1\n");
-        *p_data_size = opj_tcd_get_decoded_tile_size(p_j2k->m_tcd, OPJ_FALSE);
-        printf("b2\n");
-        if (*p_data_size == UINT_MAX) {
+        opj_tcd_t *p_tcd = p_j2k->m_tcd;
+        //
+
+        OPJ_UINT32 p, q;
+        opj_cp_t * l_cp = 00;
+        OPJ_UINT32 l_tx0, l_ty0;
+        l_cp = p_tcd->cp;
+        p = p_tile_no % l_cp->tw;       /* tile coordinates */
+        q = p_tile_no / l_cp->tw;
+        /*fprintf(stderr, "Tile coordinate = %d,%d\n", p, q);*/
+
+        /* 4 borders of the tile rescale on the image if necessary */
+        l_tx0 = l_cp->tx0 + p *
+                l_cp->tdx; /* can't be greater than l_image->x1 so won't overflow */
+        l_tile->x0 = (OPJ_INT32)opj_uint_max(l_tx0, l_image->x0);
+        l_tile->x1 = (OPJ_INT32)opj_uint_min(opj_uint_adds(l_tx0, l_cp->tdx),
+                                             l_image->x1);
+        /* all those OPJ_UINT32 are casted to OPJ_INT32, let's do some sanity check */
+        if ((l_tile->x0 < 0) || (l_tile->x1 <= l_tile->x0)) {
+            opj_event_msg(manager, EVT_ERROR, "Tile X coordinates are not supported\n");
+            return OPJ_FALSE;
+        }
+        l_ty0 = l_cp->ty0 + q *
+                l_cp->tdy; /* can't be greater than l_image->y1 so won't overflow */
+        l_tile->y0 = (OPJ_INT32)opj_uint_max(l_ty0, l_image->y0);
+        l_tile->y1 = (OPJ_INT32)opj_uint_min(opj_uint_adds(l_ty0, l_cp->tdy),
+                                             l_image->y1);
+        /* all those OPJ_UINT32 are casted to OPJ_INT32, let's do some sanity check */
+        if ((l_tile->y0 < 0) || (l_tile->y1 <= l_tile->y0)) {
+            opj_event_msg(manager, EVT_ERROR, "Tile Y coordinates are not supported\n");
             return OPJ_FALSE;
         }
     }
@@ -10109,6 +10136,12 @@ OPJ_BOOL opj_j2k_read_tile_header(opj_j2k_t * p_j2k,
                                    p_manager)) {
         opj_event_msg(p_manager, EVT_ERROR, "Cannot decode tile, memory error\n");
         return OPJ_FALSE;
+    }
+    if (p_data_size) {
+        *p_data_size = opj_tcd_get_decoded_tile_size(p_j2k->m_tcd, OPJ_FALSE);
+        if (*p_data_size == UINT_MAX) {
+            return OPJ_FALSE;
+        }
     }
 
     opj_event_msg(p_manager, EVT_INFO, "Header of tile %d / %d has been read.\n",
