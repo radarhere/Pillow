@@ -10136,6 +10136,8 @@ OPJ_BOOL opj_j2k_read_tile_header(opj_j2k_t * p_j2k,
             opj_event_msg(p_manager, EVT_ERROR, "Tile Y coordinates are not supported\n");
             return OPJ_FALSE;
         }
+        printf("image coords %d %d %d %d\n", l_image->x0, l_image->x1, l_image->y0, l_image->y1);
+        printf("tile coords %d %d %d %d\n", l_tile->x0, l_tile->x1, l_tile->y0, l_tile->y1);
     }
     if (! opj_tcd_init_decode_tile(p_j2k->m_tcd, p_j2k->m_current_tile_number,
                                    p_manager)) {

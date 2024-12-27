@@ -1409,6 +1409,7 @@ OPJ_UINT32 opj_tcd_get_decoded_tile_size(opj_tcd_t *p_tcd,
         OPJ_UINT32 w, h;
         l_size_comp = l_img_comp->prec >> 3; /*(/ 8)*/
         l_remaining = l_img_comp->prec & 7;  /* (%8) */
+        printf("l_size_comp %d\n", l_size_comp);
 
         if (l_remaining) {
             ++l_size_comp;
@@ -1442,6 +1443,7 @@ OPJ_UINT32 opj_tcd_get_decoded_tile_size(opj_tcd_t *p_tcd,
         ++l_img_comp;
         ++l_tile_comp;
     }
+    printf("decoded_tile_size %d\n", l_data_size);
 
     return l_data_size;
 }
