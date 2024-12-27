@@ -9907,6 +9907,7 @@ OPJ_BOOL opj_j2k_read_tile_header(opj_j2k_t * p_j2k,
             break;
         }
         printf("torch %d\n", number_byte_left);
+        printf(p_j2k->m_cp.strict ? "strict\n" : "notstrict\n");
 
         /* If we didn't skip data before, we need to read the SOD marker*/
         if (! p_j2k->m_specific_param.m_decoder.m_skip_data) {
