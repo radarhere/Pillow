@@ -9901,13 +9901,10 @@ OPJ_BOOL opj_j2k_read_tile_header(opj_j2k_t * p_j2k,
                                &l_current_marker, 2);
             }
         }
-        const OPJ_OFF_T number_byte_left = opj_stream_get_number_byte_left(p_stream);
-        if (number_byte_left == 0
+        if (opj_stream_get_number_byte_left(p_stream) == 0
                 && p_j2k->m_specific_param.m_decoder.m_state == J2K_STATE_NEOC) {
             break;
         }
-        printf("torch %d\n", number_byte_left);
-        printf(p_j2k->m_cp.strict ? "strict\n" : "notstrict\n");
 
         /* If we didn't skip data before, we need to read the SOD marker*/
         if (! p_j2k->m_specific_param.m_decoder.m_skip_data) {
@@ -10081,6 +10078,21 @@ OPJ_BOOL opj_j2k_read_tile_header(opj_j2k_t * p_j2k,
         return OPJ_FALSE;
     }
     /*FIXME ???*/
+    printf("a\n");
+    /*if (p_data_size) {
+        printf("b\n");
+        *p_data_size = opj_tcd_get_decoded_tile_size(p_j2k->m_tcd, OPJ_FALSE);
+        printf("c\n");
+        if (*p_data_size == UINT_MAX) {
+            printf("d\n");
+            return OPJ_FALSE;
+        }
+        printf("e\n");
+
+        printf("left %lld\n", opj_stream_get_number_byte_left(p_stream));
+        printf("needed %d\n", &p_data_size);
+        printf(p_j2k->m_cp.strict ? "strict\n" : "notstrict\n");
+    }*/
     if (! opj_tcd_init_decode_tile(p_j2k->m_tcd, p_j2k->m_current_tile_number,
                                    p_manager)) {
         opj_event_msg(p_manager, EVT_ERROR, "Cannot decode tile, memory error\n");
