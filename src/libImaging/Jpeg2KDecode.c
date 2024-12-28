@@ -885,7 +885,7 @@ j2k_decode_entry(Imaging im, ImagingCodecState state) {
             if (!opj_decode_tile_data(
                     codec,
                     tile_info.tile_index,
-                    (OPJ_BYTE *)state->buffer,
+                    (OPJ_BYTE *)new,
                     tile_info.data_size,
                     stream
                 )) {
