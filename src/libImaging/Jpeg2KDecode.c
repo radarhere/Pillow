@@ -878,7 +878,6 @@ j2k_decode_entry(Imaging im, ImagingCodecState state) {
             /* Undefined behavior, sometimes decode_tile_data doesn't
                fill the buffer and we do things with it later, leading
                to valgrind errors. */
-            memset(state->buffer, 0, tile_info.data_size);
         }
 
         if (!opj_decode_tile_data(
