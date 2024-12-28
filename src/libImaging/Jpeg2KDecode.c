@@ -870,12 +870,14 @@ j2k_decode_entry(Imaging im, ImagingCodecState state) {
         printf("total_component_width %d\n", total_component_width);
 
         if (tile_bytes > tile_info.data_size) {
+            printf("increase from %d to %d\n", tile_info.data_size, tile_bytes);
             tile_info.data_size = tile_bytes;
-            printf("increase %d\n", tile_bytes);
         }
 
         if (tile_info.data_size > 0) {
             /* malloc check ok, overflow and tile size sanity check above */
+            free(state->buffer);
+            state->buffer = NULL;
             UINT8 *new = calloc(tile_info.data_size, 1);
             if (!new) {
                 state->errcode = IMAGING_CODEC_MEMORY;
@@ -898,7 +900,6 @@ j2k_decode_entry(Imaging im, ImagingCodecState state) {
                 state->state = J2K_STATE_FAILED;
                 goto quick_exit;
             }
-            free(state->buffer);
             state->buffer = new;
         } else {
             if (!opj_decode_tile_data(
