@@ -872,7 +872,7 @@ j2k_decode_entry(Imaging im, ImagingCodecState state) {
 
         if (tile_info.data_size > 0) {
             /* malloc check ok, overflow and tile size sanity check above */
-            UINT8 *new = realloc(state->buffer, tile_info.data_size);
+            UINT8 *new = malloc(tile_info.data_size);
             if (!new) {
                 state->errcode = IMAGING_CODEC_MEMORY;
                 state->state = J2K_STATE_FAILED;
@@ -895,6 +895,7 @@ j2k_decode_entry(Imaging im, ImagingCodecState state) {
                 state->state = J2K_STATE_FAILED;
                 goto quick_exit;
             }
+            free(state->buffer);
             state->buffer = new;
         } else {
             if (!opj_decode_tile_data(
