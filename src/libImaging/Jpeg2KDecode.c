@@ -882,7 +882,6 @@ j2k_decode_entry(Imaging im, ImagingCodecState state) {
                 state->state = J2K_STATE_FAILED;
                 goto quick_exit;
             }
-            free(new);
             if (!opj_decode_tile_data(
                     codec,
                     tile_info.tile_index,
@@ -890,6 +889,7 @@ j2k_decode_entry(Imaging im, ImagingCodecState state) {
                     tile_info.data_size,
                     stream
                 )) {
+                free(new);
                 printf("ah interesting after\n");
                 state->errcode = IMAGING_CODEC_BROKEN;
                 state->state = J2K_STATE_FAILED;
