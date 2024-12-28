@@ -876,31 +876,25 @@ j2k_decode_entry(Imaging im, ImagingCodecState state) {
 
         if (tile_info.data_size > 0) {
             /* malloc check ok, overflow and tile size sanity check above */
-            free(state->buffer);
-            state->buffer = NULL;
             UINT8 *new = calloc(tile_info.data_size, 1);
             if (!new) {
                 state->errcode = IMAGING_CODEC_MEMORY;
                 state->state = J2K_STATE_FAILED;
                 goto quick_exit;
             }
-            /* Undefined behavior, sometimes decode_tile_data doesn't
-               fill the buffer and we do things with it later, leading
-               to valgrind errors. */
+            free(new);
             if (!opj_decode_tile_data(
                     codec,
                     tile_info.tile_index,
-                    (OPJ_BYTE *)new,
+                    (OPJ_BYTE *)state->buffer,
                     tile_info.data_size,
                     stream
                 )) {
                 printf("ah interesting after\n");
-                free(new);
                 state->errcode = IMAGING_CODEC_BROKEN;
                 state->state = J2K_STATE_FAILED;
                 goto quick_exit;
             }
-            state->buffer = new;
         } else {
             if (!opj_decode_tile_data(
                     codec,
