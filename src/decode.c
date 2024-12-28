@@ -109,6 +109,7 @@ _dealloc(ImagingDecoderObject *decoder) {
         decoder->cleanup(&decoder->state);
     }
     free(decoder->state.buffer);
+    decoder->state.buffer = NULL;
     free(decoder->state.context);
     Py_XDECREF(decoder->lock);
     Py_XDECREF(decoder->state.fd);
