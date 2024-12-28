@@ -640,7 +640,7 @@ j2k_decode_entry(Imaging im, ImagingCodecState state) {
     opj_dparameters_t params;
     OPJ_COLOR_SPACE color_space;
     j2k_unpacker_t unpack = NULL;
-    size_t buffer_size = 0, tile_bytes = 0;
+    size_t tile_bytes = 0;
     unsigned n, tile_height, tile_width;
     int subsampling;
     int total_component_width = 0;
@@ -868,22 +868,6 @@ j2k_decode_entry(Imaging im, ImagingCodecState state) {
 
         if (tile_bytes > tile_info.data_size) {
             tile_info.data_size = tile_bytes;
-        }
-
-        if (buffer_size < tile_info.data_size) {
-            /* malloc check ok, overflow and tile size sanity check above */
-            UINT8 *new = realloc(state->buffer, tile_info.data_size);
-            if (!new) {
-                state->errcode = IMAGING_CODEC_MEMORY;
-                state->state = J2K_STATE_FAILED;
-                goto quick_exit;
-            }
-            /* Undefined behavior, sometimes decode_tile_data doesn't
-               fill the buffer and we do things with it later, leading
-               to valgrind errors. */
-            memset(new, 0, tile_info.data_size);
-            state->buffer = new;
-            buffer_size = tile_info.data_size;
         }
 
         if (!opj_decode_tile_data(
