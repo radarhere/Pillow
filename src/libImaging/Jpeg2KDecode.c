@@ -864,6 +864,12 @@ j2k_decode_entry(Imaging im, ImagingCodecState state) {
             goto quick_exit;
         }
 
+        tile_bytes = tile_width * tile_height * total_component_width;
+
+        if (tile_bytes > tile_info.data_size) {
+            tile_info.data_size = tile_bytes;
+        }
+
         if (tile_info.data_size > 0) {
             /* malloc check ok, overflow and tile size sanity check above */
             UINT8 *new = realloc(state->buffer, tile_info.data_size);
