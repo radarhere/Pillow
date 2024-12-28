@@ -896,6 +896,7 @@ j2k_decode_entry(Imaging im, ImagingCodecState state) {
                 stream
             )) {
             printf("ah interesting\n");
+            free(new);
             state->errcode = IMAGING_CODEC_BROKEN;
             state->state = J2K_STATE_FAILED;
             goto quick_exit;
