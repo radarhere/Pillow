@@ -872,6 +872,7 @@ j2k_decode_entry(Imaging im, ImagingCodecState state) {
 
         if (buffer_size < tile_info.data_size) {
             /* malloc check ok, overflow and tile size sanity check above */
+            printf("here we go\n");
             UINT8 *new = realloc(state->buffer, tile_info.data_size);
             if (!new) {
                 state->errcode = IMAGING_CODEC_MEMORY;
@@ -893,6 +894,7 @@ j2k_decode_entry(Imaging im, ImagingCodecState state) {
                 tile_info.data_size,
                 stream
             )) {
+            printf("ah interesting\n");
             state->errcode = IMAGING_CODEC_BROKEN;
             state->state = J2K_STATE_FAILED;
             goto quick_exit;
