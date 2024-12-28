@@ -865,14 +865,18 @@ j2k_decode_entry(Imaging im, ImagingCodecState state) {
         }
 
         tile_bytes = tile_width * tile_height * total_component_width;
+        printf("tile_width %d\n", tile_width);
+        printf("tile_height %d\n", tile_height);
+        printf("total_component_width %d\n", total_component_width);
 
         if (tile_bytes > tile_info.data_size) {
             tile_info.data_size = tile_bytes;
+            printf("increase %d\n", tile_bytes);
         }
 
         if (tile_info.data_size > 0) {
             /* malloc check ok, overflow and tile size sanity check above */
-            UINT8 *new = malloc(tile_info.data_size);
+            UINT8 *new = calloc(tile_info.data_size, 1);
             if (!new) {
                 state->errcode = IMAGING_CODEC_MEMORY;
                 state->state = J2K_STATE_FAILED;
@@ -881,7 +885,6 @@ j2k_decode_entry(Imaging im, ImagingCodecState state) {
             /* Undefined behavior, sometimes decode_tile_data doesn't
                fill the buffer and we do things with it later, leading
                to valgrind errors. */
-            memset(new, 0, tile_info.data_size);
             if (!opj_decode_tile_data(
                     codec,
                     tile_info.tile_index,
