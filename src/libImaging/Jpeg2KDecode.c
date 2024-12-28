@@ -875,11 +875,6 @@ j2k_decode_entry(Imaging im, ImagingCodecState state) {
             printf("here we go\n");
             free(state->buffer);
             UINT8 *new = malloc(tile_info.data_size);
-            if (!new) {
-                state->errcode = IMAGING_CODEC_MEMORY;
-                state->state = J2K_STATE_FAILED;
-                goto quick_exit;
-            }
             /* Undefined behavior, sometimes decode_tile_data doesn't
                fill the buffer and we do things with it later, leading
                to valgrind errors. */
