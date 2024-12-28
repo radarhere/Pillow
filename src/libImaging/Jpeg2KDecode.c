@@ -873,7 +873,8 @@ j2k_decode_entry(Imaging im, ImagingCodecState state) {
         if (buffer_size < tile_info.data_size) {
             /* malloc check ok, overflow and tile size sanity check above */
             printf("here we go\n");
-            UINT8 *new = realloc(state->buffer, tile_info.data_size);
+            free(state->buffer);
+            UINT8 *new = malloc(tile_info.data_size);
             if (!new) {
                 state->errcode = IMAGING_CODEC_MEMORY;
                 state->state = J2K_STATE_FAILED;
