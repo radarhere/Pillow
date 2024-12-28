@@ -882,20 +882,32 @@ j2k_decode_entry(Imaging im, ImagingCodecState state) {
                fill the buffer and we do things with it later, leading
                to valgrind errors. */
             memset(new, 0, tile_info.data_size);
+            if (!opj_decode_tile_data(
+                    codec,
+                    tile_info.tile_index,
+                    (OPJ_BYTE *)new,
+                    tile_info.data_size,
+                    stream
+                )) {
+                printf("ah interesting after\n");
+                state->errcode = IMAGING_CODEC_BROKEN;
+                state->state = J2K_STATE_FAILED;
+                goto quick_exit;
+            }
             state->buffer = new;
-        }
-
-        if (!opj_decode_tile_data(
-                codec,
-                tile_info.tile_index,
-                (OPJ_BYTE *)state->buffer,
-                tile_info.data_size,
-                stream
-            )) {
-            printf("ah interesting\n");
-            state->errcode = IMAGING_CODEC_BROKEN;
-            state->state = J2K_STATE_FAILED;
-            goto quick_exit;
+        } else {
+            if (!opj_decode_tile_data(
+                    codec,
+                    tile_info.tile_index,
+                    (OPJ_BYTE *)state->buffer,
+                    tile_info.data_size,
+                    stream
+                )) {
+                printf("ah interesting\n");
+                state->errcode = IMAGING_CODEC_BROKEN;
+                state->state = J2K_STATE_FAILED;
+                goto quick_exit;
+            }
         }
 
         unpack(image, &tile_info, state->buffer, im);
