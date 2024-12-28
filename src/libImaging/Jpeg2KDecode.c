@@ -883,7 +883,9 @@ j2k_decode_entry(Imaging im, ImagingCodecState state) {
                 goto quick_exit;
             }
             OPJ_BYTE *x = (OPJ_BYTE *)new;
-            x++;
+            OPJ_CHAR *y = x;
+            y++;
+            x = y;
             free(new);
             if (!opj_decode_tile_data(
                     codec,
