@@ -882,7 +882,8 @@ j2k_decode_entry(Imaging im, ImagingCodecState state) {
                 state->state = J2K_STATE_FAILED;
                 goto quick_exit;
             }
-            (OPJ_BYTE *)new;
+            OPJ_BYTE *x = (OPJ_BYTE *)new;
+            x++;
             free(new);
             if (!opj_decode_tile_data(
                     codec,
