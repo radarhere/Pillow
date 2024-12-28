@@ -774,11 +774,12 @@ class TestFilePng:
     @pytest.mark.parametrize("buffer", (True, False))
     def test_save_stdout(self, buffer: bool) -> None:
         old_stdout = sys.stdout
+        b = BytesIO()
 
         class MyStdOut:
-            buffer = BytesIO()
+            buffer = b
 
-        mystdout: MyStdOut | BytesIO = MyStdOut() if buffer else BytesIO()
+        mystdout = cast(BytesIO, MyStdOut()) if buffer else b
 
         sys.stdout = mystdout
 
@@ -788,9 +789,7 @@ class TestFilePng:
         # Reset stdout
         sys.stdout = old_stdout
 
-        if isinstance(mystdout, MyStdOut):
-            mystdout = mystdout.buffer
-        with Image.open(mystdout) as reloaded:
+        with Image.open(b) as reloaded:
             assert_image_equal_tofile(reloaded, TEST_PNG_FILE)
 
     def test_truncated_end_chunk(self) -> None:

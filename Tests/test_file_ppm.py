@@ -3,6 +3,7 @@ from __future__ import annotations
 import sys
 from io import BytesIO
 from pathlib import Path
+from typing import cast
 
 import pytest
 
@@ -369,11 +370,12 @@ def test_mimetypes(tmp_path: Path) -> None:
 @pytest.mark.parametrize("buffer", (True, False))
 def test_save_stdout(buffer: bool) -> None:
     old_stdout = sys.stdout
+    b = BytesIO()
 
     class MyStdOut:
-        buffer = BytesIO()
+        buffer = b
 
-    mystdout: MyStdOut | BytesIO = MyStdOut() if buffer else BytesIO()
+    mystdout = cast(BytesIO, MyStdOut()) if buffer else b
 
     sys.stdout = mystdout
 
@@ -383,7 +385,5 @@ def test_save_stdout(buffer: bool) -> None:
     # Reset stdout
     sys.stdout = old_stdout
 
-    if isinstance(mystdout, MyStdOut):
-        mystdout = mystdout.buffer
-    with Image.open(mystdout) as reloaded:
+    with Image.open(b) as reloaded:
         assert_image_equal_tofile(reloaded, TEST_FILE)
