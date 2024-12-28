@@ -772,8 +772,7 @@ class TestFilePng:
                 im.seek(1)
 
     @pytest.mark.parametrize("buffer", (True, False))
-    def test_save_stdout(self, buffer: bool) -> None:
-        old_stdout = sys.stdout
+    def test_save_stdout(self, buffer: bool, monkeypatch: pytest.MonkeyPatch) -> None:
         b = BytesIO()
 
         class MyStdOut:
@@ -781,13 +780,10 @@ class TestFilePng:
 
         mystdout = cast(BytesIO, MyStdOut()) if buffer else b
 
-        sys.stdout = mystdout
+        monkeypatch.setattr(sys, "stdout", mystdout)
 
         with Image.open(TEST_PNG_FILE) as im:
             im.save(sys.stdout, "PNG")
-
-        # Reset stdout
-        sys.stdout = old_stdout
 
         with Image.open(b) as reloaded:
             assert_image_equal_tofile(reloaded, TEST_PNG_FILE)

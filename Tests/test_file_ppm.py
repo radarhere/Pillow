@@ -368,8 +368,7 @@ def test_mimetypes(tmp_path: Path) -> None:
 
 
 @pytest.mark.parametrize("buffer", (True, False))
-def test_save_stdout(buffer: bool) -> None:
-    old_stdout = sys.stdout
+def test_save_stdout(buffer: bool, monkeypatch: pytest.MonkeyPatch) -> None:
     b = BytesIO()
 
     class MyStdOut:
@@ -377,13 +376,10 @@ def test_save_stdout(buffer: bool) -> None:
 
     mystdout = cast(BytesIO, MyStdOut()) if buffer else b
 
-    sys.stdout = mystdout
+    monkeypatch.setattr(sys, "stdout", mystdout)
 
     with Image.open(TEST_FILE) as im:
         im.save(sys.stdout, "PPM")
-
-    # Reset stdout
-    sys.stdout = old_stdout
 
     with Image.open(b) as reloaded:
         assert_image_equal_tofile(reloaded, TEST_FILE)
