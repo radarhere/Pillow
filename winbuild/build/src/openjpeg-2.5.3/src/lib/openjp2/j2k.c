@@ -10130,9 +10130,9 @@ OPJ_BOOL opj_j2k_decode_tile(opj_j2k_t * p_j2k,
         return OPJ_FALSE;
     }
 
-    if (opj_stream_get_number_byte_left(p_stream) < 2) {
-        printf(p_j2k->m_cp.strict ? "strict\n" : "not strict\n");
-        printf("torch less than 2\n");
+    if (p_j2k->m_cp.strict && opj_stream_get_number_byte_left(p_stream) < 2) {
+        opj_event_msg(p_manager, EVT_ERROR, "Stream too short\n");
+        return OPJ_FALSE;
     }
 
     l_tcp = &(p_j2k->m_cp.tcps[p_tile_index]);
