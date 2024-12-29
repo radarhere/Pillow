@@ -1718,10 +1718,6 @@ OPJ_BOOL opj_tcd_decode_tile(opj_tcd_t *p_tcd,
 
     /*------------------TIER1-----------------*/
 
-    /* FIXME _ProfStart(PGROUP_T1); */
-    if (! opj_tcd_t1_decode(p_tcd, p_manager)) {
-        return OPJ_FALSE;
-    }
     return OPJ_TRUE;
 }
 
