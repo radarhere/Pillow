@@ -1480,17 +1480,9 @@ opj_pi_iterator_t *opj_pi_create_decode(opj_image_t *p_image,
                                     l_current_pi->include_size, sizeof(OPJ_INT16));
     }
 
-    if (!l_current_pi->include) {
-        opj_free(l_tmp_data);
-        opj_free(l_tmp_ptr);
-        opj_pi_destroy(l_pi, l_bound);
-        return 00;
-    }
-    ++l_current_pi;
     opj_free(l_tmp_data);
-    l_tmp_data = 00;
     opj_free(l_tmp_ptr);
-    l_tmp_ptr = 00;
+    opj_pi_destroy(l_pi, l_bound);
     return 00;
 }
 
