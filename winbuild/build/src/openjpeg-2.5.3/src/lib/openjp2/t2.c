@@ -429,7 +429,6 @@ OPJ_BOOL opj_t2_decode_packets(opj_tcd_t* tcd,
     if (!l_pi) {
         return OPJ_FALSE;
     }
-    opj_pi_destroy(l_pi, l_nb_pocs);
 
     return OPJ_TRUE;
 }
