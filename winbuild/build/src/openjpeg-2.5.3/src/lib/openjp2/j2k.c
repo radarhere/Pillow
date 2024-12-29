@@ -10185,6 +10185,7 @@ OPJ_BOOL opj_j2k_decode_tile(opj_j2k_t * p_j2k,
 
     if (p_j2k->m_specific_param.m_decoder.m_state != J2K_STATE_EOC) {
         if (opj_stream_read_data(p_stream, l_data, 2, p_manager) != 2) {
+            printf("too short hit\n");
             opj_event_msg(p_manager, p_j2k->m_cp.strict ? EVT_ERROR : EVT_WARNING,
                           "Stream too short\n");
             return p_j2k->m_cp.strict ? OPJ_FALSE : OPJ_TRUE;
@@ -10197,6 +10198,7 @@ OPJ_BOOL opj_j2k_decode_tile(opj_j2k_t * p_j2k,
         } else if (l_current_marker != J2K_MS_SOT) {
             if (opj_stream_get_number_byte_left(p_stream) == 0) {
                 p_j2k->m_specific_param.m_decoder.m_state = J2K_STATE_NEOC;
+                printf("neoc hit\n");
                 opj_event_msg(p_manager, EVT_WARNING, "Stream does not end with EOC\n");
                 return OPJ_TRUE;
             }

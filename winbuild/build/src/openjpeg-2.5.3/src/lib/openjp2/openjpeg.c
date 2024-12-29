@@ -601,6 +601,11 @@ OPJ_BOOL OPJ_CALLCONV opj_decode_tile_data(opj_codec_t *p_codec,
             return OPJ_FALSE;
         }
 
+        if (opj_stream_get_number_byte_left(l_stream) < 2) {
+            printf(l_codec->m_codec->m_cp.strict ? "strict\n" : "not strict\n");
+            printf("torch less than 2\n");
+        }
+
         return l_codec->m_codec_data.m_decompression.opj_decode_tile_data(
                    l_codec->m_codec,
                    p_tile_index,
