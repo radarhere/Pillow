@@ -10130,6 +10130,11 @@ OPJ_BOOL opj_j2k_decode_tile(opj_j2k_t * p_j2k,
         return OPJ_FALSE;
     }
 
+    if (opj_stream_get_number_byte_left(p_stream) < 2) {
+        printf(p_j2k->m_cp.strict ? "strict\n" : "not strict\n");
+        printf("torch less than 2\n");
+    }
+
     l_tcp = &(p_j2k->m_cp.tcps[p_tile_index]);
     if (! l_tcp->m_data) {
         opj_j2k_tcp_destroy(l_tcp);
