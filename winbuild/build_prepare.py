@@ -175,6 +175,153 @@ DEPS: dict[str, dict[str, Any]] = {
         "headers": [r"z*.h"],
         "libs": [r"zlib.lib"],
     },
+    "xz": {
+        "url": f"https://github.com/tukaani-project/xz/releases/download/v{V['XZ']}/FILENAME",
+        "filename": f"xz-{V['XZ']}.tar.gz",
+        "license": "COPYING",
+        "build": [
+            *cmds_cmake("liblzma", "-DBUILD_SHARED_LIBS:BOOL=OFF"),
+            cmd_mkdir(r"{inc_dir}\lzma"),
+            cmd_copy(r"src\liblzma\api\lzma\*.h", r"{inc_dir}\lzma"),
+        ],
+        "headers": [r"src\liblzma\api\lzma.h"],
+        "libs": [r"lzma.lib"],
+    },
+    "libwebp": {
+        "url": "http://downloads.webmproject.org/releases/webp/FILENAME",
+        "filename": f"libwebp-{V['LIBWEBP']}.tar.gz",
+        "license": "COPYING",
+        "patch": {
+            r"src\enc\picture_csp_enc.c": {
+                # link against libsharpyuv.lib
+                '#include "sharpyuv/sharpyuv.h"': '#include "sharpyuv/sharpyuv.h"\n#pragma comment(lib, "libsharpyuv.lib")',  # noqa: E501
+            }
+        },
+        "build": [
+            *cmds_cmake(
+                "webp webpmux webpdemux",
+                "-DBUILD_SHARED_LIBS:BOOL=OFF",
+                "-DWEBP_LINK_STATIC:BOOL=OFF",
+            ),
+            cmd_mkdir(r"{inc_dir}\webp"),
+            cmd_copy(r"src\webp\*.h", r"{inc_dir}\webp"),
+        ],
+        "libs": [r"libsharpyuv.lib", r"libwebp*.lib"],
+    },
+    "libtiff": {
+        "url": "https://download.osgeo.org/libtiff/FILENAME",
+        "filename": f"tiff-{V['TIFF']}.tar.gz",
+        "license": "LICENSE.md",
+        "patch": {
+            r"libtiff\tif_lzma.c": {
+                # link against lzma.lib
+                "#ifdef LZMA_SUPPORT": '#ifdef LZMA_SUPPORT\n#pragma comment(lib, "lzma.lib")',  # noqa: E501
+            },
+            r"libtiff\tif_webp.c": {
+                # link against libwebp.lib
+                "#ifdef WEBP_SUPPORT": '#ifdef WEBP_SUPPORT\n#pragma comment(lib, "libwebp.lib")',  # noqa: E501
+            },
+            r"test\CMakeLists.txt": {
+                "add_executable(test_write_read_tags ../placeholder.h)": "",
+                "target_sources(test_write_read_tags PRIVATE test_write_read_tags.c)": "",  # noqa: E501
+                "target_link_libraries(test_write_read_tags PRIVATE tiff)": "",
+                "list(APPEND simple_tests test_write_read_tags)": "",
+            },
+        },
+        "build": [
+            *cmds_cmake(
+                "tiff",
+                "-DBUILD_SHARED_LIBS:BOOL=OFF",
+                "-DWebP_LIBRARY=libwebp",
+                '-DCMAKE_C_FLAGS="-nologo -DLZMA_API_STATIC"',
+            )
+        ],
+        "headers": [r"libtiff\tiff*.h"],
+        "libs": [r"libtiff\*.lib"],
+    },
+    "libpng": {
+        "url": f"{SF_PROJECTS}/libpng/files/libpng{V['LIBPNG_XY']}/{V['LIBPNG']}/"
+        f"lpng{V['LIBPNG_DOTLESS']}.zip/download",
+        "filename": f"lpng{V['LIBPNG_DOTLESS']}.zip",
+        "license": "LICENSE",
+        "build": [
+            *cmds_cmake("png_static", "-DPNG_SHARED:BOOL=OFF", "-DPNG_TESTS:BOOL=OFF"),
+            cmd_copy(
+                f"libpng{V['LIBPNG_XY']}_static.lib", f"libpng{V['LIBPNG_XY']}.lib"
+            ),
+        ],
+        "headers": [r"png*.h"],
+        "libs": [f"libpng{V['LIBPNG_XY']}.lib"],
+    },
+    "brotli": {
+        "url": f"https://github.com/google/brotli/archive/refs/tags/v{V['BROTLI']}.tar.gz",
+        "filename": f"brotli-{V['BROTLI']}.tar.gz",
+        "license": "LICENSE",
+        "build": [
+            *cmds_cmake(("brotlicommon", "brotlidec"), "-DBUILD_SHARED_LIBS:BOOL=OFF"),
+            cmd_xcopy(r"c\include", "{inc_dir}"),
+        ],
+        "libs": ["*.lib"],
+    },
+    "freetype": {
+        "url": "https://download.savannah.gnu.org/releases/freetype/FILENAME",
+        "filename": f"freetype-{V['FREETYPE']}.tar.gz",
+        "license": ["LICENSE.TXT", r"docs\FTL.TXT", r"docs\GPLv2.TXT"],
+        "patch": {
+            r"builds\windows\vc2010\freetype.vcxproj": {
+                # freetype setting is /MD for .dll and /MT for .lib, we need /MD
+                "<RuntimeLibrary>MultiThreaded</RuntimeLibrary>": "<RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>",  # noqa: E501
+                # freetype doesn't specify SDK version, MSBuild may guess incorrectly
+                '<PropertyGroup Label="Globals">': '<PropertyGroup Label="Globals">\n    <WindowsTargetPlatformVersion>$(WindowsSDKVersion)</WindowsTargetPlatformVersion>',  # noqa: E501
+            },
+            r"builds\windows\vc2010\freetype.user.props": {
+                "<UserDefines></UserDefines>": "<UserDefines>FT_CONFIG_OPTION_SYSTEM_ZLIB;FT_CONFIG_OPTION_USE_PNG;FT_CONFIG_OPTION_USE_HARFBUZZ;FT_CONFIG_OPTION_USE_BROTLI</UserDefines>",  # noqa: E501
+                "<UserIncludeDirectories></UserIncludeDirectories>": r"<UserIncludeDirectories>{dir_harfbuzz}\src;{inc_dir}</UserIncludeDirectories>",  # noqa: E501
+                "<UserLibraryDirectories></UserLibraryDirectories>": "<UserLibraryDirectories>{lib_dir}</UserLibraryDirectories>",  # noqa: E501
+                "<UserDependencies></UserDependencies>": f"<UserDependencies>zlib.lib;libpng{V['LIBPNG_XY']}.lib;brotlicommon.lib;brotlidec.lib</UserDependencies>",  # noqa: E501
+            },
+            r"src/autofit/afshaper.c": {
+                # link against harfbuzz.lib
+                "#ifdef FT_CONFIG_OPTION_USE_HARFBUZZ": '#ifdef FT_CONFIG_OPTION_USE_HARFBUZZ\n#pragma comment(lib, "harfbuzz.lib")',  # noqa: E501
+            },
+        },
+        "build": [
+            cmd_rmdir("objs"),
+            cmd_msbuild(
+                r"builds\windows\vc2010\freetype.vcxproj", "Release Static", "Clean"
+            ),
+            cmd_msbuild(
+                r"builds\windows\vc2010\freetype.vcxproj", "Release Static", "Build"
+            ),
+            cmd_xcopy("include", "{inc_dir}"),
+        ],
+        "libs": [r"objs\{msbuild_arch}\Release Static\freetype.lib"],
+    },
+    "lcms2": {
+        "url": f"{SF_PROJECTS}/lcms/files/lcms/{V['LCMS2']}/FILENAME/download",
+        "filename": f"lcms2-{V['LCMS2']}.tar.gz",
+        "license": "LICENSE",
+        "patch": {
+            r"Projects\VC2022\lcms2_static\lcms2_static.vcxproj": {
+                # default is /MD for x86 and /MT for x64, we need /MD always
+                "<RuntimeLibrary>MultiThreaded</RuntimeLibrary>": "<RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>",  # noqa: E501
+                # retarget to default toolset (selected by vcvarsall.bat)
+                "<PlatformToolset>v143</PlatformToolset>": "<PlatformToolset>$(DefaultPlatformToolset)</PlatformToolset>",  # noqa: E501
+                # retarget to latest (selected by vcvarsall.bat)
+                "<WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>": "<WindowsTargetPlatformVersion>$(WindowsSDKVersion)</WindowsTargetPlatformVersion>",  # noqa: E501
+            }
+        },
+        "build": [
+            cmd_rmdir("Lib"),
+            cmd_rmdir(r"Projects\VC2022\Release"),
+            cmd_msbuild(r"Projects\VC2022\lcms2.sln", "Release", "Clean"),
+            cmd_msbuild(
+                r"Projects\VC2022\lcms2.sln", "Release", "lcms2_static:Rebuild"
+            ),
+            cmd_xcopy("include", "{inc_dir}"),
+        ],
+        "libs": [r"Lib\MS\*.lib"],
+    },
     "openjpeg": {
         "url": f"https://github.com/uclouvain/openjpeg/archive/v{V['OPENJPEG']}.tar.gz",
         "filename": f"openjpeg-{V['OPENJPEG']}.tar.gz",
@@ -187,6 +334,58 @@ DEPS: dict[str, dict[str, Any]] = {
             cmd_copy(r"src\lib\openjp2\*.h", rf"{{inc_dir}}\openjpeg-{V['OPENJPEG']}"),
         ],
         "libs": [r"bin\*.lib"],
+    },
+    "libimagequant": {
+        # commit: Merge branch 'master' into msvc (matches 2.17.0 tag)
+        "url": "https://github.com/ImageOptim/libimagequant/archive/e4c1334be0eff290af5e2b4155057c2953a313ab.zip",
+        "filename": "libimagequant-e4c1334be0eff290af5e2b4155057c2953a313ab.zip",
+        "license": "COPYRIGHT",
+        "patch": {
+            "CMakeLists.txt": {
+                "if(OPENMP_FOUND)": "if(false)",
+                "install": "#install",
+                # libimagequant does not detect MSVC x86_arm64 cross-compiler correctly
+                "if(${{CMAKE_SYSTEM_PROCESSOR}} STREQUAL ARM64)": "if({architecture} STREQUAL ARM64)",  # noqa: E501
+            }
+        },
+        "build": [
+            *cmds_cmake("imagequant_a"),
+            cmd_copy("imagequant_a.lib", "imagequant.lib"),
+        ],
+        "headers": [r"*.h"],
+        "libs": [r"imagequant.lib"],
+    },
+    "harfbuzz": {
+        "url": f"https://github.com/harfbuzz/harfbuzz/archive/{V['HARFBUZZ']}.zip",
+        "filename": f"harfbuzz-{V['HARFBUZZ']}.zip",
+        "license": "COPYING",
+        "build": [
+            *cmds_cmake(
+                "harfbuzz",
+                "-DHB_HAVE_FREETYPE:BOOL=TRUE",
+                '-DCMAKE_CXX_FLAGS="-nologo -d2FH4-"',
+            ),
+        ],
+        "headers": [r"src\*.h"],
+        "libs": [r"*.lib"],
+    },
+    "fribidi": {
+        "url": f"https://github.com/fribidi/fribidi/archive/v{V['FRIBIDI']}.zip",
+        "filename": f"fribidi-{V['FRIBIDI']}.zip",
+        "license": "COPYING",
+        "build": [
+            cmd_copy(r"COPYING", rf"{{bin_dir}}\fribidi-{V['FRIBIDI']}-COPYING"),
+            cmd_copy(r"{winbuild_dir}\fribidi.cmake", r"CMakeLists.txt"),
+            # generated tab.i files cannot be cross-compiled
+            " ^&^& ".join(
+                [
+                    "if {architecture}==ARM64 cmd /c call {vcvarsall} x86",
+                    *cmds_cmake("fribidi-gen", "-DARCH=x86", build_dir="build_x86"),
+                ]
+            ),
+            *cmds_cmake("fribidi", "-DARCH={architecture}"),
+        ],
+        "bins": [r"*.dll"],
     },
 }
 
