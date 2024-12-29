@@ -1942,6 +1942,20 @@ static OPJ_BOOL opj_tcd_t2_decode(opj_tcd_t *p_tcd,
         return OPJ_FALSE;
     }
 
+    if (! opj_t2_decode_packets(
+                p_tcd,
+                l_t2,
+                p_tcd->tcd_tileno,
+                p_tcd->tcd_image->tiles,
+                p_src_data,
+                p_data_read,
+                p_max_src_size,
+                p_cstr_index,
+                p_manager)) {
+        opj_t2_destroy(l_t2);
+        return OPJ_FALSE;
+    }
+
     opj_t2_destroy(l_t2);
 
     /*---------------CLEAN-------------------*/
