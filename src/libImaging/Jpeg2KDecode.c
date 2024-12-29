@@ -865,49 +865,36 @@ j2k_decode_entry(Imaging im, ImagingCodecState state) {
         }
 
         tile_bytes = tile_width * tile_height * total_component_width;
-        printf("tile_width %d\n", tile_width);
-        printf("tile_height %d\n", tile_height);
-        printf("total_component_width %d\n", total_component_width);
 
         if (tile_bytes > tile_info.data_size) {
-            printf("increase from %d to %d\n", tile_info.data_size, tile_bytes);
             tile_info.data_size = tile_bytes;
         }
 
         if (tile_info.data_size > 0) {
             /* malloc check ok, overflow and tile size sanity check above */
-            UINT8 *new = calloc(tile_info.data_size, 1);
+            UINT8 *new = realloc(state->buffer, tile_info.data_size);
             if (!new) {
                 state->errcode = IMAGING_CODEC_MEMORY;
                 state->state = J2K_STATE_FAILED;
                 goto quick_exit;
             }
-            if (!opj_decode_tile_data(
-                    codec,
-                    tile_info.tile_index,
-                    (OPJ_BYTE *)new,
-                    tile_info.data_size,
-                    stream
-                )) {
-                free(new);
-                printf("ah interesting after\n");
-                state->errcode = IMAGING_CODEC_BROKEN;
-                state->state = J2K_STATE_FAILED;
-                goto quick_exit;
-            }
-        } else {
-            if (!opj_decode_tile_data(
-                    codec,
-                    tile_info.tile_index,
-                    (OPJ_BYTE *)state->buffer,
-                    tile_info.data_size,
-                    stream
-                )) {
-                printf("ah interesting\n");
-                state->errcode = IMAGING_CODEC_BROKEN;
-                state->state = J2K_STATE_FAILED;
-                goto quick_exit;
-            }
+            /* Undefined behavior, sometimes decode_tile_data doesn't
+               fill the buffer and we do things with it later, leading
+               to valgrind errors. */
+            memset(new, 0, tile_info.data_size);
+            state->buffer = new;
+        }
+
+        if (!opj_decode_tile_data(
+                codec,
+                tile_info.tile_index,
+                (OPJ_BYTE *)state->buffer,
+                tile_info.data_size,
+                stream
+            )) {
+            state->errcode = IMAGING_CODEC_BROKEN;
+            state->state = J2K_STATE_FAILED;
+            goto quick_exit;
         }
 
         unpack(image, &tile_info, state->buffer, im);
