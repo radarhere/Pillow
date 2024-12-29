@@ -1714,6 +1714,85 @@ OPJ_BOOL opj_tcd_decode_tile(opj_tcd_t *p_tcd,
                             p_manager)) {
         return OPJ_FALSE;
     }
+    /* FIXME _ProfStop(PGROUP_T2); */
+
+    /*------------------TIER1-----------------*/
+
+    /* FIXME _ProfStart(PGROUP_T1); */
+    if (! opj_tcd_t1_decode(p_tcd, p_manager)) {
+        return OPJ_FALSE;
+    }
+    /* FIXME _ProfStop(PGROUP_T1); */
+
+
+    /* For subtile decoding, now we know the resno_decoded, we can allocate */
+    /* the tile data buffer */
+    if (!p_tcd->whole_tile_decoding) {
+        for (compno = 0; compno < p_tcd->image->numcomps; compno++) {
+            opj_tcd_tilecomp_t* tilec = &(p_tcd->tcd_image->tiles->comps[compno]);
+            opj_image_comp_t* image_comp = &(p_tcd->image->comps[compno]);
+            opj_tcd_resolution_t *res = tilec->resolutions + image_comp->resno_decoded;
+            OPJ_SIZE_T w = res->win_x1 - res->win_x0;
+            OPJ_SIZE_T h = res->win_y1 - res->win_y0;
+            OPJ_SIZE_T l_data_size;
+
+            opj_image_data_free(tilec->data_win);
+            tilec->data_win = NULL;
+
+            if (p_tcd->used_component != NULL && !p_tcd->used_component[compno]) {
+                continue;
+            }
+
+            if (w > 0 && h > 0) {
+                if (w > SIZE_MAX / h) {
+                    opj_event_msg(p_manager, EVT_ERROR,
+                                  "Size of tile data exceeds system limits\n");
+                    return OPJ_FALSE;
+                }
+                l_data_size = w * h;
+                if (l_data_size > SIZE_MAX / sizeof(OPJ_INT32)) {
+                    opj_event_msg(p_manager, EVT_ERROR,
+                                  "Size of tile data exceeds system limits\n");
+                    return OPJ_FALSE;
+                }
+                l_data_size *= sizeof(OPJ_INT32);
+
+                tilec->data_win = (OPJ_INT32*) opj_image_data_alloc(l_data_size);
+                if (tilec->data_win == NULL) {
+                    opj_event_msg(p_manager, EVT_ERROR,
+                                  "Size of tile data exceeds system limits\n");
+                    return OPJ_FALSE;
+                }
+            }
+        }
+    }
+
+    /*----------------DWT---------------------*/
+
+    /* FIXME _ProfStart(PGROUP_DWT); */
+    if
+    (! opj_tcd_dwt_decode(p_tcd)) {
+        return OPJ_FALSE;
+    }
+    /* FIXME _ProfStop(PGROUP_DWT); */
+
+    /*----------------MCT-------------------*/
+    /* FIXME _ProfStart(PGROUP_MCT); */
+    if
+    (! opj_tcd_mct_decode(p_tcd, p_manager)) {
+        return OPJ_FALSE;
+    }
+    /* FIXME _ProfStop(PGROUP_MCT); */
+
+    /* FIXME _ProfStart(PGROUP_DC_SHIFT); */
+    if
+    (! opj_tcd_dc_level_shift_decode(p_tcd)) {
+        return OPJ_FALSE;
+    }
+    /* FIXME _ProfStop(PGROUP_DC_SHIFT); */
+
+
+    /*---------------TILE-------------------*/
     return OPJ_TRUE;
 }
 

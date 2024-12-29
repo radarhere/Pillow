@@ -1480,10 +1480,107 @@ opj_pi_iterator_t *opj_pi_create_decode(opj_image_t *p_image,
                                     l_current_pi->include_size, sizeof(OPJ_INT16));
     }
 
+    if (!l_current_pi->include) {
+        opj_free(l_tmp_data);
+        opj_free(l_tmp_ptr);
+        opj_pi_destroy(l_pi, l_bound);
+        return 00;
+    }
+
+    /* special treatment for the first packet iterator */
+    l_current_comp = l_current_pi->comps;
+    l_img_comp = p_image->comps;
+    l_tccp = l_tcp->tccps;
+
+    l_current_pi->tx0 = l_tx0;
+    l_current_pi->ty0 = l_ty0;
+    l_current_pi->tx1 = l_tx1;
+    l_current_pi->ty1 = l_ty1;
+
+    /*l_current_pi->dx = l_img_comp->dx;*/
+    /*l_current_pi->dy = l_img_comp->dy;*/
+
+    l_current_pi->step_p = l_step_p;
+    l_current_pi->step_c = l_step_c;
+    l_current_pi->step_r = l_step_r;
+    l_current_pi->step_l = l_step_l;
+
+    /* allocation for components and number of components has already been calculated by opj_pi_create */
+    for
+    (compno = 0; compno < numcomps; ++compno) {
+        opj_pi_resolution_t *l_res = l_current_comp->resolutions;
+        l_encoding_value_ptr = l_tmp_ptr[compno];
+
+        l_current_comp->dx = l_img_comp->dx;
+        l_current_comp->dy = l_img_comp->dy;
+        /* resolutions have already been initialized */
+        for
+        (resno = 0; resno < l_current_comp->numresolutions; resno++) {
+            l_res->pdx = *(l_encoding_value_ptr++);
+            l_res->pdy = *(l_encoding_value_ptr++);
+            l_res->pw =  *(l_encoding_value_ptr++);
+            l_res->ph =  *(l_encoding_value_ptr++);
+            ++l_res;
+        }
+        ++l_current_comp;
+        ++l_img_comp;
+        ++l_tccp;
+    }
+    ++l_current_pi;
+
+    for (pino = 1 ; pino < l_bound ; ++pino) {
+        l_current_comp = l_current_pi->comps;
+        l_img_comp = p_image->comps;
+        l_tccp = l_tcp->tccps;
+
+        l_current_pi->tx0 = l_tx0;
+        l_current_pi->ty0 = l_ty0;
+        l_current_pi->tx1 = l_tx1;
+        l_current_pi->ty1 = l_ty1;
+        /*l_current_pi->dx = l_dx_min;*/
+        /*l_current_pi->dy = l_dy_min;*/
+        l_current_pi->step_p = l_step_p;
+        l_current_pi->step_c = l_step_c;
+        l_current_pi->step_r = l_step_r;
+        l_current_pi->step_l = l_step_l;
+
+        /* allocation for components and number of components has already been calculated by opj_pi_create */
+        for
+        (compno = 0; compno < numcomps; ++compno) {
+            opj_pi_resolution_t *l_res = l_current_comp->resolutions;
+            l_encoding_value_ptr = l_tmp_ptr[compno];
+
+            l_current_comp->dx = l_img_comp->dx;
+            l_current_comp->dy = l_img_comp->dy;
+            /* resolutions have already been initialized */
+            for
+            (resno = 0; resno < l_current_comp->numresolutions; resno++) {
+                l_res->pdx = *(l_encoding_value_ptr++);
+                l_res->pdy = *(l_encoding_value_ptr++);
+                l_res->pw =  *(l_encoding_value_ptr++);
+                l_res->ph =  *(l_encoding_value_ptr++);
+                ++l_res;
+            }
+            ++l_current_comp;
+            ++l_img_comp;
+            ++l_tccp;
+        }
+        /* special treatment*/
+        l_current_pi->include = (l_current_pi - 1)->include;
+        l_current_pi->include_size = (l_current_pi - 1)->include_size;
+        ++l_current_pi;
+    }
     opj_free(l_tmp_data);
+    l_tmp_data = 00;
     opj_free(l_tmp_ptr);
-    opj_pi_destroy(l_pi, l_bound);
-    return 00;
+    l_tmp_ptr = 00;
+    if
+    (l_tcp->POC) {
+        opj_pi_update_decode_poc(l_pi, l_tcp, l_max_prec, l_max_res);
+    } else {
+        opj_pi_update_decode_not_poc(l_pi, l_tcp, l_max_prec, l_max_res);
+    }
+    return l_pi;
 }
 
 
