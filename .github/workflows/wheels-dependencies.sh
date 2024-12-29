@@ -101,6 +101,18 @@ function build_harfbuzz {
     touch harfbuzz-stamp
 }
 
+function build_openjpeg {
+    if [ -e openjpeg-stamp ]; then return; fi
+    build_zlib
+    build_libpng
+    build_tiff
+    build_lcms2
+    (cd /src/Pillow/winbuild/build/src/openjpeg-2.5.3 \
+        && cmake -DCMAKE_INSTALL_PREFIX=$BUILD_PREFIX -DCMAKE_INSTALL_LIBDIR=$BUILD_PREFIX/lib -DCMAKE_INSTALL_NAME_DIR=$BUILD_PREFIX/lib $HOST_CMAKE_FLAGS . \
+        && make install)
+    touch openjpeg-stamp
+}
+
 function build {
     build_xz
     if [ -z "$IS_ALPINE" ] && [ -z "$IS_MACOS" ]; then

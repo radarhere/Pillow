@@ -276,6 +276,8 @@ def extract_dep(url: str, filename: str, prefs: dict[str, str]) -> None:
     depends_dir = prefs["depends_dir"]
     sources_dir = prefs["src_dir"]
 
+    if filename.startswith("openjpeg"):
+        return
     file = os.path.join(depends_dir, filename)
     if not os.path.exists(file):
         # First try our mirror
