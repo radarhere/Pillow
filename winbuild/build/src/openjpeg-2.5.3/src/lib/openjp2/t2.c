@@ -571,19 +571,6 @@ OPJ_BOOL opj_t2_decode_packets(opj_tcd_t* tcd,
 
         opj_free(first_pass_failed);
     }
-    /* INDEX >> */
-#ifdef TODO_MSD
-    if
-    (p_cstr_info) {
-        p_cstr_info->tile[p_tile_no].tp[curtp].tp_numpacks = p_cstr_info->packno -
-                tp_start_packno; /* Number of packets in last tile-part */
-    }
-#endif
-    /* << INDEX */
-
-    /* don't forget to release pi */
-    opj_pi_destroy(l_pi, l_nb_pocs);
-    *p_data_read = (OPJ_UINT32)(l_current_data - p_src);
     return OPJ_TRUE;
 }
 
