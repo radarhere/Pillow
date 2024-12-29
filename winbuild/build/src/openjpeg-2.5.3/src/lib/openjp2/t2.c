@@ -425,7 +425,7 @@ OPJ_BOOL opj_t2_decode_packets(opj_tcd_t* tcd,
 #endif
 
     /* create a packet iterator */
-    l_pi = opj_pi_create_decode(l_image, l_cp, p_tile_no, p_manager);
+    opj_pi_create_decode(l_image, l_cp, p_tile_no, p_manager);
 
     return OPJ_TRUE;
 }
