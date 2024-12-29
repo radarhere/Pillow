@@ -430,9 +430,6 @@ OPJ_BOOL opj_t2_decode_packets(opj_tcd_t* tcd,
         return OPJ_FALSE;
     }
 
-
-    l_current_pi = l_pi;
-
     return OPJ_TRUE;
 }
 
