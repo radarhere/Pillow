@@ -1570,6 +1570,8 @@ OPJ_BOOL opj_tcd_decode_tile(opj_tcd_t *p_tcd,
     opj_free(p_tcd->used_component);
     p_tcd->used_component = NULL;
 
+    printf("decode p_max_length %d\n", p_max_length);
+
     if (numcomps_to_decode) {
         OPJ_BOOL* used_component = (OPJ_BOOL*) opj_calloc(sizeof(OPJ_BOOL),
                                    p_tcd->image->numcomps);

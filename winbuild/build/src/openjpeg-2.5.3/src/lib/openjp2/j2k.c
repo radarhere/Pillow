@@ -4539,6 +4539,7 @@ static OPJ_BOOL opj_j2k_read_sot(opj_j2k_t *p_j2k,
     /* since the time taken by this function can only grow at the time */
 
     /* PSot should be equal to zero or >=14 or <= 2^32-1 */
+    printf("l_tot_len %d\n", l_tot_len);
     if ((l_tot_len != 0) && (l_tot_len < 14)) {
         if (l_tot_len ==
                 12) { /* MSD: Special case for the PHR data which are read by kakadu*/
@@ -4633,6 +4634,7 @@ static OPJ_BOOL opj_j2k_read_sot(opj_j2k_t *p_j2k,
     } else {
         /* FIXME: need to be computed from the number of bytes remaining in the codestream */
         p_j2k->m_specific_param.m_decoder.m_sot_length = 0;
+        printf("hope\n");
     }
 
     p_j2k->m_specific_param.m_decoder.m_state = J2K_STATE_TPH;
@@ -4999,11 +5001,12 @@ static OPJ_BOOL opj_j2k_read_sod(opj_j2k_t *p_j2k,
         // but we are in the last tile part,
         // so its result will fit on OPJ_UINT32 unless we find
         // a file with a single tile part of more than 4 GB...*/
-        printf("lasttilepart\n");
+        printf("lasttilepart %d\n", p_j2k->m_specific_param.m_decoder.m_sot_length);
         p_j2k->m_specific_param.m_decoder.m_sot_length = (OPJ_UINT32)(
                     opj_stream_get_number_byte_left(p_stream) - 2);
     } else {
         /* Check to avoid pass the limit of OPJ_UINT32 */
+        printf("notlast %d\n", p_j2k->m_specific_param.m_decoder.m_sot_length);
         if (p_j2k->m_specific_param.m_decoder.m_sot_length >= 2) {
             p_j2k->m_specific_param.m_decoder.m_sot_length -= 2;
         } else {
@@ -5014,9 +5017,11 @@ static OPJ_BOOL opj_j2k_read_sod(opj_j2k_t *p_j2k,
 
     l_current_data = &(l_tcp->m_data);
     l_tile_len = &l_tcp->m_data_size;
+    printf("wait\n");
 
     /* Patch to support new PHR data */
     if (p_j2k->m_specific_param.m_decoder.m_sot_length) {
+        printf("wait1\n");
         /* If we are here, we'll try to read the data after allocation */
         /* Check enough bytes left in stream before allocation */
         if ((OPJ_OFF_T)p_j2k->m_specific_param.m_decoder.m_sot_length >
@@ -5104,27 +5109,34 @@ static OPJ_BOOL opj_j2k_read_sod(opj_j2k_t *p_j2k,
     }
 
     /* Patch to support new PHR data */
+    printf("beforethisone %d\n", opj_stream_get_number_byte_left(p_stream));
     if (!l_sot_length_pb_detected) {
         l_current_read_size = opj_stream_read_data(
                                   p_stream,
                                   *l_current_data + *l_tile_len,
                                   p_j2k->m_specific_param.m_decoder.m_sot_length,
                                   p_manager);
+        printf("afterthisone %d\n", opj_stream_get_number_byte_left(p_stream));
+        printf("l_current_read_size %d\n", l_current_read_size);
     } else {
         l_current_read_size = 0;
     }
 
     if (l_current_read_size != p_j2k->m_specific_param.m_decoder.m_sot_length) {
+        printf("no pr\n");
         if (l_current_read_size == (OPJ_SIZE_T)(-1)) {
             /* Avoid issue of https://github.com/uclouvain/openjpeg/issues/1533 */
             opj_event_msg(p_manager, EVT_ERROR, "Stream too short\n");
             return OPJ_FALSE;
         }
         p_j2k->m_specific_param.m_decoder.m_state = J2K_STATE_NEOC;
-    } else if (opj_stream_get_number_byte_left(p_stream) < 2) {
-        p_j2k->m_specific_param.m_decoder.m_state = J2K_STATE_NEOC;
     } else {
-        p_j2k->m_specific_param.m_decoder.m_state = J2K_STATE_TPHSOT;
+        printf("pr length %d\n", opj_stream_get_number_byte_left(p_stream));
+        if (opj_stream_get_number_byte_left(p_stream) < 2) {
+            p_j2k->m_specific_param.m_decoder.m_state = J2K_STATE_NEOC;
+        } else {
+            p_j2k->m_specific_param.m_decoder.m_state = J2K_STATE_TPHSOT;
+        }
     }
 
     *l_tile_len += (OPJ_UINT32)l_current_read_size;
@@ -10184,15 +10196,18 @@ OPJ_BOOL opj_j2k_decode_tile(opj_j2k_t * p_j2k,
     if (p_j2k->m_specific_param.m_decoder.m_state == J2K_STATE_NEOC) {
       printf("neoc\n");
     }
-    if (p_j2k->m_cp.strict && opj_stream_get_number_byte_left(p_stream) == 1) {
-        opj_event_msg(p_manager, EVT_ERROR, "Stream too short\n");
-        return OPJ_FALSE;
-    }
 
     l_tcp = &(p_j2k->m_cp.tcps[p_tile_index]);
     if (! l_tcp->m_data) {
         opj_j2k_tcp_destroy(l_tcp);
         return OPJ_FALSE;
+    }
+    printf("data size %d\n", l_tcp->m_data_size);
+    if (p_j2k->m_specific_param.m_decoder.m_state == J2K_STATE_EOC) {
+      printf("eoc\n");
+    }
+    if (p_j2k->m_specific_param.m_decoder.m_state == J2K_STATE_NEOC) {
+      printf("neoc\n");
     }
 
     /* When using the opj_read_tile_header / opj_decode_tile_data API */
