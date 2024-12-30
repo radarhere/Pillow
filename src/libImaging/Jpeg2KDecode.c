@@ -669,6 +669,7 @@ j2k_decode_entry(Imaging im, ImagingCodecState state) {
     if (context->length < 0) {
         opj_stream_set_user_data_length(stream, 0xffffffff);
     } else {
+        printf("contextlength %d\n", context->length);
         opj_stream_set_user_data_length(stream, context->length);
     }
 #endif
@@ -809,6 +810,7 @@ j2k_decode_entry(Imaging im, ImagingCodecState state) {
         if (!should_continue) {
             break;
         }
+        printf("internal huh %d\n", opj_stream_get_number_byte_left(stream));
 
         /* Adjust the tile co-ordinates based on the reduction (OpenJPEG
            doesn't do this for us) */

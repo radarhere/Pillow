@@ -10130,6 +10130,7 @@ OPJ_BOOL opj_j2k_decode_tile(opj_j2k_t * p_j2k,
         return OPJ_FALSE;
     }
 
+    printf("huh %d\n", opj_stream_get_number_byte_left(p_stream));
     if (p_j2k->m_cp.strict && opj_stream_get_number_byte_left(p_stream) == 1) {
         opj_event_msg(p_manager, EVT_ERROR, "Stream too short\n");
         return OPJ_FALSE;
@@ -10148,6 +10149,7 @@ OPJ_BOOL opj_j2k_decode_tile(opj_j2k_t * p_j2k,
     /* but full tile decoding is done */
     l_image_for_bounds = p_j2k->m_output_image ? p_j2k->m_output_image :
                          p_j2k->m_private_image;
+    printf("huh1a %d\n", opj_stream_get_number_byte_left(p_stream));
     if (! opj_tcd_decode_tile(p_j2k->m_tcd,
                               l_image_for_bounds->x0,
                               l_image_for_bounds->y0,
@@ -10165,6 +10167,7 @@ OPJ_BOOL opj_j2k_decode_tile(opj_j2k_t * p_j2k,
         return OPJ_FALSE;
     }
 
+    printf("huh1 %d\n", opj_stream_get_number_byte_left(p_stream));
     /* p_data can be set to NULL when the call will take care of using */
     /* itself the TCD data. This is typically the case for whole single */
     /* tile decoding optimization. */
@@ -10209,6 +10212,7 @@ OPJ_BOOL opj_j2k_decode_tile(opj_j2k_t * p_j2k,
             return OPJ_FALSE;
         }
     }
+    printf("huh3 %d\n", opj_stream_get_number_byte_left(p_stream));
 
     return OPJ_TRUE;
 }
