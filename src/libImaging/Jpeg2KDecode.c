@@ -811,7 +811,7 @@ j2k_decode_entry(Imaging im, ImagingCodecState state) {
             break;
         }
 
-        printf("length %d\n", stream->m_user_data_length);
+        printf("length %d\n", stream.m_user_data_length);
 
         /* Adjust the tile co-ordinates based on the reduction (OpenJPEG
            doesn't do this for us) */
