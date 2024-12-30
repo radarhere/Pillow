@@ -4999,6 +4999,7 @@ static OPJ_BOOL opj_j2k_read_sod(opj_j2k_t *p_j2k,
         // but we are in the last tile part,
         // so its result will fit on OPJ_UINT32 unless we find
         // a file with a single tile part of more than 4 GB...*/
+        printf("lasttilepart\n");
         p_j2k->m_specific_param.m_decoder.m_sot_length = (OPJ_UINT32)(
                     opj_stream_get_number_byte_left(p_stream) - 2);
     } else {
@@ -5007,6 +5008,7 @@ static OPJ_BOOL opj_j2k_read_sod(opj_j2k_t *p_j2k,
             p_j2k->m_specific_param.m_decoder.m_sot_length -= 2;
         } else {
             /* MSD: case commented to support empty SOT marker (PHR data) */
+            printf("hereempty %d\n", p_j2k->m_specific_param.m_decoder.m_sot_length);
         }
     }
 
@@ -9762,6 +9764,9 @@ OPJ_BOOL opj_j2k_read_tile_header(opj_j2k_t * p_j2k,
                 return OPJ_FALSE;
             }
         }
+        printf("endishO\n");
+        printf("mid header %d\n", opj_stream_get_number_byte_left(p_stream));
+        printf("endishP\n");
 
         /* Try to read until the Start Of Data is detected */
         while (l_current_marker != J2K_MS_SOD) {
@@ -9901,17 +9906,28 @@ OPJ_BOOL opj_j2k_read_tile_header(opj_j2k_t * p_j2k,
                                &l_current_marker, 2);
             }
         }
+        printf("endishR\n");
+        printf("mid header %d\n", opj_stream_get_number_byte_left(p_stream));
+        printf("endishS\n");
         if (opj_stream_get_number_byte_left(p_stream) == 0
                 && p_j2k->m_specific_param.m_decoder.m_state == J2K_STATE_NEOC) {
             break;
         }
+        printf("endishT\n");
+        printf("mid header %d\n", opj_stream_get_number_byte_left(p_stream));
+        printf("endishU\n");
 
         /* If we didn't skip data before, we need to read the SOD marker*/
         if (! p_j2k->m_specific_param.m_decoder.m_skip_data) {
             /* Try to read the SOD marker and skip data ? FIXME */
+            printf("read_sod\n");
             if (! opj_j2k_read_sod(p_j2k, p_stream, p_manager)) {
                 return OPJ_FALSE;
             }
+            printf("endishTX\n");
+            printf("mid header %d\n", opj_stream_get_number_byte_left(p_stream));
+            printf("endishUX\n");
+            printf("read_sod2\n");
 
             /* Check if we can use the TLM index to access the next tile-part */
             if (!p_j2k->m_specific_param.m_decoder.m_can_decode &&
@@ -9920,10 +9936,12 @@ OPJ_BOOL opj_j2k_read_tile_header(opj_j2k_t * p_j2k,
                     p_j2k->m_specific_param.m_decoder.m_tile_ind_to_dec &&
                     !p_j2k->m_specific_param.m_decoder.m_tlm.m_is_invalid &&
                     opj_stream_has_seek(p_stream)) {
+                printf("read_sod3\n");
                 l_tcp = p_j2k->m_cp.tcps + p_j2k->m_current_tile_number;
                 if (l_tcp->m_nb_tile_parts ==
                         p_j2k->cstr_index->tile_index[p_j2k->m_current_tile_number].nb_tps &&
                         (OPJ_UINT32)l_tcp->m_current_tile_part_number + 1 < l_tcp->m_nb_tile_parts) {
+                    printf("read_sod3a\n");
                     const OPJ_OFF_T next_tp_sot_pos = p_j2k->cstr_index->tile_index[
                                                           p_j2k->m_current_tile_number].tp_index[l_tcp->m_current_tile_part_number +
                                                                   1].start_pos;
@@ -9937,6 +9955,7 @@ OPJ_BOOL opj_j2k_read_tile_header(opj_j2k_t * p_j2k,
                                       next_tp_sot_pos);
 #endif
 
+                        printf("read_sod3b\n");
                         if (!(opj_stream_read_seek(p_stream,
                                                    next_tp_sot_pos,
                                                    p_manager))) {
@@ -9944,6 +9963,9 @@ OPJ_BOOL opj_j2k_read_tile_header(opj_j2k_t * p_j2k,
                             return OPJ_FALSE;
                         }
                     }
+                    printf("endishTA\n");
+                    printf("mid header %d\n", opj_stream_get_number_byte_left(p_stream));
+                    printf("endishTB\n");
 
                     /* Try to read 2 bytes (the marker ID) from stream and copy them into the buffer */
                     if (opj_stream_read_data(p_stream,
@@ -9961,6 +9983,9 @@ OPJ_BOOL opj_j2k_read_tile_header(opj_j2k_t * p_j2k,
                         opj_event_msg(p_manager, EVT_ERROR, "Did not get expected SOT marker\n");
                         return OPJ_FALSE;
                     }
+                    printf("endishTC\n");
+                    printf("mid header %d\n", opj_stream_get_number_byte_left(p_stream));
+                    printf("endishTD\n");
 
                     continue;
                 }
@@ -9969,6 +9994,10 @@ OPJ_BOOL opj_j2k_read_tile_header(opj_j2k_t * p_j2k,
             if (p_j2k->m_specific_param.m_decoder.m_can_decode &&
                     !p_j2k->m_specific_param.m_decoder.m_nb_tile_parts_correction_checked) {
                 /* Issue 254 */
+                printf("read_sod4\n");
+                printf("endishTE\n");
+                printf("mid header %d\n", opj_stream_get_number_byte_left(p_stream));
+                printf("endishTF\n");
                 OPJ_BOOL l_correction_needed = OPJ_FALSE;
 
                 p_j2k->m_specific_param.m_decoder.m_nb_tile_parts_correction_checked = 1;
@@ -10009,8 +10038,14 @@ OPJ_BOOL opj_j2k_read_tile_header(opj_j2k_t * p_j2k,
             p_j2k->m_specific_param.m_decoder.m_can_decode = 0;
             p_j2k->m_specific_param.m_decoder.m_state = J2K_STATE_TPHSOT;
         }
+        printf("endishT5\n");
+        printf("mid header %d\n", opj_stream_get_number_byte_left(p_stream));
+        printf("endishU5\n");
 
         if (! p_j2k->m_specific_param.m_decoder.m_can_decode) {
+            printf("endishA\n");
+            printf("mid header %d\n", opj_stream_get_number_byte_left(p_stream));
+            printf("endishB\n");
             /* Try to read 2 bytes (the next marker ID) from stream and copy them into the buffer */
             if (opj_stream_read_data(p_stream,
                                      p_j2k->m_specific_param.m_decoder.m_header_data, 2, p_manager) != 2) {
@@ -10046,6 +10081,9 @@ OPJ_BOOL opj_j2k_read_tile_header(opj_j2k_t * p_j2k,
             /* Read 2 bytes from buffer as the new marker ID */
             opj_read_bytes(p_j2k->m_specific_param.m_decoder.m_header_data,
                            &l_current_marker, 2);
+            printf("endishC\n");
+            printf("mid header %d\n", opj_stream_get_number_byte_left(p_stream));
+            printf("endishD\n");
         }
     }
 
@@ -10072,12 +10110,16 @@ OPJ_BOOL opj_j2k_read_tile_header(opj_j2k_t * p_j2k,
         }
     }
 
+    printf("endish\n");
+    printf("mid header %d\n", opj_stream_get_number_byte_left(p_stream));
+    printf("endish0\n");
     if (! opj_j2k_merge_ppt(p_j2k->m_cp.tcps + p_j2k->m_current_tile_number,
                             p_manager)) {
         opj_event_msg(p_manager, EVT_ERROR, "Failed to merge PPT data\n");
         return OPJ_FALSE;
     }
     /*FIXME ???*/
+    printf("endish1\n");
     if (! opj_tcd_init_decode_tile(p_j2k->m_tcd, p_j2k->m_current_tile_number,
                                    p_manager)) {
         opj_event_msg(p_manager, EVT_ERROR, "Cannot decode tile, memory error\n");
@@ -10087,6 +10129,7 @@ OPJ_BOOL opj_j2k_read_tile_header(opj_j2k_t * p_j2k,
     opj_event_msg(p_manager, EVT_INFO, "Header of tile %d / %d has been read.\n",
                   p_j2k->m_current_tile_number + 1, (p_j2k->m_cp.th * p_j2k->m_cp.tw));
 
+    printf("endish2\n");
     *p_tile_index = p_j2k->m_current_tile_number;
     *p_go_on = OPJ_TRUE;
     if (p_data_size) {
@@ -10097,6 +10140,7 @@ OPJ_BOOL opj_j2k_read_tile_header(opj_j2k_t * p_j2k,
             return OPJ_FALSE;
         }
     }
+    printf("endish3\n");
     *p_tile_x0 = p_j2k->m_tcd->tcd_image->tiles->x0;
     *p_tile_y0 = p_j2k->m_tcd->tcd_image->tiles->y0;
     *p_tile_x1 = p_j2k->m_tcd->tcd_image->tiles->x1;
@@ -10104,6 +10148,7 @@ OPJ_BOOL opj_j2k_read_tile_header(opj_j2k_t * p_j2k,
     *p_nb_comps = p_j2k->m_tcd->tcd_image->tiles->numcomps;
 
     p_j2k->m_specific_param.m_decoder.m_state |= J2K_STATE_DATA;
+    printf("end header %d\n", opj_stream_get_number_byte_left(p_stream));
 
     return OPJ_TRUE;
 }
@@ -10131,6 +10176,12 @@ OPJ_BOOL opj_j2k_decode_tile(opj_j2k_t * p_j2k,
     }
 
     printf("huh %d\n", opj_stream_get_number_byte_left(p_stream));
+    if (p_j2k->m_specific_param.m_decoder.m_state == J2K_STATE_EOC) {
+      printf("eoc\n");
+    }
+    if (p_j2k->m_specific_param.m_decoder.m_state == J2K_STATE_NEOC) {
+      printf("neoc\n");
+    }
     if (p_j2k->m_cp.strict && opj_stream_get_number_byte_left(p_stream) == 1) {
         opj_event_msg(p_manager, EVT_ERROR, "Stream too short\n");
         return OPJ_FALSE;
