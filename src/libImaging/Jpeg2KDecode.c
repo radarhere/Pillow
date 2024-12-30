@@ -670,6 +670,7 @@ j2k_decode_entry(Imaging im, ImagingCodecState state) {
         opj_stream_set_user_data_length(stream, 0xffffffff);
     } else {
         opj_stream_set_user_data_length(stream, context->length);
+        printf("contextlength %lld\n", context->length);
     }
 #endif
 
@@ -808,6 +809,13 @@ j2k_decode_entry(Imaging im, ImagingCodecState state) {
 
         if (!should_continue) {
             break;
+        }
+
+        printf("length %d\n", stream->m_user_data_length);
+        if (opj_stream_get_number_byte_left(stream) < 2) {
+            state->errcode = IMAGING_CODEC_BROKEN;
+            state->state = J2K_STATE_FAILED;
+            goto quick_exit;
         }
 
         /* Adjust the tile co-ordinates based on the reduction (OpenJPEG
