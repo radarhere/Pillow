@@ -44,6 +44,7 @@ stub(j_compress_ptr cinfo) { /* empty */ }
 METHODDEF(boolean)
 empty_output_buffer(j_compress_ptr cinfo) {
     /* Suspension */
+    printf("empty_output_buffer\n");
     return FALSE;
 }
 
@@ -64,6 +65,7 @@ METHODDEF(void)
 error(j_common_ptr cinfo) {
     JPEGERROR *error;
     error = (JPEGERROR *)cinfo->err;
+    printf("error\n");
     (*cinfo->err->output_message)(cinfo);
     longjmp(error->setjmp_buffer, 1);
 }
@@ -80,6 +82,7 @@ ImagingJpegEncode(Imaging im, ImagingCodecState state, UINT8 *buf, int bytes) {
     if (setjmp(context->error.setjmp_buffer)) {
         /* JPEG error handler */
         jpeg_destroy_compress(&context->cinfo);
+        printf("torch1\n");
         state->errcode = IMAGING_CODEC_BROKEN;
         return -1;
     }

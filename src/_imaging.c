@@ -3554,7 +3554,7 @@ _getcodecstatus(PyObject *self, PyObject *args) {
             msg = "buffer overrun";
             break;
         case IMAGING_CODEC_BROKEN:
-            msg = "broken data stream";
+            msg = "broken data streamX";
             break;
         case IMAGING_CODEC_UNKNOWN:
             msg = "unrecognized data stream contents";
