@@ -21,8 +21,11 @@ set -e
 
 if [[ $(uname) != CYGWIN* ]]; then
     sudo apt-get -qq install python3-tk\
-                             libjpeg-turbo8-dev\
+                             zlib1g-dev\
                              cmake meson
+    sudo apt-get remove libjpeg-dev libjpeg-turbo8-dev libjpeg8-dev
+    echo "torch"
+    sudo apt list --installed
 fi
 
 python3 -m pip install --upgrade pip

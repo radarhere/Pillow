@@ -38,6 +38,7 @@ jobs:
         ]
         python-version: [
           "3.13",
+        ]
 
     runs-on: ${{ matrix.os }}
     name: ${{ matrix.os }} Python ${{ matrix.python-version }}
