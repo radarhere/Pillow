@@ -45,7 +45,7 @@ METHODDEF(boolean)
 empty_output_buffer(j_compress_ptr cinfo) {
     /* Suspension */
     printf("empty_output_buffer\n");
-    return FALSE;
+    return TRUE;
 }
 
 GLOBAL(void)
