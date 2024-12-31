@@ -160,11 +160,11 @@ class TestFileJpeg:
         im = hopper()
         im_ycbcr = self.roundtrip(im)
         assert getchannels(im_ycbcr) == (1, 2, 3)
-        assert_image_similar(im, im_ycbcr, 17)
+        assert_image_similar(im, im_ycbcr, 19)
 
         im_rgb = self.roundtrip(im, keep_rgb=True)
         assert getchannels(im_rgb) == (ord("R"), ord("G"), ord("B"))
-        assert_image_similar(im, im_rgb, 12)
+        assert_image_similar(im, im_rgb, 13)
 
     @pytest.mark.parametrize(
         "test_image_path",
@@ -1069,7 +1069,7 @@ class TestFileJpeg:
 
         with Image.open(BytesIO(b)) as repr_jpeg:
             assert repr_jpeg.format == "JPEG"
-            assert_image_similar(im, repr_jpeg, 17)
+            assert_image_similar(im, repr_jpeg, 19)
 
     def test_repr_jpeg_error_returns_none(self) -> None:
         im = hopper("F")

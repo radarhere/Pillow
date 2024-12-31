@@ -28,6 +28,15 @@ if [[ $(uname) != CYGWIN* ]]; then
     sudo apt list --installed
 fi
 
+git clone https://github.com/mozilla/mozjpeg.git
+(cd mozjpeg \
+    && git checkout v4.1.1 \
+    && mkdir build \
+    && cd build \
+    && sudo cmake -G"Unix Makefiles" -D CMAKE_INSTALL_PREFIX=/usr/local ../ \
+    && sudo make install)
+sudo ldconfig
+
 python3 -m pip install --upgrade pip
 python3 -m pip install --upgrade wheel
 python3 -m pip install coverage
