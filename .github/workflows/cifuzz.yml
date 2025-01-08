@@ -2,27 +2,11 @@ name: CIFuzz
 
 on:
   push:
-    branches:
-      - "**"
-    paths:
-      - ".github/workflows/cifuzz.yml"
-      - ".github/workflows/wheels-dependencies.sh"
-      - "**.c"
-      - "**.h"
   pull_request:
-    paths:
-      - ".github/workflows/cifuzz.yml"
-      - ".github/workflows/wheels-dependencies.sh"
-      - "**.c"
-      - "**.h"
   workflow_dispatch:
 
 permissions:
   contents: read
-
-concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
 
 jobs:
   Fuzzing:
