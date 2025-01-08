@@ -14,14 +14,14 @@ jobs:
     steps:
     - name: Build Fuzzers
       id: build
-      uses: google/oss-fuzz/infra/cifuzz/actions/build_fuzzers@master
+      uses: radarhere/oss-fuzz/infra/cifuzz/actions/run_fuzzers@ci
       with:
         oss-fuzz-project-name: 'pillow'
         language: python
         dry-run: false
     - name: Run Fuzzers
       id: run
-      uses: google/oss-fuzz/infra/cifuzz/actions/run_fuzzers@master
+      uses: radarhere/oss-fuzz/infra/cifuzz/actions/run_fuzzers@ci
       with:
         oss-fuzz-project-name: 'pillow'
         fuzz-seconds: 600
