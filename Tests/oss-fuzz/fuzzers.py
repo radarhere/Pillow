@@ -20,6 +20,7 @@ def disable_decompressionbomb_error() -> None:
 def fuzz_image(data: bytes) -> None:
     # This will fail on some images in the corpus, as we have many
     # invalid images in the test suite.
+    print("torch", ImageFile.LOAD_TRUNCATED_IMAGES)
     with Image.open(io.BytesIO(data)) as im:
         im.rotate(45)
         im.filter(ImageFilter.DETAIL)
