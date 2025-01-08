@@ -21,6 +21,12 @@ def fuzz_image(data: bytes) -> None:
     # This will fail on some images in the corpus, as we have many
     # invalid images in the test suite.
     print("torch", ImageFile.LOAD_TRUNCATED_IMAGES)
+    if ImageFile.LOAD_TRUNCATED_IMAGES:
+        print("torchabort")
+    else:
+        print("torchnot")
+    import sys
+    sys.exit()
     with Image.open(io.BytesIO(data)) as im:
         im.rotate(45)
         im.filter(ImageFilter.DETAIL)
