@@ -312,6 +312,10 @@ int main(int argc, char* argv[])
             "INCLUDEPY"
         ).replace("include", "libs")
         compiler.add_library_dir(libdir)
+        try:
+            compiler.initialize()
+        except Exception:
+            pytest.skip("Compiler could not be initialized")
         objects = compiler.compile(["embed_pil.c"])
         compiler.link_executable(objects, "embed_pil")
 
