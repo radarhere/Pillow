@@ -12,7 +12,7 @@ $env:path += ";$pillow\winbuild\build\bin\"
 & "$venv\Scripts\activate.ps1"
 & reg add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\python.exe" /v "GlobalFlag" /t REG_SZ /d "0x02000000" /f
 cd $pillow
-& python -m pip install numpy
+& pip install numpy
 & python -VV
 if (!$?) { exit $LASTEXITCODE }
 & python selftest.py
