@@ -13,7 +13,7 @@ if TYPE_CHECKING:
     import numpy
     import numpy.typing as npt
 else:
-    numpy = pytest.importorskip("numpy", reason="NumPy not installed")
+    import numpy
 
 TEST_IMAGE_SIZE = (10, 10)
 
