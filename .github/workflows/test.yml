@@ -98,6 +98,11 @@ jobs:
 
     - name: Test
       run: |
+        echo "torch"
+        python3 -c "from PIL import features;print(features.check_feature('mozjpeg'))"
+        python3 -c "from PIL import features;print(features.version_feature('mozjpeg'))"
+        echo "torchend"
+
         if [ $REVERSE ]; then
           python3 -m pip install pytest-reverse
         fi
