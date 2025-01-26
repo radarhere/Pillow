@@ -46,30 +46,9 @@ if TYPE_CHECKING:
     from ._imagingft import Font
 
     Anchor = Literal[
-        "la",
-        "lt",
-        "lm",
-        "ls",
-        "lb",
-        "ld",
-        "ma",
-        "mt",
-        "mm",
-        "ms",
-        "mb",
-        "md",
-        "ra",
-        "rt",
-        "rm",
-        "rs",
-        "rb",
-        "rd",
-        "sa",
-        "st",
-        "sm",
-        "ss",
-        "sb",
-        "sd",
+        tuple(
+            h + v for h in ("l", "m", "r", "s") for v in ("a", "t", "m", "s", "b", "d")
+        )
     ]
 
     Direction = Literal["rtl", "ltr", "ttb"]
