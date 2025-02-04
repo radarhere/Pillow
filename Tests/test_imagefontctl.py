@@ -363,8 +363,9 @@ def test_combine_multiline(anchor: str, align: str) -> None:
     assert_image_similar_tofile(im, path, 0.015)
 
 
-def test_combine_multiline_ttb() -> None:
-    path = "Tests/images/test_combine_multiline_ttb.png"
+@pytest.mark.parametrize("anchor", ("lt", "lm", "lb"))
+def test_combine_multiline_ttb(anchor: str) -> None:
+    path = f"Tests/images/test_combine_multiline_ttb_{anchor}.png"
     f = ImageFont.truetype("Tests/fonts/NotoSans-Regular.ttf", 48)
     text = "te\nxt"
 
@@ -372,9 +373,9 @@ def test_combine_multiline_ttb() -> None:
     d = ImageDraw.Draw(im)
     d.line(((0, 200), (400, 200)), "gray")
     d.line(((200, 0), (200, 400)), "gray")
-    bbox = d.multiline_textbbox((200, 200), text, f, direction="ttb")
+    bbox = d.multiline_textbbox((200, 200), text, f, anchor, direction="ttb")
     d.rectangle(bbox, outline="red")
-    d.multiline_text((200, 200), text, "black", f, direction="ttb")
+    d.multiline_text((200, 200), text, "black", f, anchor, direction="ttb")
 
     assert_image_equal_tofile(im, path)
 
