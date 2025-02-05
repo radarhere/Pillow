@@ -49,7 +49,7 @@ import struct
 import warnings
 from collections.abc import Iterator, MutableMapping
 from fractions import Fraction
-from numbers import Number, Rational
+from numbers import Complex, Number, Rational
 from typing import IO, TYPE_CHECKING, Any, Callable, NoReturn, cast
 
 from . import ExifTags, Image, ImageFile, ImageOps, ImagePalette, TiffTags
@@ -404,7 +404,7 @@ class IFDRational(Rational):
     def __repr__(self) -> str:
         return str(float(self._val))
 
-    def __hash__(self) -> int:
+    def __hash__(self) -> Complex:
         return self._val.__hash__()
 
     def __eq__(self, other: object) -> bool:
