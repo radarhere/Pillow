@@ -70,7 +70,7 @@ function build_zlib_ng {
     mv ../../zlib-ng.tar.gz .
     tar -xzf zlib-ng.tar.gz
     (cd zlib-ng \
-        && ./configure --prefix=$BUILD_PREFIX --zlib-compat \
+        && ./configure --prefix=$BUILD_PREFIX --zlib-compat --installnamedir=$BUILD_PREFIX/lib \
         && make -j4 \
         && make install)
     touch zlib-stamp
