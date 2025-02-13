@@ -61,16 +61,18 @@ jobs:
     - name: Build system information
       run: python3 .github/workflows/system-info.py
 
+    - name: Install Linux dependencies
+      if: startsWith(matrix.os, 'ubuntu')
+      run: |
+        python3 -m pip install pillow-11.2.0.dev0-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
+
+    - name: Install macOS dependencies
+      if: startsWith(matrix.os, 'macOS')
+      run: |
+        python3 -m pip install pillow-11.2.0.dev0-cp312-cp312-macosx_11_0_arm64.whl
+
     - name: Test
       run: |
-        python3 -m pip install --upgrade pip
-
-        python3 -m pip install Pillow==11.0.0 -q
-        python3 demo.py
-        shasum -a 256 im-11.0.0.png
         python3 -m PIL.report
-
-        python3 -m pip install Pillow==11.1.0 -q
         python3 demo.py
-        shasum -a 256 im-11.1.0.png
-        python3 -m PIL.report
+        shasum -a 256 im-11.2.0.dev0.png
