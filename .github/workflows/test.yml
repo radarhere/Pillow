@@ -34,6 +34,7 @@ jobs:
       matrix:
         os: [
           "macos-latest",
+          "ubuntu-latest",
         ]
         python-version: [
           "3.12",
@@ -60,39 +61,16 @@ jobs:
     - name: Build system information
       run: python3 .github/workflows/system-info.py
 
-    - name: Install macOS dependencies
-      if: startsWith(matrix.os, 'macOS')
-      run: |
-        .github/workflows/macos-install.sh
-      env:
-        GHA_PYTHON_VERSION: ${{ matrix.python-version }}
-
-    - name: Build
-      run: |
-        .ci/build.sh
-
     - name: Test
       run: |
-        python3 demo.py
         python3 -m pip install --upgrade pip
-
-        python3 -m pip install Pillow==11.0.0 -q --no-binary :all:
-        python3 demo.py
-        diff im-11.0.0.png im-11.2.0.dev0.png
-        echo "11.0.0 from source matches 11.2.0.dev0 from source"
-
-        python3 -m pip install Pillow==11.1.0 -q --no-binary :all:
-        python3 demo.py
-        diff im-11.1.0.png im-11.2.0.dev0.png
-        echo "11.1.0 from source matches 11.2.0.dev0 from source"
 
         python3 -m pip install Pillow==11.0.0 -q
         python3 demo.py
-        diff im-11.0.0.png im-11.2.0.dev0.png
-        echo "11.0.0 wheel matches 11.2.0.dev0 from source"
+        shasum -a 256 im-11.0.0.png
+        python3 -m PIL.report
 
         python3 -m pip install Pillow==11.1.0 -q
         python3 demo.py
-        echo "And now, check 11.1.0 wheel against 11.2.0.dev0 from source"
-        diff im-11.1.0.png im-11.2.0.dev0.png
-        echo "11.1.0 wheel matches 11.2.0.dev0 from source"
+        shasum -a 256 im-11.1.0.png
+        python3 -m PIL.report
