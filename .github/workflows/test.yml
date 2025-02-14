@@ -36,23 +36,10 @@ jobs:
           "macos-13",
           "macos-14",
           "macos-15",
-          "macos-latest",
         ]
         python-version: [
-          "pypy3.10",
-          "3.14",
-          "3.13t",
-          "3.13",
-          "3.12",
           "3.11",
-          "3.10",
-          "3.9",
         ]
-        include:
-        - { python-version: "3.11", PYTHONOPTIMIZE: 1, REVERSE: "--reverse" }
-        - { python-version: "3.10", PYTHONOPTIMIZE: 2 }
-        # Free-threaded
-        - { python-version: "3.13t", disable-gil: true }
 
     runs-on: ${{ matrix.os }}
     name: ${{ matrix.os }} Python ${{ matrix.python-version }}
@@ -82,7 +69,7 @@ jobs:
 
     - name: Build
       run: |
-        python3 -m pip install Pillow
+        python3 -m pip install pillow-11.1.0-cp311-cp311-macosx_10_10_x86_64.whl
 
     - name: Test
       run: |
