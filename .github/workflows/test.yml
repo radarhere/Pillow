@@ -64,7 +64,11 @@ jobs:
     - name: Install Linux dependencies
       if: startsWith(matrix.os, 'ubuntu')
       run: |
+        .ci/install.sh
         python3 -m pip install pillow-11.2.0.dev0-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
+      env:
+        GHA_PYTHON_VERSION: ${{ matrix.python-version }}
+        GHA_LIBIMAGEQUANT_CACHE_HIT: ${{ steps.cache-libimagequant.outputs.cache-hit }}
 
     - name: Install macOS dependencies
       if: startsWith(matrix.os, 'macOS')
