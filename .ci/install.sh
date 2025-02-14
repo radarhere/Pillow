@@ -23,7 +23,10 @@ if [[ $(uname) != CYGWIN* ]]; then
     sudo apt-get -qq install libfreetype6-dev liblcms2-dev python3-tk\
                              ghostscript libjpeg-turbo8-dev libopenjp2-7-dev\
                              cmake meson imagemagick libharfbuzz-dev libfribidi-dev\
-                             sway wl-clipboard libopenblas-dev zlib1g-dev
+                             sway wl-clipboard libopenblas-dev
+    echo "torchstart"
+    sudo apt-get install zlib1g-dev
+    echo "torchend"
 fi
 
 python3 -m pip install --upgrade pip

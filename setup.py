@@ -687,7 +687,7 @@ class pil_build_ext(build_ext):
 
         feature = self.feature
 
-        if feature.want("zlib"):
+        if True:
             _dbg("Looking for zlib")
             if _find_include_file(self, "zlib.h"):
                 if _find_library_file(self, "z"):
@@ -935,6 +935,7 @@ class pil_build_ext(build_ext):
 
         tk_libs = ["psapi"] if sys.platform in ("win32", "cygwin") else []
         self._update_extension("PIL._imagingtk", tk_libs)
+        int("test")
 
         build_ext.build_extensions(self)
 
