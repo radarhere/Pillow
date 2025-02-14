@@ -1155,6 +1155,19 @@ class TestImageBytes:
         reloaded.putdata(im.getdata())
         assert_image_equal(im, reloaded)
 
+    def test_8749(self):
+        size = (16, 16)
+        im = Image.new("RGB", size, "black")
+        draw = ImageDraw.Draw(im)
+        draw.ellipse((0, 0, size[0] - 1, size[1] - 1), fill="red")
+
+        b = io.BytesIO()
+        im.save(b, format="PNG")
+        import hashlib
+        m = hashlib.sha256()
+        m.update(b.getvalue())
+        assert m.hexdigest() == "e4b314f0999f81967408af5baf9129dbe20c819a88976a02823b0bb7e7f89e70"
+
 
 class MockEncoder(ImageFile.PyEncoder):
     pass
