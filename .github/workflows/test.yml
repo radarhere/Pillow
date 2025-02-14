@@ -79,4 +79,5 @@ jobs:
       run: |
         python3 -m PIL.report
         python3 demo.py
+        python3 -c "from PIL import features;print(features.check_feature('zlib_ng'))"
         shasum -a 256 im-11.2.0.dev0.png
