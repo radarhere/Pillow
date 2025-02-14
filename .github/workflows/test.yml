@@ -73,7 +73,7 @@ jobs:
     - name: Install macOS dependencies
       if: startsWith(matrix.os, 'macOS')
       run: |
-        python3 -m pip install .
+        python3 -m pip install -v .
 
     - name: Test
       run: |
