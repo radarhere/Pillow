@@ -662,19 +662,6 @@ class TestAvifAnimation:
             with Image.open("Tests/images/avif/rgba10.heif"):
                 pass
 
-    @pytest.mark.parametrize("alpha_premultiplied", [False, True])
-    def test_alpha_premultiplied(
-        self, tmp_path: Path, alpha_premultiplied: bool
-    ) -> None:
-        temp_file = str(tmp_path / "temp.avif")
-        color = (200, 200, 200, 1)
-        im = Image.new("RGBA", (1, 1), color)
-        im.save(temp_file, alpha_premultiplied=alpha_premultiplied)
-
-        expected = (255, 255, 255, 1) if alpha_premultiplied else color
-        with Image.open(temp_file) as reloaded:
-            assert reloaded.getpixel((0, 0)) == expected
-
     def test_timestamp_and_duration(self, tmp_path: Path) -> None:
         """
         Try passing a list of durations, and make sure the encoded

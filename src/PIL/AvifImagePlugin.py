@@ -164,7 +164,6 @@ def _save(
     range_ = info.get("range", "full")
     tile_rows_log2 = info.get("tile_rows", 0)
     tile_cols_log2 = info.get("tile_cols", 0)
-    alpha_premultiplied = bool(info.get("alpha_premultiplied", False))
     autotiling = bool(info.get("autotiling", tile_rows_log2 == tile_cols_log2 == 0))
 
     icc_profile = info.get("icc_profile", im.info.get("icc_profile"))
@@ -214,7 +213,6 @@ def _save(
         range_,
         tile_rows_log2,
         tile_cols_log2,
-        alpha_premultiplied,
         autotiling,
         icc_profile or b"",
         exif or b"",

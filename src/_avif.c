@@ -241,7 +241,6 @@ AvifEncoderNew(PyObject *self_, PyObject *args) {
     Py_buffer icc_buffer;
     Py_buffer exif_buffer;
     Py_buffer xmp_buffer;
-    int alpha_premultiplied;
     int autotiling;
     int tile_rows_log2;
     int tile_cols_log2;
@@ -254,7 +253,7 @@ AvifEncoderNew(PyObject *self_, PyObject *args) {
 
     if (!PyArg_ParseTuple(
             args,
-            "(II)siiissiippy*y*iy*O",
+            "(II)siiissiipy*y*iy*O",
             &width,
             &height,
             &subsampling,
@@ -265,7 +264,6 @@ AvifEncoderNew(PyObject *self_, PyObject *args) {
             &range,
             &tile_rows_log2,
             &tile_cols_log2,
-            &alpha_premultiplied,
             &autotiling,
             &icc_buffer,
             &exif_buffer,
@@ -318,9 +316,6 @@ AvifEncoderNew(PyObject *self_, PyObject *args) {
     image->height = height;
 
     image->depth = 8;
-#if AVIF_VERSION >= 90000
-    image->alphaPremultiplied = alpha_premultiplied ? AVIF_TRUE : AVIF_FALSE;
-#endif
 
     encoder = avifEncoderCreate();
     if (!encoder) {
@@ -537,9 +532,6 @@ _encoder_add(AvifEncoderObject *self, PyObject *args) {
         frame->yuvRange = image->yuvRange;
         frame->yuvFormat = image->yuvFormat;
         frame->depth = image->depth;
-#if AVIF_VERSION >= 90000
-        frame->alphaPremultiplied = image->alphaPremultiplied;
-#endif
     }
 
     avifRGBImageSetDefaults(&rgb, frame);

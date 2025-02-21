@@ -71,10 +71,6 @@ The :py:meth:`~PIL.Image.Image.save` method supports the following options:
     and "tile_cols" both have their default values of zero. Requires libavif version
     **0.11.0** or greater.
 
-**alpha_premultiplied**
-    Encode the image with premultiplied alpha. Defaults to ``False``. Requires libavif
-    version **0.9.0** or greater.
-
 **advanced**
     Codec specific options. Requires libavif version **0.8.2** or greater.
 
