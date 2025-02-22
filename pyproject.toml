@@ -97,7 +97,7 @@ build-verbosity = 1
 
 config-settings = "raqm=enable raqm=vendor fribidi=vendor imagequant=disable"
 # Disable platform guessing on macOS
-macos.config-settings = "raqm=enable raqm=vendor fribidi=vendor imagequant=disable platform-guessing=disable"
+macos.config-settings = "platform-guessing=disable"
 
 test-command = "cd {project} && .github/workflows/wheels-test.sh"
 test-extras = "tests"
