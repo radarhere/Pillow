@@ -41,49 +41,14 @@ get_row_len(ImagingCodecState state, int pass) {
 
 int
 ImagingZipDecode(Imaging im, ImagingCodecState state, UINT8 *buf, Py_ssize_t bytes) {
-    ZIPSTATE *context = (ZIPSTATE *)state->context;
-    int err;
-    int n;
-    UINT8 *ptr;
-    int i, bpp;
-    int row_len;
+    z_stream z_stream;
+    z_stream.zalloc = (alloc_func)NULL;
+    z_stream.zfree = (free_func)NULL;
+    z_stream.opaque = (voidpf)NULL;
 
-    if (!state->state) {
-        /* Initialization */
-        if (context->mode == ZIP_PNG || context->mode == ZIP_PNG_PALETTE) {
-            context->prefix = 1; /* PNG */
-        }
-
-        /* overflow check for malloc */
-        if (state->bytes > INT_MAX - 1) {
-            state->errcode = IMAGING_CODEC_MEMORY;
-            return -1;
-        }
-        /* Expand standard buffer to make room for the (optional) filter
-           prefix, and allocate a buffer to hold the previous line */
-        free(state->buffer);
-        /* malloc check ok, overflow checked above */
-        state->buffer = (UINT8 *)malloc(state->bytes + 1);
-        context->previous = (UINT8 *)malloc(state->bytes + 1);
-        if (!state->buffer || !context->previous) {
-            state->errcode = IMAGING_CODEC_MEMORY;
-            return -1;
-        }
-
-        context->last_output = 0;
-
-        /* Initialize to black */
-        memset(context->previous, 0, state->bytes + 1);
-
-        /* Setup decompression context */
-        context->z_stream.zalloc = (alloc_func)NULL;
-        context->z_stream.zfree = (free_func)NULL;
-        context->z_stream.opaque = (voidpf)NULL;
-
-        printf("Before segfault\n");
-        inflateInit(&context->z_stream);
-        printf("After segfault\n");
-    }
+    printf("Before segfault\n");
+    inflateInit(&z_stream);
+    printf("After segfault\n");
     return -1;
 }
 
