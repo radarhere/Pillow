@@ -37,30 +37,7 @@ fi
 ARCHIVE_SDIR=pillow-depends-main
 
 # Package versions for fresh source builds
-FREETYPE_VERSION=2.13.3
-HARFBUZZ_VERSION=10.2.0
-LIBPNG_VERSION=1.6.46
-JPEGTURBO_VERSION=3.1.0
-OPENJPEG_VERSION=2.5.3
-XZ_VERSION=5.6.4
-TIFF_VERSION=4.6.0
-LCMS2_VERSION=2.16
 ZLIB_NG_VERSION=2.2.4
-LIBWEBP_VERSION=1.5.0
-BZIP2_VERSION=1.0.8
-LIBXCB_VERSION=1.17.0
-BROTLI_VERSION=1.1.0
-
-function build_pkg_config {
-    if [ -e pkg-config-stamp ]; then return; fi
-    # This essentially duplicates the Homebrew recipe
-    CFLAGS="$CFLAGS -Wno-int-conversion" build_simple pkg-config 0.29.2 https://pkg-config.freedesktop.org/releases tar.gz \
-        --disable-debug --disable-host-tool --with-internal-glib \
-        --with-pc-path=$BUILD_PREFIX/share/pkgconfig:$BUILD_PREFIX/lib/pkgconfig \
-        --with-system-include-path=$(xcrun --show-sdk-path --sdk macosx)/usr/include
-    export PKG_CONFIG=$BUILD_PREFIX/bin/pkg-config
-    touch pkg-config-stamp
-}
 
 function build_zlib_ng {
     if [ -e zlib-stamp ]; then return; fi
@@ -80,79 +57,11 @@ function build_zlib_ng {
     touch zlib-stamp
 }
 
-function build_brotli {
-    if [ -e brotli-stamp ]; then return; fi
-    local out_dir=$(fetch_unpack https://github.com/google/brotli/archive/v$BROTLI_VERSION.tar.gz brotli-$BROTLI_VERSION.tar.gz)
-    (cd $out_dir \
-        && cmake -DCMAKE_INSTALL_PREFIX=$BUILD_PREFIX -DCMAKE_INSTALL_LIBDIR=$BUILD_PREFIX/lib -DCMAKE_INSTALL_NAME_DIR=$BUILD_PREFIX/lib . \
-        && make install)
-    touch brotli-stamp
-}
-
-function build_harfbuzz {
-    if [ -e harfbuzz-stamp ]; then return; fi
-    python3 -m pip install meson ninja
-
-    local out_dir=$(fetch_unpack https://github.com/harfbuzz/harfbuzz/releases/download/$HARFBUZZ_VERSION/harfbuzz-$HARFBUZZ_VERSION.tar.xz harfbuzz-$HARFBUZZ_VERSION.tar.xz)
-    (cd $out_dir \
-        && meson setup build --prefix=$BUILD_PREFIX --libdir=$BUILD_PREFIX/lib --buildtype=release -Dfreetype=enabled -Dglib=disabled)
-    (cd $out_dir/build \
-        && meson install)
-    touch harfbuzz-stamp
-}
-
 function build {
-    build_xz
     if [ -z "$IS_ALPINE" ] && [ -z "$SANITIZER" ] && [ -z "$IS_MACOS" ]; then
         yum remove -y zlib-devel
     fi
     build_zlib_ng
-
-    build_simple xcb-proto 1.17.0 https://xorg.freedesktop.org/archive/individual/proto
-    if [ -n "$IS_MACOS" ]; then
-        build_simple xorgproto 2024.1 https://www.x.org/pub/individual/proto
-        build_simple libXau 1.0.12 https://www.x.org/pub/individual/lib
-        build_simple libpthread-stubs 0.5 https://xcb.freedesktop.org/dist
-    else
-        sed s/\${pc_sysrootdir\}// $BUILD_PREFIX/share/pkgconfig/xcb-proto.pc > $BUILD_PREFIX/lib/pkgconfig/xcb-proto.pc
-    fi
-    build_simple libxcb $LIBXCB_VERSION https://www.x.org/releases/individual/lib
-
-    build_libjpeg_turbo
-    if [ -n "$IS_MACOS" ]; then
-        # Custom tiff build to include jpeg; by default, configure won't include
-        # headers/libs in the custom macOS prefix. Explicitly disable webp,
-        # libdeflate and zstd, because on x86_64 macs, it will pick up the
-        # Homebrew versions of those libraries from /usr/local.
-        build_simple tiff $TIFF_VERSION https://download.osgeo.org/libtiff tar.gz \
-            --with-jpeg-include-dir=$BUILD_PREFIX/include --with-jpeg-lib-dir=$BUILD_PREFIX/lib \
-            --disable-webp --disable-libdeflate --disable-zstd
-    else
-        build_tiff
-    fi
-
-    build_libpng
-    build_lcms2
-    build_openjpeg
-
-    webp_cflags="-O3 -DNDEBUG"
-    if [[ -n "$IS_MACOS" ]]; then
-        webp_cflags="$webp_cflags -Wl,-headerpad_max_install_names"
-    fi
-    CFLAGS="$CFLAGS $webp_cflags" build_simple libwebp $LIBWEBP_VERSION \
-        https://storage.googleapis.com/downloads.webmproject.org/releases/webp tar.gz \
-        --enable-libwebpmux --enable-libwebpdemux
-
-    build_brotli
-
-    if [ -n "$IS_MACOS" ]; then
-        # Custom freetype build
-        build_simple freetype $FREETYPE_VERSION https://download.savannah.gnu.org/releases/freetype tar.gz --with-harfbuzz=no
-    else
-        build_freetype
-    fi
-
-    build_harfbuzz
 }
 
 # Perform all dependency builds in the build subfolder.
@@ -185,8 +94,6 @@ if [[ -n "$IS_MACOS" ]]; then
     mkdir -p "$BUILD_PREFIX/bin"
     mkdir -p "$BUILD_PREFIX/lib"
 
-    # Ensure pkg-config is available
-    build_pkg_config
     # Ensure cmake is available
     python3 -m pip install cmake
 fi
@@ -195,9 +102,3 @@ wrap_wheel_builder build
 
 # Return to the project root to finish the build
 popd > /dev/null
-
-# Append licenses
-for filename in wheels/dependency_licenses/*; do
-  echo -e "\n\n----\n\n$(basename $filename | cut -f 1 -d '.')\n" | cat >> LICENSE
-  cat $filename >> LICENSE
-done
