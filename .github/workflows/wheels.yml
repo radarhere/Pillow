@@ -28,11 +28,11 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - name: "macOS 10.14 x86_64"
-            os: macos-13
-            cibw_arch: x86_64
+          - name: "macOS arm64"
+            os: macos-latest
+            cibw_arch: arm64
             build: "cp311*"
-            macosx_deployment_target: "10.14"
+            macosx_deployment_target: "11.0"
     steps:
       - uses: actions/checkout@v4
         with:
