@@ -54,9 +54,6 @@ from typing import (
 # PILLOW_VERSION was removed in Pillow 9.0.0.
 # Use __version__ instead.
 from . import (
-    ExifTags,
-    ImageMode,
-    TiffTags,
     UnidentifiedImageError,
     __version__,
     _plugins,
@@ -352,30 +349,6 @@ def preinit() -> None:
     if _initialized >= 1:
         return
 
-    try:
-        from . import BmpImagePlugin
-
-        assert BmpImagePlugin
-    except ImportError:
-        pass
-    try:
-        from . import GifImagePlugin
-
-        assert GifImagePlugin
-    except ImportError:
-        pass
-    try:
-        from . import JpegImagePlugin
-
-        assert JpegImagePlugin
-    except ImportError:
-        pass
-    try:
-        from . import PpmImagePlugin
-
-        assert PpmImagePlugin
-    except ImportError:
-        pass
     try:
         from . import PngImagePlugin
 

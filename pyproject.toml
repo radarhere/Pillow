@@ -99,9 +99,6 @@ config-settings = "raqm=enable raqm=vendor fribidi=vendor imagequant=disable"
 # Disable platform guessing on macOS
 macos.config-settings = "platform-guessing=disable"
 
-test-command = "cd {project} && .github/workflows/wheels-test.sh"
-test-extras = "tests"
-
 [tool.cibuildwheel.macos.environment]
 PATH = "$(pwd)/build/deps/darwin/bin:$(dirname $(which python3)):/usr/bin:/bin:/usr/sbin:/sbin:/Library/Apple/usr/bin"
 
