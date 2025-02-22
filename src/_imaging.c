@@ -14,7 +14,9 @@ setup_module(PyObject *m) {
     z_stream.zfree = (free_func)NULL;
     z_stream.opaque = (voidpf)NULL;
 
-    printf("Do not segfault\n");
+    printf("Before segfault\n");
+    inflateInit(&z_stream);
+    printf("After segfault\n");
 
     return 0;
 }
