@@ -37,30 +37,7 @@ fi
 ARCHIVE_SDIR=pillow-depends-main
 
 # Package versions for fresh source builds
-FREETYPE_VERSION=2.13.3
-HARFBUZZ_VERSION=10.2.0
-LIBPNG_VERSION=1.6.46
-JPEGTURBO_VERSION=3.1.0
-OPENJPEG_VERSION=2.5.3
-XZ_VERSION=5.6.4
-TIFF_VERSION=4.6.0
-LCMS2_VERSION=2.16
 ZLIB_NG_VERSION=2.2.4
-LIBWEBP_VERSION=1.5.0
-BZIP2_VERSION=1.0.8
-LIBXCB_VERSION=1.17.0
-BROTLI_VERSION=1.1.0
-
-function build_pkg_config {
-    if [ -e pkg-config-stamp ]; then return; fi
-    # This essentially duplicates the Homebrew recipe
-    CFLAGS="$CFLAGS -Wno-int-conversion" build_simple pkg-config 0.29.2 https://pkg-config.freedesktop.org/releases tar.gz \
-        --disable-debug --disable-host-tool --with-internal-glib \
-        --with-pc-path=$BUILD_PREFIX/share/pkgconfig:$BUILD_PREFIX/lib/pkgconfig \
-        --with-system-include-path=$(xcrun --show-sdk-path --sdk macosx)/usr/include
-    export PKG_CONFIG=$BUILD_PREFIX/bin/pkg-config
-    touch pkg-config-stamp
-}
 
 function build_zlib_ng {
     if [ -e zlib-stamp ]; then return; fi
@@ -80,34 +57,11 @@ function build_zlib_ng {
     touch zlib-stamp
 }
 
-function build_brotli {
-    if [ -e brotli-stamp ]; then return; fi
-    local out_dir=$(fetch_unpack https://github.com/google/brotli/archive/v$BROTLI_VERSION.tar.gz brotli-$BROTLI_VERSION.tar.gz)
-    (cd $out_dir \
-        && cmake -DCMAKE_INSTALL_PREFIX=$BUILD_PREFIX -DCMAKE_INSTALL_LIBDIR=$BUILD_PREFIX/lib -DCMAKE_INSTALL_NAME_DIR=$BUILD_PREFIX/lib . \
-        && make install)
-    touch brotli-stamp
-}
-
-function build_harfbuzz {
-    if [ -e harfbuzz-stamp ]; then return; fi
-    python3 -m pip install meson ninja
-
-    local out_dir=$(fetch_unpack https://github.com/harfbuzz/harfbuzz/releases/download/$HARFBUZZ_VERSION/harfbuzz-$HARFBUZZ_VERSION.tar.xz harfbuzz-$HARFBUZZ_VERSION.tar.xz)
-    (cd $out_dir \
-        && meson setup build --prefix=$BUILD_PREFIX --libdir=$BUILD_PREFIX/lib --buildtype=release -Dfreetype=enabled -Dglib=disabled)
-    (cd $out_dir/build \
-        && meson install)
-    touch harfbuzz-stamp
-}
-
 function build {
     if [ -z "$IS_ALPINE" ] && [ -z "$SANITIZER" ] && [ -z "$IS_MACOS" ]; then
         yum remove -y zlib-devel
     fi
     build_zlib_ng
-
-    build_libjpeg_turbo
 }
 
 # Perform all dependency builds in the build subfolder.
@@ -140,8 +94,6 @@ if [[ -n "$IS_MACOS" ]]; then
     mkdir -p "$BUILD_PREFIX/bin"
     mkdir -p "$BUILD_PREFIX/lib"
 
-    # Ensure pkg-config is available
-    build_pkg_config
     # Ensure cmake is available
     python3 -m pip install cmake
 fi
@@ -150,9 +102,3 @@ wrap_wheel_builder build
 
 # Return to the project root to finish the build
 popd > /dev/null
-
-# Append licenses
-for filename in wheels/dependency_licenses/*; do
-  echo -e "\n\n----\n\n$(basename $filename | cut -f 1 -d '.')\n" | cat >> LICENSE
-  cat $filename >> LICENSE
-done
