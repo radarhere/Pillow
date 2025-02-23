@@ -46,8 +46,7 @@ function build_zlib_ng {
     (cd zlib-ng \
         && git checkout develop \
         && cmake -DZLIB_COMPAT=ON . \
-        && cmake --build . --config Release \
-        && cmake --build . --target install)
+        && cmake --build . --config Release)
     echo "torchdone"
 
     if [ -n "$IS_MACOS" ]; then
