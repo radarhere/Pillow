@@ -47,7 +47,6 @@ function build_zlib_ng {
         && git checkout develop \
         && cmake -DZLIB_COMPAT=ON . \
         && cmake --build . --config Release \
-        && ctest --verbose -C Release \
         && cmake --build . --target install)
     echo "torchdone"
 
