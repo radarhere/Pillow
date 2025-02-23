@@ -28,5 +28,7 @@ package-dir = { "" = "src" }
 before-all = ".github/workflows/wheels-dependencies.sh"
 build-verbosity = 1
 
+test-command = "python3 -c 'from PIL import _imaging'"
+
 [tool.cibuildwheel.macos.environment]
 PATH = "$(pwd)/build/deps/darwin/bin:$(dirname $(which python3)):/usr/bin:/bin:/usr/sbin:/sbin:/Library/Apple/usr/bin"
