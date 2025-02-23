@@ -45,7 +45,8 @@ function build_zlib_ng {
     fetch_unpack https://github.com/zlib-ng/zlib-ng/archive/$ZLIB_NG_VERSION.tar.gz zlib-ng-$ZLIB_NG_VERSION.tar.gz
     (cd zlib-ng-$ZLIB_NG_VERSION \
         && cmake -DZLIB_COMPAT=ON . \
-        && cmake --build . --config Release)
+        && cmake --build . --config Release \
+        && cmake --build . --target install)
     echo "torchdone"
 
     if [ -n "$IS_MACOS" ]; then
