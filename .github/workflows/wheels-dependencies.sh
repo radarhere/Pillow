@@ -44,9 +44,10 @@ function build_zlib_ng {
     git clone https://github.com/radarhere/zlib-ng
     (cd zlib-ng \
         && git checkout develop \
-        && ./configure --prefix=$BUILD_PREFIX --zlib-compat --debug \
-        && make -j4 \
-        && make install)
+        && cmake -DCMAKE_BUILD_TYPE=Debug -DZLIB_COMPAT=ON -DCMAKE_INSTALL_PREFIX:PATH=$BUILD_PREFIX . \
+        && cmake --build . --config Release \
+        && ctest --verbose -C Release \
+        && cmake --build . --target install)
 
     if [ -n "$IS_MACOS" ]; then
         # Ensure that on macOS, the library name is an absolute path, not an
