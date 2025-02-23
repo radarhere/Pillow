@@ -44,7 +44,7 @@ function build_zlib_ng {
     echo "torchstart"
     fetch_unpack https://github.com/zlib-ng/zlib-ng/archive/$ZLIB_NG_VERSION.tar.gz zlib-ng-$ZLIB_NG_VERSION.tar.gz
     (cd zlib-ng-$ZLIB_NG_VERSION \
-        && cmake -DZLIB_COMPAT=ON . \
+        && cmake -DCMAKE_BUILD_TYPE=Debug -DZLIB_COMPAT=ON -DCMAKE_INSTALL_PREFIX:PATH=$BUILD_PREFIX . \
         && cmake --build . --config Release \
         && cmake --build . --target install)
     echo "torchdone"
