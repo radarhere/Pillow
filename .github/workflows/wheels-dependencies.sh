@@ -42,12 +42,14 @@ ZLIB_NG_VERSION=2.2.4
 function build_zlib_ng {
     if [ -e zlib-stamp ]; then return; fi
     git clone https://github.com/radarhere/zlib-ng
+    echo "torchstart"
     (cd zlib-ng \
         && git checkout develop \
-        && cmake -DCMAKE_BUILD_TYPE=Debug -DZLIB_COMPAT=ON -DCMAKE_INSTALL_PREFIX:PATH=$BUILD_PREFIX . \
+        && cmake -DZLIB_COMPAT=ON . \
         && cmake --build . --config Release \
         && ctest --verbose -C Release \
         && cmake --build . --target install)
+    echo "torchdone"
 
     if [ -n "$IS_MACOS" ]; then
         # Ensure that on macOS, the library name is an absolute path, not an
