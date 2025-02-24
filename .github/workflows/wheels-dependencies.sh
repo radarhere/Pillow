@@ -41,8 +41,9 @@ ZLIB_NG_VERSION=2.2.4
 
 function build_zlib_ng {
     if [ -e zlib-stamp ]; then return; fi
-    fetch_unpack https://github.com/zlib-ng/zlib-ng/archive/$ZLIB_NG_VERSION.tar.gz zlib-ng-$ZLIB_NG_VERSION.tar.gz
-    (cd zlib-ng-$ZLIB_NG_VERSION \
+    git clone https://github.com/phprus/zlib-ng
+    (cd zlib-ng \
+        && git checkout macos-legacy-1 \
         && cmake . \
         && cmake --build . --config Release \
         && ctest --verbose -C Release)
