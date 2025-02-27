@@ -2211,7 +2211,9 @@ class AppendingTiffWriter(io.BytesIO):
         self._write(value, 4)
 
     def close(self) -> None:
-        print("close")
+        print("close", self.isFirst)
+        if self.f.closed:
+            return
         self.finalize()
         if self.close_fp:
             self.f.close()
