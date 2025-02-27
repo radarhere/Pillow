@@ -2100,6 +2100,7 @@ class AppendingTiffWriter(io.BytesIO):
         return self
 
     def __exit__(self, *args: object) -> None:
+        print("exit")
         if self.close_fp:
             self.close()
 
@@ -2209,6 +2210,7 @@ class AppendingTiffWriter(io.BytesIO):
         self._write(value, 4)
 
     def close(self) -> None:
+        print("close")
         self.finalize()
         if self.close_fp:
             self.f.close()
