@@ -32,3 +32,6 @@ with open("out.tiff", "w+b") as fp:
         print("_save", i)
         TiffImagePlugin._save(frame, tf, "out.tiff")
         print("_save end", i)
+        print("closed1" if tf.f.closed else "not closed1")
+        tf.newFrame()
+        print("closed2" if tf.f.closed else "not closed2")
