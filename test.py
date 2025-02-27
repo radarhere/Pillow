@@ -28,8 +28,7 @@ for i, frame in enumerate(image_list):
 with open("out.tiff", "w+b") as fp:
 	with TiffImagePlugin.AppendingTiffWriter(fp) as tf:
 		for frame in frames:
-			frame.encoderconfig = ()
-			TiffImagePlugin._save(frame, tf, "out.tiff")
+			frame.save(tf, "TIFF")
 			tf.newFrame()
 
 reloaded = Image.open("out.tiff")
