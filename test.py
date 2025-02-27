@@ -33,10 +33,3 @@ with open("out.tiff", "w+b") as fp:
 			TiffImagePlugin._save(frame, tf, "out.tiff")
 			print("_save end", i)
 			tf.newFrame()
-
-reloaded = Image.open("out.tiff")
-for tupleIdTag, _ in listOfTuples:
-	print(reloaded.tag_v2.get(tupleIdTag))
-reloaded.seek(1)
-for tupleIdTag, _ in listOfTuples:
-	print(reloaded.tag_v2.get(tupleIdTag))
