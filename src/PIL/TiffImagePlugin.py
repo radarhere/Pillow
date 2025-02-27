@@ -1876,6 +1876,7 @@ def _save(im: Image.Image, fp: IO[bytes], filename: str | bytes) -> None:
             ifd.setdefault(tag, default_value)
 
     blocklist = [TILEWIDTH, TILELENGTH, TILEOFFSETS, TILEBYTECOUNTS]
+    print("libtiff", libtiff)
     if libtiff:
         if "quality" in encoderinfo:
             quality = encoderinfo["quality"]

@@ -27,6 +27,11 @@ for i, frame in enumerate(image_list):
     frames.append(frame)
 with open("out.tiff", "w+b") as fp:
     with TiffImagePlugin.AppendingTiffWriter(fp) as tf:
+        frame = frames[0]
+        frame.encoderconfig = ()
+        print("_save", i)
+        TiffImagePlugin._save(frame, tf, "out.tiff")
+        print("_save end", i)
         print("closed1" if tf.f.closed else "not closed1")
         tf.newFrame()
         print("closed2" if tf.f.closed else "not closed2")

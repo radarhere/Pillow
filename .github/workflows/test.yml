@@ -50,9 +50,6 @@ jobs:
       run: |
         echo "PYTHON_GIL=0" >> $GITHUB_ENV
 
-    - name: Build system information
-      run: python3 .github/workflows/system-info.py
-
     - name: Cache libimagequant
       if: startsWith(matrix.os, 'ubuntu')
       uses: actions/cache@v4
@@ -99,25 +96,3 @@ jobs:
       env:
         PYTHONOPTIMIZE: ${{ matrix.PYTHONOPTIMIZE }}
         REVERSE: ${{ matrix.REVERSE }}
-
-    - name: Prepare to upload errors
-      if: failure()
-      run: |
-        mkdir -p Tests/errors
-
-    - name: Upload errors
-      uses: actions/upload-artifact@v4
-      if: failure()
-      with:
-        name: errors
-        path: Tests/errors
-
-  success:
-    permissions:
-      contents: none
-    needs: build
-    runs-on: ubuntu-latest
-    name: Test Successful
-    steps:
-      - name: Success
-        run: echo Test Successful
