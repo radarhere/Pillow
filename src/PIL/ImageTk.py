@@ -31,6 +31,7 @@ from io import BytesIO
 from typing import TYPE_CHECKING, Any, cast
 
 from . import Image, ImageFile
+from ._deprecate import deprecate
 
 if TYPE_CHECKING:
     from ._typing import CapsuleType
@@ -266,8 +267,6 @@ def getimage(photo: PhotoImage) -> Image.Image:
 
 
 def _show(image: Image.Image, title: str | None) -> None:
-    """Helper for the Image.show method."""
-
     class UI(tkinter.Label):
         def __init__(self, master: tkinter.Toplevel, im: Image.Image) -> None:
             self.image: BitmapImage | PhotoImage
@@ -281,6 +280,7 @@ def _show(image: Image.Image, title: str | None) -> None:
                 image = self.image
             super().__init__(master, image=image, bg="black", bd=0)
 
+    deprecate("ImageTk._show", 13)
     if not getattr(tkinter, "_default_root"):
         msg = "tkinter not initialized"
         raise OSError(msg)

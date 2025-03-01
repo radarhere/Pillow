@@ -112,3 +112,13 @@ def test_bitmapimage() -> None:
 
     with pytest.raises(ValueError):
         ImageTk.BitmapImage()
+
+
+def test_show_deprecated() -> None:
+    im = hopper()
+
+    with pytest.warns(DeprecationWarning):
+        try:
+            ImageTk._show(im, "test")
+        except tk.TclError:
+            pass

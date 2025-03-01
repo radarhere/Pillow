@@ -33,6 +33,14 @@ Image.Image.get_child_images()
 method uses an image's file pointer, and so child images could only be retrieved from
 an :py:class:`PIL.ImageFile.ImageFile` instance.
 
+ImageTk._show()
+^^^^^^^^^^^^^^^
+
+.. deprecated:: 11.2.0
+
+``ImageTk._show()`` has been deprecated, as it was an unused helper for
+:py:meth:`.Image.Image.show`.
+
 API Changes
 ===========
 
