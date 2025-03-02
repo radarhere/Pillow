@@ -598,6 +598,15 @@ j2ku_sycca_rgba(
     }
 }
 
+/*
+struct j2k_decode_unpacker {
+    const char *mode;
+    OPJ_COLOR_SPACE color_space;
+    unsigned components;
+    // bool indicating if unpacker supports subsampling
+    int subsampling;
+    j2k_unpacker_t unpacker;
+};*/
 static const struct j2k_decode_unpacker j2k_unpackers[] = {
     {"L", OPJ_CLRSPC_GRAY, 1, 0, j2ku_gray_l},
     {"P", OPJ_CLRSPC_SRGB, 1, 0, j2ku_gray_l},
@@ -742,6 +751,7 @@ j2k_decode_entry(Imaging im, ImagingCodecState state) {
 
     /* Find the correct unpacker */
     color_space = image->color_space;
+    printf("original color_space %d\n", color_space);
 
     if (color_space == OPJ_CLRSPC_UNKNOWN || color_space == OPJ_CLRSPC_UNSPECIFIED) {
         switch (image->numcomps) {
@@ -766,6 +776,11 @@ j2k_decode_entry(Imaging im, ImagingCodecState state) {
         }
     }
 
+    // OPJ_CLRSPC_GRAY 4
+    printf("color_space %d\n", color_space);
+    printf("image->numcomps %d\n", image->numcomps);
+    printf("subsampling %d\n", subsampling);
+    printf("mode %s\n", im->mode);
     for (n = 0; n < sizeof(j2k_unpackers) / sizeof(j2k_unpackers[0]); ++n) {
         if (color_space == j2k_unpackers[n].color_space &&
             image->numcomps == j2k_unpackers[n].components &&
@@ -777,6 +792,7 @@ j2k_decode_entry(Imaging im, ImagingCodecState state) {
     }
 
     if (!unpack) {
+        printf("e\n");
         state->errcode = IMAGING_CODEC_BROKEN;
         state->state = J2K_STATE_FAILED;
         goto quick_exit;
