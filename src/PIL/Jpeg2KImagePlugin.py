@@ -192,8 +192,10 @@ def _parse_jp2_header(
                 mode = "RGB"
             elif nc == 4:
                 mode = "RGBA"
+            print("nc", nc, "mode", mode, "bpc", bpc)
         elif tbox == b"colr" and nc == 4:
             meth, _, _, enumcs = header.read_fields(">BBBI")
+            print("meth", meth, "enumcs", enumcs)
             if meth == 1 and enumcs == 12:
                 mode = "CMYK"
         elif tbox == b"pclr" and mode in ("L", "LA"):
@@ -270,6 +272,7 @@ class Jpeg2KImageFile(ImageFile.ImageFile):
             else:
                 msg = "not a JPEG 2000 file"
                 raise SyntaxError(msg)
+        print("codec", self.codec)
 
         self._reduce = 0
         self.layers = 0
