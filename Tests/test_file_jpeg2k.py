@@ -57,5 +57,6 @@ def roundtrip(im: Image.Image, **options: Any) -> Image.Image:
 
 def test_9bit() -> None:
     with Image.open("000137.jp2") as im:
-        im.load()
         print(im)
+        im.load()
+        im.save('out.png')

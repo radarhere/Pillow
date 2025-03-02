@@ -189,20 +189,6 @@ jobs:
 
     - name: Upload errors
       uses: actions/upload-artifact@v4
-      if: failure()
       with:
-        name: errors
-        path: Tests/errors
-
-    - name: After success
-      run: |
-        .ci/after_success.sh
-      shell: pwsh
-
-    - name: Upload coverage
-      uses: codecov/codecov-action@v5
-      with:
-        files: ./coverage.xml
-        flags: GHA_Windows
-        name: ${{ runner.os }} Python ${{ matrix.python-version }}
-        token: ${{ secrets.CODECOV_ORG_TOKEN }}
+        name: out
+        path: out.png
