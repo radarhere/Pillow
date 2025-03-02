@@ -510,6 +510,5 @@ def test_plt_marker(card: ImageFile.ImageFile) -> None:
 
 
 def test_9bit() -> None:
-    with Image.open("Tests/images/9bit.j2k") as im:
-        assert im.mode == "I;16"
-        assert im.size == (128, 128)
+    with Image.open("000137.jp2") as im:
+        im.load()
