@@ -113,7 +113,6 @@ function build_libavif {
 
     # For rav1e
     curl https://sh.rustup.rs -sSf | sh -s -- -y
-    . "$HOME/.cargo/env"
     if [ -z "$IS_ALPINE" ] && [ -z "$SANITIZER" ] && [ -z "$IS_MACOS" ]; then
         yum install -y perl
         if [[ "$MB_ML_VER" == 2014 ]]; then
@@ -123,6 +122,7 @@ function build_libavif {
 
     local out_dir=$(fetch_unpack https://github.com/AOMediaCodec/libavif/archive/refs/tags/v$LIBAVIF_VERSION.tar.gz libavif-$LIBAVIF_VERSION.tar.gz)
     (cd $out_dir \
+        && . "$HOME/.cargo/env" \
         && cmake \
             -DCMAKE_INSTALL_PREFIX=$BUILD_PREFIX \
             -DCMAKE_INSTALL_LIBDIR=$BUILD_PREFIX/lib \
