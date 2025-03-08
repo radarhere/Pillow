@@ -405,3 +405,6 @@ def test_save_dxt1(tmp_path: Path) -> None:
 
     with Image.open(out) as reloaded:
         assert_image_similar(im, reloaded, 1.84)
+
+    with Image.open("Tests/images/transparent.png") as im:
+        im.save("temp.dds", pixel_format="DXT1")

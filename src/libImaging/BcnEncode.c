@@ -16,6 +16,11 @@ typedef struct {
     UINT8 color[3];
 } rgb;
 
+typedef struct {
+    UINT8 color[3];
+    int alpha;
+} rgba;
+
 static rgb
 decode_565(UINT16 x) {
     rgb item;
@@ -33,7 +38,7 @@ decode_565(UINT16 x) {
 }
 
 static UINT16
-encode_565(rgb item) {
+encode_565(rgba item) {
     UINT8 r, g, b;
     r = item.color[0] >> (8 - 5);
     g = item.color[1] >> (8 - 6);
@@ -48,9 +53,12 @@ ImagingBcnEncode(Imaging im, ImagingCodecState state, UINT8 *buf, int bytes) {
     for (;;) {
         int i, j, k;
         UINT16 color_min, color_max;
-        rgb block[16], color_min_rgb, color_max_rgb, *current_rgb;
+        rgb color_min_rgb, color_max_rgb;
+        rgba block[16], *current_rgba;
 
         // Determine the min and max colors in this 4x4 block
+        int has_alpha_channel = strcmp(im->mode, "RGBA") == 0;
+        int transparency = 0;
         for (i = 0; i < 4; i++) {
             for (j = 0; j < 4; j++) {
                 int x = state->x + i * im->pixelsize;
@@ -60,12 +68,20 @@ ImagingBcnEncode(Imaging im, ImagingCodecState state, UINT8 *buf, int bytes) {
                     continue;
                 }
 
-                current_rgb = &block[i + j * 4];
+                current_rgba = &block[i + j * 4];
                 for (k = 0; k < 3; k++) {
-                    current_rgb->color[k] = (UINT8)im->image[y][x + k];
+                    current_rgba->color[k] = (UINT8)im->image[y][x + k];
+                }
+                if (has_alpha_channel) {
+                    if ((UINT8)im->image[y][x + 3] == 0) {
+                        current_rgba->alpha = 0;
+                        transparency = 1;
+                    } else {
+                        current_rgba->alpha = 1;
+                    }
                 }
 
-                UINT16 color = encode_565(*current_rgb);
+                UINT16 color = encode_565(*current_rgba);
                 if ((i == 0 && j == 0) || color < color_min) {
                     color_min = color;
                 }
@@ -75,17 +91,27 @@ ImagingBcnEncode(Imaging im, ImagingCodecState state, UINT8 *buf, int bytes) {
             }
         }
 
+        if (transparency) {
+            *dst++ = color_min;
+            *dst++ = color_min >> 8;
+        }
         *dst++ = color_max;
         *dst++ = color_max >> 8;
-        *dst++ = color_min;
-        *dst++ = color_min >> 8;
+        if (!transparency) {
+            *dst++ = color_min;
+            *dst++ = color_min >> 8;
+        }
 
         color_min_rgb = decode_565(color_min);
         color_max_rgb = decode_565(color_max);
         for (i = 0; i < 4; i++) {
             UINT8 l = 0;
             for (j = 3; j > -1; j--) {
-                current_rgb = &block[i * 4 + j];
+                current_rgba = &block[i * 4 + j];
+                if (transparency && !current_rgba->alpha) {
+                    l |= 3 << (j * 2);
+                    continue;
+                }
 
                 float distance = 0;
                 int total = 0;
@@ -94,7 +120,7 @@ ImagingBcnEncode(Imaging im, ImagingCodecState state, UINT8 *buf, int bytes) {
                         (float)abs(color_max_rgb.color[k] - color_min_rgb.color[k]);
                     if (denom != 0) {
                         distance +=
-                            abs(current_rgb->color[k] - color_min_rgb.color[k]) / denom;
+                            abs(current_rgba->color[k] - color_min_rgb.color[k]) / denom;
                         total += 1;
                     }
                 }
@@ -102,14 +128,24 @@ ImagingBcnEncode(Imaging im, ImagingCodecState state, UINT8 *buf, int bytes) {
                     continue;
                 }
                 distance *= 6 / total;
-                if (distance < 1) {
-                    l |= 1 << (j * 2);  // color_min
-                } else if (distance < 3) {
-                    l |= 3 << (j * 2);  // 1/3 * color_min + 2/3 * color_max
-                } else if (distance < 5) {
-                    l |= 2 << (j * 2);  // 2/3 * color_min + 1/3 * color_max
+                if (transparency) {
+                    if (distance < 1.5) {
+                        // color_max
+                    } else if (distance < 4.5) {
+                        l |= 2 << (j * 2);  // 1/2 * color_min + 1/2 * color_max
+                    } else {
+                        l |= 1 << (j * 2);  // color_min
+                    }
                 } else {
-                    // color_max
+                    if (distance < 1) {
+                        l |= 1 << (j * 2);  // color_min
+                    } else if (distance < 3) {
+                        l |= 3 << (j * 2);  // 1/3 * color_min + 2/3 * color_max
+                    } else if (distance < 5) {
+                        l |= 2 << (j * 2);  // 2/3 * color_min + 1/3 * color_max
+                    } else {
+                        // color_max
+                    }
                 }
             }
             *dst++ = l;
