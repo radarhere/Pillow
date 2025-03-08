@@ -95,6 +95,7 @@ ImagingBcnEncode(Imaging im, ImagingCodecState state, UINT8 *buf, int bytes) {
         }
 
         if (transparency) {
+            printf("transparency\n");
             *dst++ = color_min;
             *dst++ = color_min >> 8;
         }
