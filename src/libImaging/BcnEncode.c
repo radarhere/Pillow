@@ -133,11 +133,11 @@ ImagingBcnEncode(Imaging im, ImagingCodecState state, UINT8 *buf, int bytes) {
                 distance *= 6 / total;
                 if (transparency) {
                     if (distance < 1.5) {
-                        l |= 1 << (j * 2);  // color_min
+                        // color_max
                     } else if (distance < 4.5) {
                         l |= 2 << (j * 2);  // 1/2 * color_min + 1/2 * color_max
                     } else {
-                        // color_max
+                        l |= 1 << (j * 2);  // color_min
                     }
                 } else {
                     if (distance < 1) {
