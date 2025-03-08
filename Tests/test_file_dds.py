@@ -9,7 +9,12 @@ import pytest
 
 from PIL import DdsImagePlugin, Image
 
-from .helper import assert_image_equal, assert_image_equal_tofile, hopper
+from .helper import (
+    assert_image_equal,
+    assert_image_equal_tofile,
+    assert_image_similar,
+    hopper,
+)
 
 TEST_FILE_DXT1 = "Tests/images/dxt1-rgb-4bbp-noalpha_MipMaps-1.dds"
 TEST_FILE_DXT3 = "Tests/images/dxt3-argb-8bbp-explicitalpha_MipMaps-1.dds"
@@ -391,3 +396,12 @@ def test_save(mode: str, test_file: str, tmp_path: Path) -> None:
 
         with Image.open(out) as reloaded:
             assert_image_equal(im, reloaded)
+
+
+def test_save_dxt1(tmp_path: Path) -> None:
+    out = str(tmp_path / "temp.dds")
+    with Image.open("Tests/images/dxt1-rgb-4bbp-noalpha_MipMaps-1.dds") as im:
+        im.save(out, pixel_format="DXT1")
+
+    with Image.open(out) as reloaded:
+        assert_image_similar(im, reloaded, 1.84)
