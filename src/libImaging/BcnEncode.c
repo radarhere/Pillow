@@ -52,12 +52,13 @@ ImagingBcnEncode(Imaging im, ImagingCodecState state, UINT8 *buf, int bytes) {
 
     for (;;) {
         int i, j, k;
-        UINT16 color_min, color_max;
+        UINT16 color_min = 0, color_max = 0;
         rgb color_min_rgb, color_max_rgb;
         rgba block[16], *current_rgba;
 
         // Determine the min and max colors in this 4x4 block
         int has_alpha_channel = strcmp(im->mode, "RGBA") == 0;
+        int first = 1;
         int transparency = 0;
         for (i = 0; i < 4; i++) {
             for (j = 0; j < 4; j++) {
@@ -76,18 +77,20 @@ ImagingBcnEncode(Imaging im, ImagingCodecState state, UINT8 *buf, int bytes) {
                     if ((UINT8)im->image[y][x + 3] == 0) {
                         current_rgba->alpha = 0;
                         transparency = 1;
+                        continue;
                     } else {
                         current_rgba->alpha = 1;
                     }
                 }
 
                 UINT16 color = encode_565(*current_rgba);
-                if ((i == 0 && j == 0) || color < color_min) {
+                if (first || color < color_min) {
                     color_min = color;
                 }
-                if ((i == 0 && j == 0) || color > color_max) {
+                if (first || color > color_max) {
                     color_max = color;
                 }
+                first = 0;
             }
         }
 
@@ -130,11 +133,11 @@ ImagingBcnEncode(Imaging im, ImagingCodecState state, UINT8 *buf, int bytes) {
                 distance *= 6 / total;
                 if (transparency) {
                     if (distance < 1.5) {
-                        // color_max
+                        l |= 1 << (j * 2);  // color_min
                     } else if (distance < 4.5) {
                         l |= 2 << (j * 2);  // 1/2 * color_min + 1/2 * color_max
                     } else {
-                        l |= 1 << (j * 2);  // color_min
+                        // color_max
                     }
                 } else {
                     if (distance < 1) {
