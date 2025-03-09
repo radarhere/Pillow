@@ -73,7 +73,7 @@ ImagingBcnEncode(Imaging im, ImagingCodecState state, UINT8 *buf, int bytes) {
                 current_rgba = &block[i + j * 4];
                 for (k = 0; k < 3; k++) {
                     current_rgba->color[k] =
-                        (UINT8)im->image[y][x + (im->pixelsize == 1 ? 1 : k)];
+                        (UINT8)im->image[y][x + (im->pixelsize == 1 ? 0 : k)];
                 }
                 if (has_alpha_channel) {
                     if ((UINT8)im->image[y][x + 3] == 0) {
