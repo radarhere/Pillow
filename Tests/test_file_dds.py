@@ -402,3 +402,10 @@ def test_save_dxt1(tmp_path: Path) -> None:
     with Image.open(TEST_FILE_DXT1) as im:
         im.convert("RGB").save(out, pixel_format="DXT1")
     assert_image_similar_tofile(im, out, 1.84)
+
+    out = str(tmp_path / "temp_rgba.dds")
+    im_alpha = im.copy()
+    im_alpha.putpixel((0, 0), (0, 0, 0, 0))
+    im_alpha.save(out, pixel_format="DXT1")
+    with Image.open(out) as reloaded:
+        assert reloaded.getpixel((0, 0)) == (0, 0, 0, 0)
