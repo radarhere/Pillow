@@ -409,3 +409,8 @@ def test_save_dxt1(tmp_path: Path) -> None:
     im_alpha.save(out, pixel_format="DXT1")
     with Image.open(out) as reloaded:
         assert reloaded.getpixel((0, 0)) == (0, 0, 0, 0)
+
+    out = str(tmp_path / "temp_l.dds")
+    im_l = im.convert("L")
+    im_l.save(out, pixel_format="DXT1")
+    assert_image_similar_tofile(im_l.convert("RGBA"), out, 9.25)
