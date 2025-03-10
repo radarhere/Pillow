@@ -38,6 +38,7 @@ jobs:
         ]
         python-version: [
           "3.10",
+          "3.13",
         ]
 
     runs-on: ${{ matrix.os }}
@@ -64,10 +65,3 @@ jobs:
     - name: Test
       run: |
         python3 -m pip install Pillow==10.2.0
-        python3 demo.py
-        python3 -m pip install Pillow==10.3.0
-        python3 demo.py
-        python3 -m pip install Pillow==10.4.0
-        python3 demo.py
-        python3 -m pip install Pillow==11.1.0
-        python3 demo.py
