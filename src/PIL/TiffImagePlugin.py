@@ -1291,7 +1291,6 @@ class TiffImageFile(ImageFile.ImageFile):
         return blocks
 
     def load(self) -> Image.core.PixelAccess | None:
-        self.use_load_libtiff = False
         print("tile", self.tile)
         if self.tile and self.use_load_libtiff:
             return self._load_libtiff()
@@ -1550,6 +1549,7 @@ class TiffImageFile(ImageFile.ImageFile):
         # build tile descriptors
         x = y = layer = 0
         self.tile = []
+        print("compression", self._compression)
         self.use_load_libtiff = READ_LIBTIFF or self._compression != "raw"
         if self.use_load_libtiff:
             # Decoder expects entire file as one tile.
