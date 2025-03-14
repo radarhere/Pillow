@@ -1292,6 +1292,7 @@ class TiffImageFile(ImageFile.ImageFile):
 
     def load(self) -> Image.core.PixelAccess | None:
         self.use_load_libtiff = False
+        print("tile", self.tile)
         if self.tile and self.use_load_libtiff:
             return self._load_libtiff()
         return super().load()
