@@ -558,6 +558,7 @@ _decodeStrip(
                 ) == -1) {
                 TRACE(("Decode Error, strip %d\n", TIFFComputeStrip(tiff, state->y, 0))
                 );
+                printf("pillow strip broken\n");
                 state->errcode = IMAGING_CODEC_BROKEN;
                 return -1;
             }
