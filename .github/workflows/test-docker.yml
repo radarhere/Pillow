@@ -22,10 +22,6 @@ on:
 permissions:
   contents: read
 
-concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
-
 jobs:
   build:
 
@@ -38,20 +34,6 @@ jobs:
           # Run slower jobs first to give them a headstart and reduce waiting time
           ubuntu-24.04-noble-ppc64le,
           ubuntu-24.04-noble-s390x,
-          # Then run the remainder
-          alpine,
-          amazon-2-amd64,
-          amazon-2023-amd64,
-          arch,
-          centos-stream-9-amd64,
-          centos-stream-10-amd64,
-          debian-12-bookworm-x86,
-          debian-12-bookworm-amd64,
-          fedora-40-amd64,
-          fedora-41-amd64,
-          gentoo,
-          ubuntu-22.04-jammy-amd64,
-          ubuntu-24.04-noble-amd64,
         ]
         dockerTag: [main]
         include:
@@ -59,9 +41,6 @@ jobs:
             qemu-arch: "ppc64le"
           - docker: "ubuntu-24.04-noble-s390x"
             qemu-arch: "s390x"
-          - docker: "ubuntu-24.04-noble-arm64v8"
-            os: "ubuntu-24.04-arm"
-            dockerTag: main
 
     name: ${{ matrix.docker }}
 
@@ -76,7 +55,9 @@ jobs:
     - name: Set up QEMU
       if: "matrix.qemu-arch"
       run: |
+        uname -a
         docker run --rm --privileged aptman/qus -s -- -p ${{ matrix.qemu-arch }}
+        uname -a
 
     - name: Docker pull
       run: |
