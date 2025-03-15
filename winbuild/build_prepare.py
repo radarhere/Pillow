@@ -471,7 +471,7 @@ def extract_dep(url: str, filename: str, prefs: dict[str, str]) -> None:
         # First try our mirror
         mirror_url = (
             f"https://raw.githubusercontent.com/"
-            f"python-pillow/pillow-depends/main/{filename}"
+            f"radarhere/pillow-depends/main/{filename}"
         )
         try:
             download_dep(mirror_url, file)
