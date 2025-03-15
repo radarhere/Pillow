@@ -1548,7 +1548,7 @@ class TiffImageFile(ImageFile.ImageFile):
         # build tile descriptors
         x = y = layer = 0
         self.tile = []
-        self.use_load_libtiff = READ_LIBTIFF or self._compression != "raw"
+        self.use_load_libtiff = False
         if self.use_load_libtiff:
             # Decoder expects entire file as one tile.
             # There's a buffer size limit in load (64k)
