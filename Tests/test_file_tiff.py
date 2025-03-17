@@ -35,6 +35,6 @@ class TestFileTiff:
     def test_timeout(self, monkeypatch: pytest.MonkeyPatch) -> None:
         import time
         start = time.time()
-        with Image.open("Tests/images/timeout-6646305047838720") as im:
+        with TiffImagePlugin.TiffImageFile("Tests/images/timeout-6646305047838720") as im:
             monkeypatch.setattr(ImageFile, "LOAD_TRUNCATED_IMAGES", True)
         print(time.time() - start)
