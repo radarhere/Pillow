@@ -1610,11 +1610,11 @@ class TiffImageFile(ImageFile.ImageFile):
 
             w2 = w * sum(bps_tuple) / 8
             last = None
+            if x + w > xsize:
+                stride = w2  # bytes per line
+            else:
+                stride = 0
             for offset in offsets:
-                if x + w > xsize:
-                    stride = w2  # bytes per line
-                else:
-                    stride = 0
 
                 tile_rawmode = rawmode
                 if self._planar_configuration == 2:
@@ -1637,10 +1637,13 @@ class TiffImageFile(ImageFile.ImageFile):
                 last = (extents, args)
                 x += w
                 if x >= xsize:
+                    stride = w2  # bytes per line
                     x, y = 0, y + h
                     if y >= ysize:
                         x = y = 0
                         layer += 1
+                else:
+                    stride = 0
         else:
             logger.debug("- unsupported data organization")
             msg = "unknown data organization"
