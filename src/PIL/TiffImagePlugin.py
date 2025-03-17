@@ -1636,8 +1636,6 @@ class TiffImageFile(ImageFile.ImageFile):
                     if y >= ysize:
                         x = y = 0
                         layer += 1
-            for t in self.tile[:10]:
-                print(t)
         else:
             logger.debug("- unsupported data organization")
             msg = "unknown data organization"
