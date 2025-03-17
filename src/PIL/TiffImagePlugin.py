@@ -1608,6 +1608,36 @@ class TiffImageFile(ImageFile.ImageFile):
                     raise ValueError(msg)
                 w = tilewidth
 
+            for offset in offsets:
+                if x + w > xsize:
+                    stride = w * sum(bps_tuple) / 8  # bytes per line
+                else:
+                    stride = 0
+
+                tile_rawmode = rawmode
+                if self._planar_configuration == 2:
+                    # each band on it's own layer
+                    tile_rawmode = rawmode[layer]
+                    # adjust stride width accordingly
+                    stride /= bps_count
+
+                args = (tile_rawmode, int(stride), 1)
+                self.tile.append(
+                    ImageFile._Tile(
+                        self._compression,
+                        (x, y, min(x + w, xsize), min(y + h, ysize)),
+                        offset,
+                        args,
+                    )
+                )
+                x = x + w
+                if x >= xsize:
+                    x, y = 0, y + h
+                    if y >= ysize:
+                        x = y = 0
+                        layer += 1
+            self.tile = []
+
 #
 # --------------------------------------------------------------------
 # Write TIFF files
