@@ -345,6 +345,7 @@ class ImageFile(Image.Image):
                     self.tile, lambda tile: (tile[0], tile[1], tile[3])
                 )
             ]
+            print(self.tile)
             for decoder_name, extents, offset, args in self.tile:
                 seek(offset)
                 decoder = Image._getdecoder(
