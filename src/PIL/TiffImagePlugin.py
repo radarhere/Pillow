@@ -1608,9 +1608,10 @@ class TiffImageFile(ImageFile.ImageFile):
                     raise ValueError(msg)
                 w = tilewidth
 
+            w2 = w * sum(bps_tuple) / 8
             for offset in offsets:
                 if x + w > xsize:
-                    stride = w * sum(bps_tuple) / 8  # bytes per line
+                    stride = w2  # bytes per line
                 else:
                     stride = 0
 
@@ -1630,7 +1631,7 @@ class TiffImageFile(ImageFile.ImageFile):
                         args,
                     )
                 )
-                x = x + w
+                x += w
                 if x >= xsize:
                     x, y = 0, y + h
                     if y >= ysize:
