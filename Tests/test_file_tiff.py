@@ -37,4 +37,5 @@ class TestFileTiff:
         start = time.time()
         with TiffImagePlugin.TiffImageFile("Tests/images/timeout-6646305047838720") as im:
             monkeypatch.setattr(ImageFile, "LOAD_TRUNCATED_IMAGES", True)
+            im.load()
         print(time.time() - start)

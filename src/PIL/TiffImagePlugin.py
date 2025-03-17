@@ -1636,6 +1636,23 @@ class TiffImageFile(ImageFile.ImageFile):
                     if y >= ysize:
                         x = y = 0
                         layer += 1
+            for t in self.tile[:10]:
+                print(t)
+        else:
+            logger.debug("- unsupported data organization")
+            msg = "unknown data organization"
+            raise SyntaxError(msg)
+
+        # Fix up info.
+        if ICCPROFILE in self.tag_v2:
+            self.info["icc_profile"] = self.tag_v2[ICCPROFILE]
+
+        # fixup palette descriptor
+
+        if self.mode in ["P", "PA"]:
+            palette = [o8(b // 256) for b in self.tag_v2[COLORMAP]]
+            self.palette = ImagePalette.raw("RGB;L", b"".join(palette))
+
 
 #
 # --------------------------------------------------------------------
