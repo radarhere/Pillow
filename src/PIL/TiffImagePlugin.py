@@ -1263,7 +1263,6 @@ class TiffImageFile(ImageFile.ImageFile):
         # fill the legacy tag/ifd entries
         self.tag = self.ifd = ImageFileDirectory_v1.from_v2(self.tag_v2)
         self.__frame = frame
-        self._setup()
 
     def tell(self) -> int:
         """Return the current frame number"""
