@@ -1608,22 +1608,23 @@ class TiffImageFile(ImageFile.ImageFile):
                     raise ValueError(msg)
                 w = tilewidth
 
-            w2 = w * sum(bps_tuple) / 8
+            w2 = int(w * sum(bps_tuple) / 8)
             last = None
             if x + w > xsize:
                 stride = w2  # bytes per line
             else:
                 stride = 0
             for offset in offsets:
-
-                tile_rawmode = rawmode
                 if self._planar_configuration == 2:
                     # each band on it's own layer
                     tile_rawmode = rawmode[layer]
                     # adjust stride width accordingly
                     stride /= bps_count
+                else:
+                    tile_rawmode = rawmode
 
-                args = (tile_rawmode, int(stride), 1)
+
+                args = (tile_rawmode, stride, 1)
                 extents = (x, y, min(x + w, xsize), min(y + h, ysize))
                 if (extents, args) != last:
                     self.tile.append(
