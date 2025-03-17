@@ -1609,6 +1609,7 @@ class TiffImageFile(ImageFile.ImageFile):
                 w = tilewidth
 
             w2 = w * sum(bps_tuple) / 8
+            last = None
             for offset in offsets:
                 if x + w > xsize:
                     stride = w2  # bytes per line
@@ -1624,7 +1625,7 @@ class TiffImageFile(ImageFile.ImageFile):
 
                 args = (tile_rawmode, int(stride), 1)
                 extents = (x, y, min(x + w, xsize), min(y + h, ysize))
-                if not (self.tile and self.tile[-1].extents == extents and self.tile[-1].args == args):
+                if (extents, args) != last:
                     self.tile.append(
                         ImageFile._Tile(
                             self._compression,
@@ -1633,6 +1634,7 @@ class TiffImageFile(ImageFile.ImageFile):
                             args,
                         )
                     )
+                last = (extents, args)
                 x += w
                 if x >= xsize:
                     x, y = 0, y + h
