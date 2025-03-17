@@ -1608,7 +1608,27 @@ class TiffImageFile(ImageFile.ImageFile):
                     raise ValueError(msg)
                 w = tilewidth
 
+            xys = []
             for offset in offsets:
+                x += w
+                if x >= xsize:
+                    x, y = 0, y + h
+                    if y >= ysize:
+                        y = 0
+                        layer += 1
+                if self._planar_configuration == 2:
+                    xys.append((x, y, layer))
+                else:
+                    xys.append((x, y))
+            if self._planar_configuration != 2:
+                xy = xys[-1]
+                if xy[0] == 0 and xy[1] == 0 and xy[0] + w >= xsize and xy[1] + h >= ysize:
+                    xys = [xy[-1]]
+            for i, offset in enumerate(offsets):
+                if self._planar_configuration == 2:
+                    x, y, layer = xys[i]
+                else:
+                    x, y = xys[i]
                 if x + w > xsize:
                     stride = w * sum(bps_tuple) / 8  # bytes per line
                 else:
@@ -1630,12 +1650,6 @@ class TiffImageFile(ImageFile.ImageFile):
                         args,
                     )
                 )
-                x += w
-                if x >= xsize:
-                    x, y = 0, y + h
-                    if y >= ysize:
-                        y = 0
-                        layer += 1
         else:
             logger.debug("- unsupported data organization")
             msg = "unknown data organization"
