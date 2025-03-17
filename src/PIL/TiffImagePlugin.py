@@ -1623,14 +1623,16 @@ class TiffImageFile(ImageFile.ImageFile):
                     stride /= bps_count
 
                 args = (tile_rawmode, int(stride), 1)
-                self.tile.append(
-                    ImageFile._Tile(
-                        self._compression,
-                        (x, y, min(x + w, xsize), min(y + h, ysize)),
-                        offset,
-                        args,
+                extents = (x, y, min(x + w, xsize), min(y + h, ysize))
+                if not (self.tile and self.tile[-1].extents == extents and self.tile[-1].args == args):
+                    self.tile.append(
+                        ImageFile._Tile(
+                            self._compression,
+                            extents,
+                            offset,
+                            args,
+                        )
                     )
-                )
                 x += w
                 if x >= xsize:
                     x, y = 0, y + h
