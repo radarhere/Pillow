@@ -950,7 +950,7 @@ class TestFileTiff:
             with pytest.raises(OSError):
                 im.load()
 
-    @pytest.mark.timeout(8)
+    @pytest.mark.timeout(7)
     @pytest.mark.filterwarnings("ignore:Truncated File Read")
     def test_timeout(self, monkeypatch: pytest.MonkeyPatch) -> None:
         with Image.open("Tests/images/timeout-6646305047838720") as im:
