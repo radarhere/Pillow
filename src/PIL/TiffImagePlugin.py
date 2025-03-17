@@ -1608,6 +1608,9 @@ class TiffImageFile(ImageFile.ImageFile):
                     raise ValueError(msg)
                 w = tilewidth
 
+            if w == xsize and h == ysize and self._planar_configuration != 2:
+                # Every tile will fill the image. Only use the last offset
+                offsets = [offsets[-1]]
             for offset in offsets:
                 if x + w > xsize:
                     stride = w * sum(bps_tuple) / 8  # bytes per line
