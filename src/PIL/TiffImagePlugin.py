@@ -1636,7 +1636,6 @@ class TiffImageFile(ImageFile.ImageFile):
                     if y >= ysize:
                         x = y = 0
                         layer += 1
-            self.tile = []
 
 #
 # --------------------------------------------------------------------
