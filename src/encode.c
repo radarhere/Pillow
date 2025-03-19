@@ -28,6 +28,7 @@
 #include "thirdparty/pythoncapi_compat.h"
 #include "libImaging/Imaging.h"
 #include "libImaging/Gif.h"
+#include "libImaging/Bcn.h"
 
 #ifdef HAVE_UNISTD_H
 #include <unistd.h> /* write */
@@ -358,12 +359,14 @@ PyObject *
 PyImaging_BcnEncoderNew(PyObject *self, PyObject *args) {
     ImagingEncoderObject *encoder;
 
-    encoder = PyImaging_EncoderNew(0);
+    encoder = PyImaging_EncoderNew(sizeof(char *));
     if (encoder == NULL) {
         return NULL;
     }
 
     encoder->encode = ImagingBcnEncode;
+    encoder->state.state = 1;
+    ((BCNSTATE *)encoder->state.context)->pixel_format = "DXT1";
 
     return (PyObject *)encoder;
 }
