@@ -26,5 +26,6 @@ jobs:
 
       - name: Prepare for build
         run: |
-          & python.exe winbuild\build_prepare.py -v --no-imagequant --architecture=AMD64
-        shell: pwsh
+          git clone https://github.com/AOMediaCodec/libavif.git
+          cmake -S libavif -B libavif/build -DAVIF_CODEC_RAV1E=LOCAL -DAVIF_LIBYUV=LOCAL
+          cmake --build libavif/build
