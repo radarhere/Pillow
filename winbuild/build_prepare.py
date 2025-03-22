@@ -104,9 +104,7 @@ def cmd_msbuild(
 SF_PROJECTS = "https://sourceforge.net/projects"
 
 ARCHITECTURES = {
-    "x86": {"vcvars_arch": "x86", "msbuild_arch": "Win32"},
     "AMD64": {"vcvars_arch": "x86_amd64", "msbuild_arch": "x64"},
-    "ARM64": {"vcvars_arch": "x86_arm64", "msbuild_arch": "ARM64"},
 }
 
 V = {
