@@ -28,4 +28,4 @@ jobs:
         run: |
           git clone https://github.com/AOMediaCodec/libavif.git
           cmake -S libavif -B libavif/build -DAVIF_CODEC_RAV1E=LOCAL -DAVIF_LIBYUV=LOCAL
-          cmake --build libavif/build
+          cmake --build libavif/build --parallel
