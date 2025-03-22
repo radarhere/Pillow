@@ -28,20 +28,11 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - cibw_arch: x86
           - cibw_arch: AMD64
-          - cibw_arch: ARM64
     steps:
       - uses: actions/checkout@v4
         with:
           persist-credentials: false
-
-      - name: Checkout extra test images
-        uses: actions/checkout@v4
-        with:
-          persist-credentials: false
-          repository: python-pillow/test-images
-          path: Tests\test-images
 
       - uses: actions/setup-python@v5
         with:
@@ -55,9 +46,6 @@ jobs:
         run: |
           choco install nasm --no-progress
           echo "C:\Program Files\NASM" >> $env:GITHUB_PATH
-
-          # Install extra test images
-          xcopy /S /Y Tests\test-images\* Tests\images
 
           & python.exe winbuild\build_prepare.py -v --no-imagequant --architecture=${{ matrix.cibw_arch }}
         shell: pwsh
