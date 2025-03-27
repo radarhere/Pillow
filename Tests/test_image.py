@@ -31,6 +31,7 @@ from .helper import (
     assert_not_all_same,
     hopper,
     is_big_endian,
+    is_pypy,
     is_win32,
     mark_if_feature_version,
     skip_unless_feature,
@@ -257,6 +258,16 @@ class TestImage:
         with Image.open(temp_file) as im:
             assert im.readonly
             im.save(temp_file)
+
+    @pytest.mark.skipif(is_pypy(), reason="Requires mmap")
+    def test_save_without_changing_readonly(self, tmp_path: Path) -> None:
+        temp_file = tmp_path / "temp.bmp"
+
+        with Image.open("Tests/images/rgb32bf-rgba.bmp") as im:
+            assert im.readonly
+
+            im.save(temp_file)
+            assert im.readonly
 
     def test_dump(self, tmp_path: Path) -> None:
         im = Image.new("L", (10, 10))
