@@ -102,7 +102,11 @@ function build_harfbuzz {
 }
 
 function build {
-    build_xz
+    build_xz || true
+    echo "torchstart"
+    cat /project/build/xz-5.8.0/po/Makefile
+    echo "torchend"
+    exit
     if [ -z "$IS_ALPINE" ] && [ -z "$SANITIZER" ] && [ -z "$IS_MACOS" ]; then
         yum remove -y zlib-devel
     fi
