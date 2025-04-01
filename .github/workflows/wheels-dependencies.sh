@@ -138,7 +138,7 @@ function build_libavif {
 
     local out_dir=$(fetch_unpack https://github.com/AOMediaCodec/libavif/archive/refs/tags/v$LIBAVIF_VERSION.tar.gz libavif-$LIBAVIF_VERSION.tar.gz)
     (cd $out_dir \
-        && CMAKE_POLICY_VERSION_MINIMUM=3.5 cmake \
+        && cmake \
             -DCMAKE_INSTALL_PREFIX=$BUILD_PREFIX \
             -DCMAKE_INSTALL_LIBDIR=$BUILD_PREFIX/lib \
             -DCMAKE_BUILD_TYPE=Release \
