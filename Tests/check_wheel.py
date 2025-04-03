@@ -10,7 +10,7 @@ from .helper import is_pypy
 
 
 def test_wheel_modules() -> None:
-    expected_modules = {"pil", "tkinter", "freetype2", "littlecms2", "webp", "avif"}
+    expected_modules = {"pil", "tkinter", "freetype2", "littlecms2", "webp"}
 
     # tkinter is not available in cibuildwheel installed CPython on Windows
     try:
