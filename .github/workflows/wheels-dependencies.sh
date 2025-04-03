@@ -172,7 +172,6 @@ function build {
         build_tiff
     fi
 
-    build_libavif
     build_libpng
     build_lcms2
     build_openjpeg
