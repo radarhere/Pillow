@@ -485,6 +485,8 @@ def download_dep(url: str, file: str) -> None:
 def extract_dep(url: str, filename: str, prefs: dict[str, str]) -> None:
     import tarfile
     import zipfile
+    if filename[:4] == "tiff":
+        return
 
     depends_dir = prefs["depends_dir"]
     sources_dir = prefs["src_dir"]
@@ -579,22 +581,6 @@ def build_dep(name: str, prefs: dict[str, str], verbose: bool) -> str:
     sources_dir = prefs["src_dir"]
 
     extract_dep(dep["url"], dep["filename"], prefs)
-
-    licenses = dep["license"]
-    if isinstance(licenses, str):
-        licenses = [licenses]
-    license_text = ""
-    for license_file in licenses:
-        with open(os.path.join(sources_dir, directory, license_file)) as f:
-            license_text += f.read()
-    if "license_pattern" in dep:
-        match = re.search(dep["license_pattern"], license_text, re.DOTALL)
-        assert match is not None
-        license_text = "\n".join(match.groups())
-    assert len(license_text) > 50
-    with open(os.path.join(license_dir, f"{directory}.txt"), "w") as f:
-        print(f"Writing license {directory}.txt")
-        f.write(license_text)
 
     for patch_file, patch_list in dep.get("patch", {}).items():
         patch_file = os.path.join(sources_dir, directory, patch_file.format(**prefs))
@@ -741,8 +727,8 @@ def main() -> None:
     # copy dependency licenses to this directory
     license_dir = os.path.join(args.build_dir, "license")
 
-    shutil.rmtree(args.build_dir, ignore_errors=True)
-    os.makedirs(args.build_dir, exist_ok=False)
+    #shutil.rmtree(args.build_dir, ignore_errors=True)
+    #os.makedirs(args.build_dir, exist_ok=False)
     for path in [inc_dir, lib_dir, bin_dir, sources_dir, license_dir]:
         os.makedirs(path, exist_ok=True)
 

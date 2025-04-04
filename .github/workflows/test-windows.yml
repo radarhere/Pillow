@@ -2,21 +2,7 @@ name: Test Windows
 
 on:
   push:
-    branches:
-      - "**"
-    paths-ignore:
-      - ".github/workflows/docs.yml"
-      - ".github/workflows/wheels*"
-      - ".gitmodules"
-      - "docs/**"
-      - "wheels/**"
   pull_request:
-    paths-ignore:
-      - ".github/workflows/docs.yml"
-      - ".github/workflows/wheels*"
-      - ".gitmodules"
-      - "docs/**"
-      - "wheels/**"
   workflow_dispatch:
 
 permissions:
@@ -55,13 +41,6 @@ jobs:
         repository: python-pillow/pillow-depends
         path: winbuild\depends
 
-    - name: Checkout extra test images
-      uses: actions/checkout@v4
-      with:
-        persist-credentials: false
-        repository: python-pillow/test-images
-        path: Tests\test-images
-
     # sets env: pythonLocation
     - name: Set up Python
       uses: actions/setup-python@v5
@@ -84,9 +63,6 @@ jobs:
       run: |
         choco install nasm --no-progress
         echo "C:\Program Files\NASM" >> $env:GITHUB_PATH
-
-        # Install extra test images
-        xcopy /S /Y Tests\test-images\* Tests\images
 
         # make cache key depend on VS version
         & "C:\Program Files (x86)\Microsoft Visual Studio\Installer\vswhere.exe" `
