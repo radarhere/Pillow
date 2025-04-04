@@ -209,12 +209,14 @@ static int LZMADecode(TIFF *tif, uint8_t *op, tmsize_t occ, uint16_t s)
         size_t avail_in = sp->stream.avail_in;
 
         lzma_ret ret = lzma_code(&sp->stream, LZMA_RUN);
+        printf("ret1 %d %d %d\n", ret, LZMA_STREAM_END, LZMA_DATA_ERROR);
         if (ret == LZMA_STREAM_END)
             break;
         if (ret == LZMA_MEMLIMIT_ERROR)
         {
             lzma_ret r =
                 lzma_stream_decoder(&sp->stream, lzma_memusage(&sp->stream), 0);
+            printf("ret2 %d\n", r);
             if (r != LZMA_OK)
             {
                 printf("break1\n");
