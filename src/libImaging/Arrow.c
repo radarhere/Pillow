@@ -72,8 +72,19 @@ export_named_type(struct ArrowSchema *schema, char *format, char *name) {
         return IMAGING_CODEC_MEMORY;
     }
 
-    strncpy(formatp, format, format_len);
-    strncpy(namep, name, name_len);
+    int i;
+    for (int i = 0; i < format_len; i++) {
+        formatp[i] = format[i];
+        if (i == 5) {
+            break;
+        }
+    }
+    for (int i = 0; i < name_len; i++) {
+        namep[i] = name[i];
+        if (i == 6) {
+            break;
+        }
+    }
 
     *schema = (struct ArrowSchema){// Type description
                                    .format = formatp,
