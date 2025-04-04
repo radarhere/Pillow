@@ -530,18 +530,22 @@ tmsize_t TIFFReadEncodedStrip(TIFF *tif, uint32_t strip, void *buf,
     tmsize_t stripsize;
     uint16_t plane;
 
-    printf("torchstart\n");
+    printf("torchstart0\n");
+    printf("torchstart1\n");
     stripsize = TIFFReadEncodedStripGetStripSize(tif, strip, &plane);
+    printf("huh\n");
     if (stripsize == ((tmsize_t)(-1))) {
         printf("a\n");
         return ((tmsize_t)(-1));
     }
+    printf("huh1\n");
 
     /* shortcut to avoid an extra memcpy() */
     if (td->td_compression == COMPRESSION_NONE && size != (tmsize_t)(-1) &&
         size >= stripsize && !isMapped(tif) &&
         ((tif->tif_flags & TIFF_NOREADRAW) == 0))
     {
+        printf("what\n");
         if (TIFFReadRawStrip1(tif, strip, buf, stripsize, module) != stripsize) {
             printf("d\n");
             return ((tmsize_t)(-1));
@@ -554,19 +558,23 @@ tmsize_t TIFFReadEncodedStrip(TIFF *tif, uint32_t strip, void *buf,
         (*tif->tif_postdecode)(tif, buf, stripsize);
         return (stripsize);
     }
+    printf("huh2\n");
 
     if ((size != (tmsize_t)(-1)) && (size < stripsize))
         stripsize = size;
+    printf("huh3\n");
     if (!TIFFFillStrip(tif, strip))
     {
         memset(buf, 0, (size_t)stripsize);
         printf("b\n");
         return ((tmsize_t)(-1));
     }
+    printf("leavetodecode\n");
     if ((*tif->tif_decodestrip)(tif, buf, stripsize, plane) <= 0) {
         printf("c\n");
         return ((tmsize_t)(-1));
     }
+    printf("aftertodecode\n");
     (*tif->tif_postdecode)(tif, buf, stripsize);
     return (stripsize);
 }

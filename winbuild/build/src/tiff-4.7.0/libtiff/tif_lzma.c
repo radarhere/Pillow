@@ -166,6 +166,7 @@ static int LZMAPreDecode(TIFF *tif, uint16_t s)
 
 static int LZMADecode(TIFF *tif, uint8_t *op, tmsize_t occ, uint16_t s)
 {
+    printf("lzmadecode\n");
     static const char module[] = "LZMADecode";
     LZMAState *sp = LZMADecoderState(tif);
 
@@ -216,6 +217,7 @@ static int LZMADecode(TIFF *tif, uint8_t *op, tmsize_t occ, uint16_t s)
                 lzma_stream_decoder(&sp->stream, lzma_memusage(&sp->stream), 0);
             if (r != LZMA_OK)
             {
+                printf("break1\n");
                 sp->read_error = 1;
                 memset(op, 0, (size_t)occ);
                 TIFFErrorExtR(tif, module,
@@ -229,6 +231,7 @@ static int LZMADecode(TIFF *tif, uint8_t *op, tmsize_t occ, uint16_t s)
         }
         if (ret != LZMA_OK)
         {
+            printf("break2\n");
             TIFFErrorExtR(tif, module,
                           "Decoding error at scanline %" PRIu32 ", %s",
                           tif->tif_row, LZMAStrerror(ret));
@@ -243,7 +246,10 @@ static int LZMADecode(TIFF *tif, uint8_t *op, tmsize_t occ, uint16_t s)
                       "Not enough data at scanline %" PRIu32
                       " (short %" TIFF_SIZE_FORMAT " bytes)",
                       tif->tif_row, sp->stream.avail_out);
+        printf("decode3\n");
         return 0;
+    } else {
+        printf("else\n");
     }
 
     tif->tif_rawcp = (uint8_t *)sp->stream.next_in; /* cast away const */

@@ -70,14 +70,6 @@ jobs:
           | ForEach-Object { $a = $_.split(" ")[1]; echo "vs=$a" >> $env:GITHUB_OUTPUT }
       shell: pwsh
 
-    - name: Cache build
-      id: build-cache
-      uses: actions/cache@v4
-      with:
-        path: winbuild\build
-        key:
-          ${{ hashFiles('winbuild\build_prepare.py') }}-${{ hashFiles('.github\workflows\test-windows.yml') }}-${{ env.pythonLocation }}-${{ steps.install.outputs.vs }}
-
     - name: Prepare build
       if: steps.build-cache.outputs.cache-hit != 'true'
       run: |
@@ -99,12 +91,6 @@ jobs:
     - name: Build dependencies / LibTiff
       if: steps.build-cache.outputs.cache-hit != 'true'
       run: "& winbuild\\build\\build_dep_libtiff.cmd"
-
-    # trim ~150MB for each job
-    - name: Optimize build cache
-      if: steps.build-cache.outputs.cache-hit != 'true'
-      run: rmdir /S /Q winbuild\build\src
-      shell: cmd
 
     - name: Build Pillow
       run: |
