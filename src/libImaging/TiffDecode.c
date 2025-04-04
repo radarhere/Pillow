@@ -452,11 +452,24 @@ ImagingLibTiffDecode(
     UINT8 *new_data = malloc(TIFFStripSize(tiff));
     tsize_t strip_size = TIFFStripSize(tiff);
     printf("strip_size %d\n", strip_size);
-    if (TIFFReadEncodedStrip(tiff, TIFFComputeStrip(tiff, 0, 0), (tdata_t)new_data, strip_size) == -1) {
-        printf("TIFFReadEncodedStrip returned -1\n");
-    } else {
-        printf("TIFFReadEncodedStrip did not return -1\n");
-    }
+
+    tmsize_t stripsize;
+    uint32_t strip = TIFFComputeStrip(tiff, 0, 0);
+    uint16_t plane;
+    stripsize = TIFFReadEncodedStripGetStripSize(tiff, strip, &plane);
+    TIFFFillStrip(tiff, strip);
+
+    LZMAState *sp = GetLZMAState(tif);
+
+    sp->stream.next_in = tif->tif_rawcp;
+    sp->stream.avail_in = (size_t)tif->tif_rawcc;
+
+    sp->stream.next_out = (tdata_t)new_data;
+    sp->stream.avail_out = (size_t)stripsize;
+
+    lzma_ret ret = lzma_code(&sp->stream, LZMA_RUN);
+    printf("ret1 %d %d %d\n", ret, LZMA_OK, LZMA_DATA_ERROR);
+
     return 0;
 }
 
