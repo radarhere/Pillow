@@ -450,25 +450,20 @@ ImagingLibTiffDecode(
     TIFF *tiff = TIFFOpen("Tests/images/hopper_lzma.tif", "rC");
 
     UINT8 *new_data = malloc(TIFFStripSize(tiff));
-    tsize_t strip_size = TIFFStripSize(tiff);
-    printf("strip_size %d\n", strip_size);
 
-    tmsize_t stripsize;
     uint32_t strip = TIFFComputeStrip(tiff, 0, 0);
     uint16_t plane;
-    stripsize = TIFFReadEncodedStripGetStripSize(tiff, strip, &plane);
-    TIFFFillStrip(tiff, strip);
+    //TIFFFillStrip(tiff, strip);
 
-    LZMAState *sp = GetLZMAState(tif);
+    lzma_stream stream = tiff->tif_data->stream;
+    stream.next_in = tiff->tif_rawcp;
+    stream.avail_in = (size_t)tiff->tif_rawcc;
 
-    sp->stream.next_in = tif->tif_rawcp;
-    sp->stream.avail_in = (size_t)tif->tif_rawcc;
+    stream.next_out = (tdata_t)new_data;
+    stream.avail_out = 49152;
 
-    sp->stream.next_out = (tdata_t)new_data;
-    sp->stream.avail_out = (size_t)stripsize;
-
-    lzma_ret ret = lzma_code(&sp->stream, LZMA_RUN);
-    printf("ret1 %d %d %d\n", ret, LZMA_OK, LZMA_DATA_ERROR);
+    int ret = lzma_code(&stream, LZMA_RUN);
+    printf("ret1 %d\n", ret);
 
     return 0;
 }
