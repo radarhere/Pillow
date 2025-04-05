@@ -455,16 +455,16 @@ ImagingLibTiffDecode(
     uint16_t plane;
     //TIFFFillStrip(tiff, strip);
 
-    lzma_stream stream = tiff->tif_data->stream;
-    stream.next_in = tiff->tif_rawcp;
-    stream.avail_in = (size_t)tiff->tif_rawcc;
+    //lzma_stream stream = tiff->tif_data->stream;
+    lzma_stream stream = LZMA_STREAM_INIT;
+    stream.next_in = tiff->tif_rawcp;//uint8_t *
+    stream.avail_in = (size_t)tiff->tif_rawcc;//uint8_t
 
-    stream.next_out = (tdata_t)new_data;
+    stream.next_out = (tdata_t)new_data;//uint8_t *
     stream.avail_out = 49152;
 
     int ret = lzma_code(&stream, LZMA_RUN);
     printf("ret1 %d\n", ret);
-
     return 0;
 }
 
