@@ -446,33 +446,24 @@ int
 ImagingLibTiffDecode(
     Imaging im, ImagingCodecState state, UINT8 *buffer, Py_ssize_t bytes
 ) {
-    printf("Start tiff read\n");
-    /*TIFF *tiff = TIFFOpen("Tests/images/hopper_lzma.tif", "rC");
-
-    UINT8 *new_data = malloc(TIFFStripSize(tiff));
-
-    uint32_t strip = TIFFComputeStrip(tiff, 0, 0);
-    uint16_t plane;
-    //TIFFFillStrip(tiff, strip);
-
-    //lzma_stream stream = tiff->tif_data->stream;*/
     lzma_stream stream = LZMA_STREAM_INIT;
-    //stream.next_in = NULL;//tiff->tif_rawcp;//uint8_t *
-    //stream.avail_in = 0;//30424;//(size_t)tiff->tif_rawcc;//uint8_t
-
     lzma_stream_decoder(&stream, UINT64_MAX, 0);
 
 	uint8_t inbuf[30424];
-	FILE *infile = fopen("avail_in", "rb");
+	FILE *infile = fopen("data", "rb");
 	stream.next_in = inbuf;
     stream.avail_in = fread(inbuf, 1, 30424, infile);
 
     uint8_t outbuf[49152];
-    stream.next_out = outbuf;//(tdata_t)new_data;//uint8_t *
+    stream.next_out = outbuf;
     stream.avail_out = 49152;
 
     int ret = lzma_code(&stream, LZMA_RUN);
-    printf("ret1 %d\n", ret);
+    if (ret == LZMA_DATA_ERROR) {
+        printf("lzma_code returned data error\n");
+    } else if (ret == LZMA_STREAM_END) {
+        printf("lzma_code returned stream end\n");
+    }
     return 0;
 }
 
