@@ -463,8 +463,7 @@ ImagingLibTiffDecode(
     lzma_stream_decoder(&stream, UINT64_MAX, 0);
 
 	uint8_t inbuf[30424];
-	FILE *infile = fopen("Tests/images/hopper_lzma.tif", "rb");
-	fseek(infile, 365, SEEK_SET);
+	FILE *infile = fopen("avail_in", "rb");
 	stream.next_in = inbuf;
     stream.avail_in = fread(inbuf, 1, 30424, infile);
 
