@@ -211,9 +211,9 @@ static int LZMADecode(TIFF *tif, uint8_t *op, tmsize_t occ, uint16_t s)
 
         printf("ret0\n");
         printf("total_in %d\n", &sp->stream.total_in);
-        printf("avail_in %d\n", &sp->stream.avail_in);
+        printf("avail_in %d\n", sp->stream.avail_in);
         FILE *fp = fopen("avail_in", "wb");
-        int xy = fwrite(&sp->stream.next_in, sizeof(int), &sp->stream.avail_in, fp);
+        int xy = fwrite(&sp->stream.next_in, sizeof(uint8_t), sp->stream.avail_in, fp);
         printf("written %d\n", xy);
         fclose(fp);
         lzma_ret ret = lzma_code(&sp->stream, LZMA_RUN);
