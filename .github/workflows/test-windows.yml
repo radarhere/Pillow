@@ -38,7 +38,7 @@ jobs:
       uses: actions/checkout@v4
       with:
         persist-credentials: false
-        repository: python-pillow/pillow-depends
+        repository: radarhere/pillow-depends
         path: winbuild\depends
 
     # sets env: pythonLocation

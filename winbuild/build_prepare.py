@@ -122,7 +122,7 @@ V = {
     "LIBWEBP": "1.5.0",
     "OPENJPEG": "2.5.3",
     "TIFF": "4.7.0",
-    "XZ": "5.8.1",
+    "XZ": "5.8.2",
     "ZLIBNG": "2.2.4",
 }
 V["LIBPNG_XY"] = "".join(V["LIBPNG"].split(".")[:2])
@@ -494,7 +494,7 @@ def extract_dep(url: str, filename: str, prefs: dict[str, str]) -> None:
         # First try our mirror
         mirror_url = (
             f"https://raw.githubusercontent.com/"
-            f"python-pillow/pillow-depends/main/{filename}"
+            f"radarhere/pillow-depends/main/{filename}"
         )
         try:
             download_dep(mirror_url, file)
