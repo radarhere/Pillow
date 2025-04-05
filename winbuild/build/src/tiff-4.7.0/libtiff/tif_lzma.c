@@ -210,6 +210,7 @@ static int LZMADecode(TIFF *tif, uint8_t *op, tmsize_t occ, uint16_t s)
         size_t avail_in = sp->stream.avail_in;
 
         printf("ret0\n");
+        printf("total_in %d\n", &sp->stream->total_in);
         lzma_ret ret = lzma_code(&sp->stream, LZMA_RUN);
         printf("ret1 %d %d %d\n", ret, LZMA_STREAM_END, LZMA_DATA_ERROR);
         if (ret == LZMA_STREAM_END)
