@@ -181,7 +181,7 @@ DEPS: dict[str, dict[str, Any]] = {
         "filename": f"xz-{V['XZ']}.tar.gz",
         "license": "COPYING",
         "build": [
-            *cmds_cmake("liblzma", "-DBUILD_SHARED_LIBS:BOOL=OFF", "-DCMAKE_C_FLAGS=\"-DXZ_CLMUL_CRC=OFF\""),
+            *cmds_cmake("liblzma", "-DBUILD_SHARED_LIBS:BOOL=OFF", "-DCMAKE_C_FLAGS=\"-DLZMA_LZ_DECODER_CONFIG=1 -DXZ_CLMUL_CRC=OFF\""),
             cmd_mkdir(r"{inc_dir}\lzma"),
             cmd_copy(r"src\liblzma\api\lzma\*.h", r"{inc_dir}\lzma"),
         ],
