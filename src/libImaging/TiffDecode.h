@@ -12,6 +12,7 @@
 #ifndef _TIFF_
 #include <tiff.h>
 #endif
+#include <lzma.h>
 
 #ifndef min
 #define min(x, y) ((x > y) ? y : x)
