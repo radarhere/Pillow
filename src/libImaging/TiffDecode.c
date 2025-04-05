@@ -457,8 +457,15 @@ ImagingLibTiffDecode(
 
     //lzma_stream stream = tiff->tif_data->stream;*/
     lzma_stream stream = LZMA_STREAM_INIT;
-    stream.next_in = NULL;//tiff->tif_rawcp;//uint8_t *
-    stream.avail_in = 0;//30424;//(size_t)tiff->tif_rawcc;//uint8_t
+    //stream.next_in = NULL;//tiff->tif_rawcp;//uint8_t *
+    //stream.avail_in = 0;//30424;//(size_t)tiff->tif_rawcc;//uint8_t
+
+    lzma_stream_decoder(&stream, UINT64_MAX, 0);
+
+	uint8_t inbuf[30424];
+	FILE *infile = fopen("Tests/images/hopper_lzma.tif", "rb");
+	stream.next_in = inbuf;
+    stream.avail_in = fread(inbuf, 1, 30424, infile);
 
     uint8_t outbuf[49152];
     stream.next_out = outbuf;//(tdata_t)new_data;//uint8_t *
