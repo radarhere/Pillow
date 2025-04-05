@@ -447,7 +447,7 @@ ImagingLibTiffDecode(
     Imaging im, ImagingCodecState state, UINT8 *buffer, Py_ssize_t bytes
 ) {
     printf("Start tiff read\n");
-    TIFF *tiff = TIFFOpen("Tests/images/hopper_lzma.tif", "rC");
+    /*TIFF *tiff = TIFFOpen("Tests/images/hopper_lzma.tif", "rC");
 
     UINT8 *new_data = malloc(TIFFStripSize(tiff));
 
@@ -455,12 +455,13 @@ ImagingLibTiffDecode(
     uint16_t plane;
     //TIFFFillStrip(tiff, strip);
 
-    //lzma_stream stream = tiff->tif_data->stream;
+    //lzma_stream stream = tiff->tif_data->stream;*/
     lzma_stream stream = LZMA_STREAM_INIT;
-    stream.next_in = tiff->tif_rawcp;//uint8_t *
-    stream.avail_in = (size_t)tiff->tif_rawcc;//uint8_t
+    stream.next_in = NULL;//tiff->tif_rawcp;//uint8_t *
+    stream.avail_in = 0;//30424;//(size_t)tiff->tif_rawcc;//uint8_t
 
-    stream.next_out = (tdata_t)new_data;//uint8_t *
+    uint8_t outbuf[49152];
+    stream.next_out = outbuf;//(tdata_t)new_data;//uint8_t *
     stream.avail_out = 49152;
 
     int ret = lzma_code(&stream, LZMA_RUN);
