@@ -1,3 +1,4 @@
+// clang-format Language: Cpp
 
 #include "Imaging.h"
 

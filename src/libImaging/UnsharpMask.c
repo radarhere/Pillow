@@ -5,6 +5,7 @@
 
 /* Originally released under LGPL.  Graciously donated to PIL
    for distribution under the standard PIL license in 2009." */
+// clang-format Language: Cpp
 
 #include "Imaging.h"
 

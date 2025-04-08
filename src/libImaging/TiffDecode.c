@@ -9,6 +9,7 @@
  * eds 3/12/12
  *
  */
+// clang-format Language: Cpp
 
 #include "Imaging.h"
 

@@ -1,3 +1,4 @@
+// clang-format Language: Cpp
 #include "Imaging.h"
 
 /* For large images rotation is an inefficient operation in terms of CPU cache.

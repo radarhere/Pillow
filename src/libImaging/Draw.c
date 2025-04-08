@@ -26,6 +26,7 @@
  *
  * See the README file for information on usage and redistribution.
  */
+// clang-format Language: Cpp
 
 /* FIXME: support fill/outline attribute for all filled shapes */
 /* FIXME: support zero-winding fill */

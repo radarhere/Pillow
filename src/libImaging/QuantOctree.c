@@ -22,6 +22,7 @@
 /*
 // This file implements a variation of the octree color quantization algorithm.
 */
+// clang-format Language: Cpp
 
 #include <stdio.h>
 #include <stdlib.h>

@@ -7,6 +7,7 @@
  *   https://web.archive.org/web/20170802060935/http://oss.sgi.com/projects/ogl-sample/registry/EXT/texture_compression_s3tc.txt
  *
  */
+// clang-format Language: Cpp
 
 #include "Imaging.h"
 

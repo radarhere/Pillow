@@ -17,6 +17,7 @@
  *
  * See the README file for information on usage and redistribution.
  */
+// clang-format Language: Cpp
 
 /*
  * FIXME: Support RGB and RGBA/CMYK modes as well

@@ -7,6 +7,7 @@
  * Copyright (c) 2016 Marcin Kurczewski <rr-@sakuya.pl>
  *
  */
+// clang-format Language: Cpp
 
 #include <stdio.h>
 #include <stdlib.h>

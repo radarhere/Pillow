@@ -16,6 +16,7 @@
  * Copyright (c) Secret Labs AB 1997.
  *
  * See the README file for information on usage and redistribution.  */
+// clang-format Language: Cpp
 
 #include "Imaging.h"
 

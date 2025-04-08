@@ -10,6 +10,7 @@
  * Full text of the CC0 license:
  *   https://creativecommons.org/publicdomain/zero/1.0/
  */
+// clang-format Language: Cpp
 
 #include "Imaging.h"
 

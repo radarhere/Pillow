@@ -7,6 +7,7 @@
  *
  * See the README file for details on usage and redistribution.
  */
+// clang-format Language: Cpp
 
 #include "Imaging.h"
 
