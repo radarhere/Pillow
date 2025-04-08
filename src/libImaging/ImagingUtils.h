@@ -1,3 +1,4 @@
+// clang-format Language: C
 #ifdef WORDS_BIGENDIAN
 #define MAKE_UINT32(u0, u1, u2, u3) \
     ((UINT32)(u3) | ((UINT32)(u2) << 8) | ((UINT32)(u1) << 16) | ((UINT32)(u0) << 24))

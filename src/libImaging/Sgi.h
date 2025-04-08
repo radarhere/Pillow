@@ -1,3 +1,4 @@
+// clang-format Language: C
 /* Sgi.h */
 
 typedef struct {

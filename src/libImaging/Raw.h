@@ -1,3 +1,4 @@
+// clang-format Language: C
 /* Raw.h */
 
 typedef struct {

@@ -11,6 +11,7 @@ ColumnLimit: 88
 DerivePointerAlignment: false
 IndentGotoLabels: false
 IndentWidth: 4
+Language: C
 PointerAlignment: Right
 ReflowComments: true
 SortIncludes: false

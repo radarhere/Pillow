@@ -1,3 +1,4 @@
+// clang-format Language: C
 /*
  * The Python Imaging Library
  * $Id$

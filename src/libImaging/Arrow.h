@@ -1,3 +1,4 @@
+// clang-format Language: C
 #include <stdint.h>
 #include <assert.h>
 

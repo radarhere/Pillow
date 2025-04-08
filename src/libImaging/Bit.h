@@ -1,3 +1,4 @@
+// clang-format Language: C
 /* Bit.h */
 
 typedef struct {
