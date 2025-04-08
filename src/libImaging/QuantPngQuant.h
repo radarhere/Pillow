@@ -1,3 +1,4 @@
+// clang-format Language: C
 #ifndef __QUANT_PNGQUANT_H__
 #define __QUANT_PNGQUANT_H__
 

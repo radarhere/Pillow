@@ -1,3 +1,4 @@
+// clang-format Language: C
 /*
  * The Python Imaging Library.
  * $Id: //modules/pil/libImaging/Tiff.h#1 $

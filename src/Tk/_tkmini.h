@@ -1,3 +1,4 @@
+// clang-format Language: C
 /* Small excerpts from the Tcl / Tk 8.6 headers
  *
  * License terms copied from:
