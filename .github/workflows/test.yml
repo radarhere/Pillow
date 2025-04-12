@@ -38,6 +38,8 @@ jobs:
         python-version: [
           "3.13",
         ]
+        include:
+        - { os: "macos-13", python-version: "3.9" }
 
     runs-on: ${{ matrix.os }}
     name: ${{ matrix.os }} Python ${{ matrix.python-version }}
