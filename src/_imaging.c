@@ -4337,7 +4337,9 @@ setup_module(PyObject *m) {
 #ifdef HAVE_LIBJPEG
     {
         extern const char *ImagingJpegVersion(void);
+        printf("Start converting JPEG version to unicode: %s\n", ImagingJpegVersion());
         PyObject *v = PyUnicode_FromString(ImagingJpegVersion());
+        printf("Finish converting JPEG version to unicode\n");
         PyDict_SetItemString(d, "jpeglib_version", v ? v : Py_None);
         Py_XDECREF(v);
     }
@@ -4346,7 +4348,9 @@ setup_module(PyObject *m) {
 #ifdef HAVE_OPENJPEG
     {
         extern const char *ImagingJpeg2KVersion(void);
+        printf("Start converting JPEG2K version to unicode: %s\n", ImagingJpeg2KVersion());
         PyObject *v = PyUnicode_FromString(ImagingJpeg2KVersion());
+        printf("Finish converting JPEG2K version to unicode\n");
         PyDict_SetItemString(d, "jp2klib_version", v ? v : Py_None);
         Py_XDECREF(v);
     }
@@ -4358,7 +4362,9 @@ setup_module(PyObject *m) {
     {
 #define tostr1(a) #a
 #define tostr(a) tostr1(a)
+        printf("Start converting libjpeg turbo version to unicode: %s\n", tostr(LIBJPEG_TURBO_VERSION));
         PyObject *v = PyUnicode_FromString(tostr(LIBJPEG_TURBO_VERSION));
+        printf("Finish converting libjpeg turbo version to unicode\n");
         PyDict_SetItemString(d, "libjpeg_turbo_version", v ? v : Py_None);
         Py_XDECREF(v);
 #undef tostr
@@ -4384,7 +4390,9 @@ setup_module(PyObject *m) {
     have_libimagequant = Py_True;
     {
         extern const char *ImagingImageQuantVersion(void);
+        printf("Start converting imagequant version to unicode: %s\n", ImagingImageQuantVersion());
         PyObject *v = PyUnicode_FromString(ImagingImageQuantVersion());
+        printf("Finish converting imagequant version to unicode\n");
         PyDict_SetItemString(d, "imagequant_version", v ? v : Py_None);
         Py_XDECREF(v);
     }
@@ -4403,7 +4411,9 @@ setup_module(PyObject *m) {
     PyModule_AddIntConstant(m, "FIXED", Z_FIXED);
     {
         extern const char *ImagingZipVersion(void);
+        printf("Start converting zip version to unicode: %s\n", ImagingZipVersion());
         PyObject *v = PyUnicode_FromString(ImagingZipVersion());
+        printf("Finish converting zip version to unicode\n");
         PyDict_SetItemString(d, "zlib_version", v ? v : Py_None);
         Py_XDECREF(v);
     }
@@ -4413,7 +4423,9 @@ setup_module(PyObject *m) {
 #ifdef ZLIBNG_VERSION
     have_zlibng = Py_True;
     {
+        printf("Start converting zlibng version to unicode: %s\n", ZLIBNG_VERSION);
         PyObject *v = PyUnicode_FromString(ZLIBNG_VERSION);
+        printf("Finish converting zlibng version to unicode\n");
         PyDict_SetItemString(d, "zlib_ng_version", v ? v : Py_None);
         Py_XDECREF(v);
     }
@@ -4426,7 +4438,9 @@ setup_module(PyObject *m) {
 #ifdef HAVE_LIBTIFF
     {
         extern const char *ImagingTiffVersion(void);
+        printf("Start converting tiff version to unicode: %s\n", ImagingTiffVersion());
         PyObject *v = PyUnicode_FromString(ImagingTiffVersion());
+        printf("Finish converting tiff version to unicode\n");
         PyDict_SetItemString(d, "libtiff_version", v ? v : Py_None);
         Py_XDECREF(v);
 
@@ -4451,7 +4465,9 @@ setup_module(PyObject *m) {
     Py_INCREF(have_xcb);
     PyModule_AddObject(m, "HAVE_XCB", have_xcb);
 
+    printf("Start converting pillow version to unicode: %s\n", version);
     PyObject *pillow_version = PyUnicode_FromString(version);
+    printf("Finish converting pillow version to unicode\n");
     PyDict_SetItemString(
         d, "PILLOW_VERSION", pillow_version ? pillow_version : Py_None
     );
