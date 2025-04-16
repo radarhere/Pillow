@@ -828,9 +828,7 @@ def _save(im: Image.Image, fp: IO[bytes], filename: str | bytes) -> None:
     )
 
     # if we optimize, libjpeg needs a buffer big enough to hold the whole image
-    # in a shot. Guessing on the size, at im.size bytes. (raw pixel size is
-    # channels*size, this is a value that's been used in a django patch.
-    # https://github.com/matthewwithanm/django-imagekit/issues/50
+    # in a shot.
     bufsize = 0
     if optimize or progressive:
         # CMYK can be bigger
@@ -840,7 +838,7 @@ def _save(im: Image.Image, fp: IO[bytes], filename: str | bytes) -> None:
         elif quality >= 95 or quality == -1:
             bufsize = 2 * im.size[0] * im.size[1]
         else:
-            bufsize = im.size[0] * im.size[1]
+            bufsize = int(1.2 * im.size[0] * im.size[1])
         if exif:
             bufsize += len(exif) + 5
         if extra:
