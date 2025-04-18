@@ -286,10 +286,6 @@ DEPS: dict[str, dict[str, Any]] = {
                 "<UserLibraryDirectories></UserLibraryDirectories>": "<UserLibraryDirectories>{lib_dir}</UserLibraryDirectories>",  # noqa: E501
                 "<UserDependencies></UserDependencies>": f"<UserDependencies>zlib.lib;libpng{V['LIBPNG_XY']}.lib;brotlicommon.lib;brotlidec.lib</UserDependencies>",  # noqa: E501
             },
-            r"src/autofit/afshaper.c": {
-                # link against harfbuzz.lib
-                "#ifdef FT_CONFIG_OPTION_USE_HARFBUZZ": '#ifdef FT_CONFIG_OPTION_USE_HARFBUZZ\n#pragma comment(lib, "src/harfbuzz.lib")',  # noqa: E501
-            },
         },
         "build": [
             cmd_rmdir("objs"),
