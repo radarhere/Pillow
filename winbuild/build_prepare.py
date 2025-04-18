@@ -364,7 +364,7 @@ DEPS: dict[str, dict[str, Any]] = {
             "meson install",
         ],
         "headers": [r"src\*.h"],
-        "libs": [r"src\*.lib"],
+        "libs": ["src/harfbuzz.lib"],
     },
     "fribidi": {
         "url": f"https://github.com/fribidi/fribidi/archive/v{V['FRIBIDI']}.zip",
