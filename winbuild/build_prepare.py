@@ -357,14 +357,14 @@ DEPS: dict[str, dict[str, Any]] = {
         "filename": f"harfbuzz-{V['HARFBUZZ']}.tar.xz",
         "license": "COPYING",
         "build": [
-            *cmds_cmake(
-                "harfbuzz",
-                "-DHB_HAVE_FREETYPE:BOOL=TRUE",
-                '-DCMAKE_CXX_FLAGS="-nologo -d2FH4-"',
-            ),
+            f"{sys.executable} -m pip install meson",
+            "meson setup build --buildtype=minsize -Dfreetype=enabled "
+            "-Dglib=disabled -Dtests=disabled",
+            cmd_cd("build"),
+            "meson install",
         ],
         "headers": [r"src\*.h"],
-        "libs": [r"*.lib"],
+        "libs": [r"src\*.lib"],
     },
     "fribidi": {
         "url": f"https://github.com/fribidi/fribidi/archive/v{V['FRIBIDI']}.zip",
