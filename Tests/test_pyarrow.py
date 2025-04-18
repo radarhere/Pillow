@@ -12,7 +12,11 @@ from .helper import (
     hopper,
 )
 
-pyarrow = pytest.importorskip("pyarrow", reason="PyArrow not installed")
+TYPE_CHECKING = False
+if TYPE_CHECKING:
+    import pyarrow
+else:
+    pyarrow = pytest.importorskip("pyarrow", reason="PyArrow not installed")
 
 TEST_IMAGE_SIZE = (10, 10)
 
@@ -35,7 +39,7 @@ def _test_img_equals_pyarray(
 
 
 # really hard to get a non-nullable list type
-fl_uint8_4_type = pyarrow.field(
+fl_uint8_4_type: pyarrow.DataType = pyarrow.field(
     "_", pyarrow.list_(pyarrow.field("_", pyarrow.uint8()).with_nullable(False), 4)
 ).type
 
@@ -55,14 +59,14 @@ fl_uint8_4_type = pyarrow.field(
         ("HSV", fl_uint8_4_type, [0, 1, 2]),
     ),
 )
-def test_to_array(mode: str, dtype: Any, mask: list[int] | None) -> None:
+def test_to_array(mode: str, dtype: pyarrow.DataType, mask: list[int] | None) -> None:
     img = hopper(mode)
 
     # Resize to non-square
     img = img.crop((3, 0, 124, 127))
     assert img.size == (121, 127)
 
-    arr = pyarrow.array(img)
+    arr = pyarrow.array(img)  # type: ignore[call-overload]
     _test_img_equals_pyarray(img, arr, mask)
     assert arr.type == dtype
 
@@ -79,8 +83,8 @@ def test_lifetime() -> None:
 
     img = hopper("L")
 
-    arr_1 = pyarrow.array(img)
-    arr_2 = pyarrow.array(img)
+    arr_1 = pyarrow.array(img)  # type: ignore[call-overload]
+    arr_2 = pyarrow.array(img)  # type: ignore[call-overload]
 
     del img
 
@@ -97,8 +101,8 @@ def test_lifetime2() -> None:
 
     img = hopper("L")
 
-    arr_1 = pyarrow.array(img)
-    arr_2 = pyarrow.array(img)
+    arr_1 = pyarrow.array(img)  # type: ignore[call-overload]
+    arr_2 = pyarrow.array(img)  # type: ignore[call-overload]
 
     assert arr_1.sum().as_py() > 0
     del arr_1
