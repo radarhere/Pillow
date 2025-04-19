@@ -2,29 +2,11 @@ name: Test
 
 on:
   push:
-    branches:
-      - "**"
-    paths-ignore:
-      - ".github/workflows/docs.yml"
-      - ".github/workflows/wheels*"
-      - ".gitmodules"
-      - "docs/**"
-      - "wheels/**"
   pull_request:
-    paths-ignore:
-      - ".github/workflows/docs.yml"
-      - ".github/workflows/wheels*"
-      - ".gitmodules"
-      - "docs/**"
-      - "wheels/**"
   workflow_dispatch:
 
 permissions:
   contents: read
-
-concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
 
 env:
   COVERAGE_CORE: sysmon
@@ -37,29 +19,11 @@ jobs:
       fail-fast: false
       matrix:
         os: [
-          "macos-latest",
           "ubuntu-latest",
         ]
         python-version: [
-          "pypy3.11",
-          "pypy3.10",
-          "3.14",
-          "3.13t",
           "3.13",
-          "3.12",
-          "3.11",
-          "3.10",
-          "3.9",
         ]
-        include:
-        - { python-version: "3.11", PYTHONOPTIMIZE: 1, REVERSE: "--reverse" }
-        - { python-version: "3.10", PYTHONOPTIMIZE: 2 }
-        # Free-threaded
-        - { python-version: "3.13t", disable-gil: true }
-        # M1 only available for 3.10+
-        - { os: "macos-13", python-version: "3.9" }
-        exclude:
-        - { os: "macos-latest", python-version: "3.9" }
 
     runs-on: ${{ matrix.os }}
     name: ${{ matrix.os }} Python ${{ matrix.python-version }}
@@ -141,28 +105,6 @@ jobs:
 
     - name: Upload errors
       uses: actions/upload-artifact@v4
-      if: failure()
       with:
         name: errors
-        path: Tests/errors
-
-    - name: After success
-      run: |
-        .ci/after_success.sh
-
-    - name: Upload coverage
-      uses: codecov/codecov-action@v5
-      with:
-        flags: ${{ matrix.os == 'ubuntu-latest' && 'GHA_Ubuntu' || 'GHA_macOS' }}
-        name: ${{ matrix.os }} Python ${{ matrix.python-version }}
-        token: ${{ secrets.CODECOV_ORG_TOKEN }}
-
-  success:
-    permissions:
-      contents: none
-    needs: build
-    runs-on: ubuntu-latest
-    name: Test Successful
-    steps:
-      - name: Success
-        run: echo Test Successful
+        path: grim.png

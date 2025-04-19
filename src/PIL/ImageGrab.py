@@ -97,6 +97,7 @@ def grab(
                 raise
             fh, filepath = tempfile.mkstemp(".png")
             os.close(fh)
+            print(args)
             subprocess.call(args + [filepath])
             im = Image.open(filepath)
             im.load()
