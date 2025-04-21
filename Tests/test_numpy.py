@@ -20,5 +20,5 @@ TEST_IMAGE_SIZE = (10, 10)
 
 def test_8911() -> None:
     img = Image.open("Tests/images/hopper.png").convert("L")
-    size = 2
+    size = numpy.int64(2)
     img.filter(ImageFilter.GaussianBlur(radius = size))
