@@ -357,15 +357,14 @@ DEPS: dict[str, dict[str, Any]] = {
         "filename": f"harfbuzz-{V['HARFBUZZ']}.tar.xz",
         "license": "COPYING",
         "build": [
-            f"{sys.executable} -m pip install meson",
-            "meson build --buildtype=Release -Dfreetype=enabled "
-            "-Dtests=disabled",
-            "ninja -Cbuild",
+            *cmds_cmake(
+                "harfbuzz",
+                "-DHB_HAVE_FREETYPE:BOOL=TRUE",
+                '-DCMAKE_CXX_FLAGS="-nologo -d2FH4-"',
+            ),
             cmd_cd("build"),
             "echo torchtest",
             "python ../../../../find.py",
-            "meson install",
-            "echo torchtest2",
         ],
         "headers": [r"src\*.h"],
         "libs": [r"src\*.lib"],
