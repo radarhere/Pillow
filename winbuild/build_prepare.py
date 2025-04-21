@@ -359,7 +359,7 @@ DEPS: dict[str, dict[str, Any]] = {
         "build": [
             f"{sys.executable} -m pip install meson",
             "meson setup build --wrap-mode=default --buildtype=minsize -Dfreetype=enabled -Dtests=disabled",
-            "ninja -C build",
+            "meson compile -C build",
             "python ../../../find.py",
             "echo torchtest2",
         ],
