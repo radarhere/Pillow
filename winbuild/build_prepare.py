@@ -358,7 +358,7 @@ DEPS: dict[str, dict[str, Any]] = {
         "license": "COPYING",
         "build": [
             f"{sys.executable} -m pip install meson",
-            "meson setup build --buildtype=minsize -Dfreetype=enabled "
+            "meson setup lib --buildtype=minsize -Dfreetype=enabled "
             "-Dtests=disabled",
             cmd_cd("build"),
             "echo torchtest",
