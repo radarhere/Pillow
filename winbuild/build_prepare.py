@@ -288,7 +288,7 @@ DEPS: dict[str, dict[str, Any]] = {
             },
             r"src/autofit/afshaper.c": {
                 # link against harfbuzz.lib
-                "#ifdef FT_CONFIG_OPTION_USE_HARFBUZZ": '#ifdef FT_CONFIG_OPTION_USE_HARFBUZZ\n#pragma comment(lib, "harfbuzz.lib")',  # noqa: E501
+                "#ifdef FT_CONFIG_OPTION_USE_HARFBUZZ": '#ifdef FT_CONFIG_OPTION_USE_HARFBUZZ\n#pragma comment(lib, "src/harfbuzz.lib")',  # noqa: E501
             },
         },
         "build": [
@@ -361,7 +361,9 @@ DEPS: dict[str, dict[str, Any]] = {
             "meson setup build --buildtype=minsize -Dfreetype=enabled "
             "-Dglib=disabled -Dtests=disabled",
             cmd_cd("build"),
+            "echo torchtest",
             "meson install",
+            "echo torchtest2",
         ],
         "headers": [r"src\*.h"],
         "libs": [r"src\*.lib"],
