@@ -362,7 +362,7 @@ DEPS: dict[str, dict[str, Any]] = {
             "-Dglib=disabled -Dtests=disabled",
             cmd_cd("build"),
             "echo torchtest",
-            "find . -iname harfbuzz.lib",
+            "find / -iname harfbuzz.lib",
             "echo torchtest1",
             "meson install",
             "echo torchtest2",
