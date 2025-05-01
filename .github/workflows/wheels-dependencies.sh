@@ -115,6 +115,11 @@ function build_libavif {
 
     if [ -n "$IS_MACOS" ]; then
         lto=OFF
+        libavif_cmake_flags+=(
+            -DCMAKE_C_FLAGS_MINSIZEREL="-Oz -DNDEBUG -flto " \
+            -DCMAKE_CXX_FLAGS_MINSIZEREL="-Oz -DNDEBUG -flto" \
+            -DCMAKE_SHARED_LINKER_FLAGS_INIT="-Wl,-S,-x,-dead_strip_dylibs" \
+        )
     else
         if [[ "$MB_ML_VER" == 2014 ]] && [[ "$PLAT" == "x86_64" ]]; then
             build_type=Release
@@ -139,7 +144,6 @@ function build_libavif {
             -DAVIF_LIBYUV=LOCAL \
             -DAVIF_CODEC_AOM=LOCAL \
             -DCONFIG_AV1_DECODER=0 \
-            -DCONFIG_AV1_HIGHBITDEPTH=0 \
             -DAVIF_CODEC_AOM_DECODE=OFF \
             -DAVIF_CODEC_DAV1D=LOCAL \
             -DCMAKE_INTERPROCEDURAL_OPTIMIZATION=$lto \
