@@ -121,6 +121,9 @@ function build_libavif {
             -DCMAKE_SHARED_LINKER_FLAGS_INIT="-Wl,-S,-x,-dead_strip_dylibs" \
         )
     else
+        if [[ "$MB_ML_VER" == 2014 ]] && [[ "$PLAT" == "x86_64" ]]; then
+            build_type=Release
+        fi
         libavif_cmake_flags+=(-DCMAKE_SHARED_LINKER_FLAGS_INIT="-Wl,--strip-all,-z,relro,-z,now")
     fi
 
@@ -145,8 +148,6 @@ function build_libavif {
             -DAVIF_CODEC_AOM_DECODE=OFF \
             -DAVIF_CODEC_DAV1D=LOCAL \
             -DCMAKE_INTERPROCEDURAL_OPTIMIZATION=$lto \
-            -DCMAKE_C_VISIBILITY_PRESET=hidden \
-            -DCMAKE_CXX_VISIBILITY_PRESET=hidden \
             -DCMAKE_BUILD_TYPE=$build_type \
             "${libavif_cmake_flags[@]}" \
             . \
