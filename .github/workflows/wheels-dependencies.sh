@@ -121,9 +121,6 @@ function build_libavif {
             -DCMAKE_SHARED_LINKER_FLAGS_INIT="-Wl,-S,-x,-dead_strip_dylibs" \
         )
     else
-        if [[ "$MB_ML_VER" == 2014 ]]; then
-            build_type=Release
-        fi
         libavif_cmake_flags+=(-DCMAKE_SHARED_LINKER_FLAGS_INIT="-Wl,--strip-all,-z,relro,-z,now")
     fi
 
