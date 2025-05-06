@@ -23,6 +23,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       # Drafts your next release notes as pull requests are merged into "main"
-      - uses: release-drafter/release-drafter@v6.1
+      - uses: release-drafter/release-drafter@b1476f6
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
