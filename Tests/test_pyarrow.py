@@ -98,7 +98,7 @@ fl_uint8_4_type = pyarrow.field(
         ("HSV", fl_uint8_4_type, [0, 1, 2]),
     ),
 )
-def test_to_array(mode: str, dtype: Any, mask: list[int] | None) -> None:
+def test_to_array(mode: str, dtype: pyarrow.DataType, mask: list[int] | None) -> None:
     img = hopper(mode)
 
     # Resize to non-square
@@ -156,7 +156,7 @@ def test_lifetime2() -> None:
 
 
 class DataShape(NamedTuple):
-    dtype: Any
+    dtype: pyarrow.DataType
     # Strictly speaking, elt should be a pixel or pixel component, so
     # list[uint8][4], float, int, uint32, uint8, etc.  But more
     # correctly, it should be exactly the dtype from the line above.
