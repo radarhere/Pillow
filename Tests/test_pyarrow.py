@@ -160,7 +160,7 @@ class DataShape(NamedTuple):
     # Strictly speaking, elt should be a pixel or pixel component, so
     # list[uint8][4], float, int, uint32, uint8, etc.  But more
     # correctly, it should be exactly the dtype from the line above.
-    elt: Any
+    elt: list[int] | float
     elts_per_pixel: int
 
 
