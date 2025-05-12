@@ -41,6 +41,7 @@ FREETYPE_VERSION=2.13.3
 HARFBUZZ_VERSION=11.1.0
 LIBPNG_VERSION=1.6.47
 JPEGTURBO_VERSION=3.1.0
+HIGHWAY_VERSION=1.2.0
 JPEGXL_VERSION=0.11.1
 OPENJPEG_VERSION=2.5.3
 XZ_VERSION=5.8.1
@@ -80,6 +81,15 @@ function build_zlib_ng {
 
 function build_jpegxl {
     if [ -e jpegxl-stamp ]; then return; fi
+    echo "torch1"
+    local out_dir=$(fetch_unpack https://github.com/google/highway/releases/download/$HIGHWAY_VERSION/highway-$HIGHWAY_VERSION.tar.gz)
+    echo "torch2"
+    echo $out_dir
+    (cd $out_dir \
+        && CMAKE_POLICY_VERSION_MINIMUM=3.5 cmake -DCMAKE_INSTALL_PREFIX=$BUILD_PREFIX -DCMAKE_INSTALL_LIBDIR=$BUILD_PREFIX/lib -DCMAKE_INSTALL_NAME_DIR=$BUILD_PREFIX/lib . \
+        && make install)
+
+    echo "torch3"
     local out_dir=$(fetch_unpack https://github.com/libjxl/libjxl/archive/refs/tags/v$JPEGXL_VERSION.tar.gz brotli-$JPEGXL_VERSION.tar.gz)
     (cd $out_dir \
         && cmake -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTING=OFF . \
@@ -109,6 +119,9 @@ function build_harfbuzz {
 }
 
 function build {
+    install_rsync
+    build_libjpeg_turbo
+    build_brotli
     build_jpegxl
 }
 
