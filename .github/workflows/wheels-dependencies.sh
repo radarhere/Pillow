@@ -119,9 +119,61 @@ function build_harfbuzz {
 }
 
 function build {
-    install_rsync
+    build_xz
+    if [ -z "$IS_ALPINE" ] && [ -z "$SANITIZER" ] && [ -z "$IS_MACOS" ]; then
+        yum remove -y zlib-devel
+    fi
+    if [[ -n "$IS_MACOS" ]] && [[ "$MACOSX_DEPLOYMENT_TARGET" == "10.10" || "$MACOSX_DEPLOYMENT_TARGET" == "10.13" ]]; then
+        build_new_zlib
+    else
+        build_zlib_ng
+    fi
+
+    build_simple xcb-proto 1.17.0 https://xorg.freedesktop.org/archive/individual/proto
+    if [ -n "$IS_MACOS" ]; then
+        build_simple xorgproto 2024.1 https://www.x.org/pub/individual/proto
+        build_simple libXau 1.0.12 https://www.x.org/pub/individual/lib
+        build_simple libpthread-stubs 0.5 https://xcb.freedesktop.org/dist
+    else
+        sed s/\${pc_sysrootdir\}// $BUILD_PREFIX/share/pkgconfig/xcb-proto.pc > $BUILD_PREFIX/lib/pkgconfig/xcb-proto.pc
+    fi
+    build_simple libxcb $LIBXCB_VERSION https://www.x.org/releases/individual/lib
+
     build_libjpeg_turbo
+    if [ -n "$IS_MACOS" ]; then
+        # Custom tiff build to include jpeg; by default, configure won't include
+        # headers/libs in the custom macOS prefix. Explicitly disable webp,
+        # libdeflate and zstd, because on x86_64 macs, it will pick up the
+        # Homebrew versions of those libraries from /usr/local.
+        build_simple tiff $TIFF_VERSION https://download.osgeo.org/libtiff tar.gz \
+            --with-jpeg-include-dir=$BUILD_PREFIX/include --with-jpeg-lib-dir=$BUILD_PREFIX/lib \
+            --disable-webp --disable-libdeflate --disable-zstd
+    else
+        build_tiff
+    fi
+
+    build_libpng
+    build_lcms2
+    build_openjpeg
+
+    webp_cflags="-O3 -DNDEBUG"
+    if [[ -n "$IS_MACOS" ]]; then
+        webp_cflags="$webp_cflags -Wl,-headerpad_max_install_names"
+    fi
+    CFLAGS="$CFLAGS $webp_cflags" build_simple libwebp $LIBWEBP_VERSION \
+        https://storage.googleapis.com/downloads.webmproject.org/releases/webp tar.gz \
+        --enable-libwebpmux --enable-libwebpdemux
+
     build_brotli
+
+    if [ -n "$IS_MACOS" ]; then
+        # Custom freetype build
+        build_simple freetype $FREETYPE_VERSION https://download.savannah.gnu.org/releases/freetype tar.gz --with-harfbuzz=no
+    else
+        build_freetype
+    fi
+
+    build_harfbuzz
     build_jpegxl
 }
 
