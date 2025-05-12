@@ -41,6 +41,7 @@ FREETYPE_VERSION=2.13.3
 HARFBUZZ_VERSION=11.1.0
 LIBPNG_VERSION=1.6.47
 JPEGTURBO_VERSION=3.1.0
+JPEGXL_VERSION=0.11.1
 OPENJPEG_VERSION=2.5.3
 XZ_VERSION=5.8.1
 TIFF_VERSION=4.7.0
@@ -75,6 +76,15 @@ function build_zlib_ng {
         install_name_tool -id $BUILD_PREFIX/lib/libz.1.dylib $BUILD_PREFIX/lib/libz.1.dylib
     fi
     touch zlib-stamp
+}
+
+function build_jpegxl {
+    if [ -e jpegxl-stamp ]; then return; fi
+    local out_dir=$(fetch_unpack https://github.com/libjxl/libjxl/archive/refs/tags/v$JPEGXL_VERSION.tar.gz brotli-$JPEGXL_VERSION.tar.gz)
+    (cd $out_dir \
+        && cmake -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTING=OFF . \
+        && make install)
+    touch jpegxl-stamp
 }
 
 function build_brotli {
@@ -145,6 +155,7 @@ function build {
         --enable-libwebpmux --enable-libwebpdemux
 
     build_brotli
+    build_jpegxl
 
     if [ -n "$IS_MACOS" ]; then
         # Custom freetype build
