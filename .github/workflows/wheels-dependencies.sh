@@ -131,7 +131,7 @@ function build_libavif {
     # CONFIG_AV1_HIGHBITDEPTH=0 is a flag for libaom (included as a subproject
     # of libavif) that disables support for encoding high bit depth images.
     (cd $out_dir \
-        && cmake \
+        && CMAKE_POLICY_VERSION_MINIMUM=3.9 cmake \
             -DCMAKE_INSTALL_PREFIX=$BUILD_PREFIX \
             -DCMAKE_INSTALL_LIBDIR=$BUILD_PREFIX/lib \
             -DCMAKE_INSTALL_NAME_DIR=$BUILD_PREFIX/lib \
