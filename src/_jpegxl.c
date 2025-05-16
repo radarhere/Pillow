@@ -222,54 +222,23 @@ _jxl_decoder_new(PyObject *self, PyObject *args) {
     Py_ssize_t _tmp_jxl_data_len;
 
     // convert jxl data string to C uint8_t pointer
-    PyBytes_AsStringAndSize(
-        (PyObject *)jxl_string, (char **)&_tmp_jxl_data, &_tmp_jxl_data_len
-    );
+    PyBytes_AsStringAndSize((PyObject *)jxl_string, (char **)&_tmp_jxl_data, &_tmp_jxl_data_len);
 
     // here occurs this copying (inefficiency)
     decp->jxl_data = malloc(_tmp_jxl_data_len);
     memcpy(decp->jxl_data, _tmp_jxl_data, _tmp_jxl_data_len);
     decp->jxl_data_len = _tmp_jxl_data_len;
 
-    size_t suggested_num_threads = JxlThreadParallelRunnerDefaultNumWorkerThreads();
-    decp->runner = JxlThreadParallelRunnerCreate(NULL, suggested_num_threads);
     decp->decoder = JxlDecoderCreate(NULL);
 
-    decp->status = JxlDecoderSetParallelRunner(
-        decp->decoder, JxlThreadParallelRunner, decp->runner
+    JxlDecoderSubscribeEvents(decp->decoder,
+        JXL_DEC_BASIC_INFO | JXL_DEC_COLOR_ENCODING | JXL_DEC_FRAME | JXL_DEC_FULL_IMAGE
     );
-    _JXL_CHECK("JxlDecoderSetParallelRunner")
 
-    decp->status = JxlDecoderSubscribeEvents(
-        decp->decoder,
-        JXL_DEC_BASIC_INFO | JXL_DEC_COLOR_ENCODING | JXL_DEC_FRAME |
-            JXL_DEC_FULL_IMAGE
-    );
-    _JXL_CHECK("JxlDecoderSubscribeEvents")
-
-    // tell libjxl to decompress boxes (for example Exif is usually compressed)
-    decp->status = JxlDecoderSetDecompressBoxes(decp->decoder, JXL_TRUE);
-    _JXL_CHECK("JxlDecoderSetDecompressBoxes")
-
-    _jxl_decoder_set_input((PyObject *)decp);
-    _JXL_CHECK("JxlDecoderSetInput")
+    decp->status = JxlDecoderSetInput(decp->decoder, decp->jxl_data, decp->jxl_data_len);
+    JxlDecoderCloseInput(decp->decoder);
 
     return (PyObject *)decp;
-
-    // on success we should never reach here
-
-    // set error message
-    char err_msg[128];
-
-end:
-    snprintf(
-        err_msg,
-        128,
-        "could not create decoder object. libjxl call: %s returned: %d",
-        jxl_call_name,
-        decp->status
-    );
-    PyErr_SetString(PyExc_OSError, err_msg);
 }
 
 PyObject *
@@ -292,12 +261,9 @@ _jxl_decoder_get_info(PyObject *self) {
 PyObject *
 _jxl_decoder_get_next(PyObject *self) {
     JpegXlDecoderObject *decp = (JpegXlDecoderObject *)self;
-    PyObject *bytes;
-    PyObject *ret;
     JxlFrameHeader fhdr = {};
 
     printf("start\n");
-    char *jxl_call_name;
 
     // process events until next frame output is ready
     while (decp->status != JXL_DEC_NEED_IMAGE_OUT_BUFFER) {
