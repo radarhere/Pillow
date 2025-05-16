@@ -216,24 +216,16 @@ _jxl_decoder_new(PyObject *self, PyObject *args) {
         return NULL;
     }
 
-    // this data needs to be copied to JpegXlDecoderObject
-    // so that input bitstream is preserved across calls
     const uint8_t *_tmp_jxl_data;
     Py_ssize_t _tmp_jxl_data_len;
-
-    // convert jxl data string to C uint8_t pointer
     PyBytes_AsStringAndSize((PyObject *)jxl_string, (char **)&_tmp_jxl_data, &_tmp_jxl_data_len);
 
-    // here occurs this copying (inefficiency)
     decp->jxl_data = malloc(_tmp_jxl_data_len);
     memcpy(decp->jxl_data, _tmp_jxl_data, _tmp_jxl_data_len);
     decp->jxl_data_len = _tmp_jxl_data_len;
 
     decp->decoder = JxlDecoderCreate(NULL);
-
-    JxlDecoderSubscribeEvents(decp->decoder,
-        JXL_DEC_BASIC_INFO | JXL_DEC_COLOR_ENCODING | JXL_DEC_FRAME | JXL_DEC_FULL_IMAGE
-    );
+    JxlDecoderSubscribeEvents(decp->decoder, JXL_DEC_BASIC_INFO | JXL_DEC_COLOR_ENCODING | JXL_DEC_FRAME | JXL_DEC_FULL_IMAGE);
 
     decp->status = JxlDecoderSetInput(decp->decoder, decp->jxl_data, decp->jxl_data_len);
     JxlDecoderCloseInput(decp->decoder);
@@ -274,18 +266,6 @@ _jxl_decoder_get_next(PyObject *self) {
         if (decp->status == JXL_DEC_SUCCESS) {
             printf("exit1\n");
             Py_RETURN_NONE;
-        }
-
-        // this should only occur after rewind
-        if (decp->status == JXL_DEC_NEED_MORE_INPUT) {
-            _jxl_decoder_set_input((PyObject *)decp);
-            continue;
-        }
-
-        if (decp->status == JXL_DEC_FRAME) {
-            // decode frame header
-            decp->status = JxlDecoderGetFrameHeader(decp->decoder, &fhdr);
-            continue;
         }
     }
     Py_RETURN_NONE;
