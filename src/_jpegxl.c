@@ -465,68 +465,7 @@ _jxl_decoder_get_next(PyObject *self) {
             continue;
         }
     }
-
-    size_t new_outbuf_len;
-    decp->status = JxlDecoderImageOutBufferSize(
-        decp->decoder, &decp->pixel_format, &new_outbuf_len
-    );
-    _JXL_CHECK("JxlDecoderImageOutBufferSize");
-
-    // only allocate memory when current buffer is too small
-    if (decp->outbuf_len < new_outbuf_len) {
-        decp->outbuf_len = new_outbuf_len;
-        uint8_t *_new_outbuf = realloc(decp->outbuf, decp->outbuf_len);
-        if (!_new_outbuf) {
-            PyErr_SetString(PyExc_OSError, "failed to allocate outbuf");
-            printf("exit2\n");
-            goto end_with_custom_error;
-        }
-        decp->outbuf = _new_outbuf;
-    }
-
-    decp->status = JxlDecoderSetImageOutBuffer(
-        decp->decoder, &decp->pixel_format, decp->outbuf, decp->outbuf_len
-    );
-    _JXL_CHECK("JxlDecoderSetImageOutBuffer");
-
-    // decode image into output_buffer
-    decp->status = JxlDecoderProcessInput(decp->decoder);
-
-    if (decp->status != JXL_DEC_FULL_IMAGE) {
-        PyErr_SetString(PyExc_OSError, "failed to read next frame");
-        printf("exit3\n");
-        goto end_with_custom_error;
-    }
-
-    bytes = PyBytes_FromStringAndSize((char *)(decp->outbuf), decp->outbuf_len);
-
-    ret = Py_BuildValue("SIi", bytes, fhdr.duration, fhdr.is_last);
-
-    Py_DECREF(bytes);
-    return ret;
-
-    // we also shouldn't reach here if frame read was ok
-
-    // set error message
-    char err_msg[128];
-
-end:
-    printf("exit4\n");
-    snprintf(
-        err_msg,
-        128,
-        "could not read frame. libjxl call: %s returned: %d",
-        jxl_call_name,
-        decp->status
-    );
-    PyErr_SetString(PyExc_OSError, err_msg);
-
-end_with_custom_error:
-
-    // no need to deallocate anything here
-    // user can just ignore error
-
-    return NULL;
+    Py_RETURN_NONE;
 }
 
 PyObject *
