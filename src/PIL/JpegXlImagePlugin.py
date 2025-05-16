@@ -1,8 +1,5 @@
 from __future__ import annotations
 
-import struct
-from io import BytesIO
-
 from . import Image, ImageFile
 
 try:
@@ -41,15 +38,8 @@ class JpegXlImageFile(ImageFile.ImageFile):
     def _open(self) -> None:
         self._decoder = _jpegxl.JpegXlDecoder(self.fp.read())
 
-        (
-            self._size,
-            self._mode,
-            self.is_animated,
-            tps_num,
-            tps_denom,
-            self.info["loop"],
-            n_frames,
-        ) = self._decoder.get_info()
+        self._size = (1, 1)
+        self._mode = "RGB"
 
         self._decoder.get_next()
 
