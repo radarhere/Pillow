@@ -278,7 +278,6 @@ decoder_loop_skip_process:
                 PyErr_SetString(
                     PyExc_NotImplementedError, "unsupported pixel data type"
                 );
-                goto end_with_custom_error;
             }
             decp->mode = _jxl_get_mode(&decp->basic_info);
 
@@ -300,7 +299,6 @@ decoder_loop_skip_process:
             decp->jxl_icc = malloc(decp->jxl_icc_len);
             if (!decp->jxl_icc) {
                 PyErr_SetString(PyExc_OSError, "jxl_icc malloc failed");
-                goto end_with_custom_error;
             }
 
             decp->status = JxlDecoderGetColorAsICCProfile(
@@ -376,14 +374,12 @@ decoder_loop_skip_process:
     // couldn't determine Image mode or it is unsupported
     if (!decp->mode) {
         PyErr_SetString(PyExc_NotImplementedError, "only 8-bit images are supported");
-        goto end_with_custom_error;
     }
 
     if (decp->basic_info.have_animation) {
         // get frame count by iterating over image out events
         if (!_jxl_decoder_count_frames((PyObject *)decp)) {
             PyErr_SetString(PyExc_OSError, "something went wrong when counting frames");
-            goto end_with_custom_error;
         }
     }
 
@@ -403,14 +399,6 @@ end:
         decp->status
     );
     PyErr_SetString(PyExc_OSError, err_msg);
-
-end_with_custom_error:
-
-    // deallocate
-    _jxl_decoder_dealloc((PyObject *)decp);
-    PyObject_Del(decp);
-
-    return NULL;
 }
 
 PyObject *
@@ -454,14 +442,12 @@ _jxl_decoder_get_next(PyObject *self) {
         // this should only occur after rewind
         if (decp->status == JXL_DEC_NEED_MORE_INPUT) {
             _jxl_decoder_set_input((PyObject *)decp);
-            _JXL_CHECK("JxlDecoderSetInput")
             continue;
         }
 
         if (decp->status == JXL_DEC_FRAME) {
             // decode frame header
             decp->status = JxlDecoderGetFrameHeader(decp->decoder, &fhdr);
-            _JXL_CHECK("JxlDecoderGetFrameHeader");
             continue;
         }
     }
