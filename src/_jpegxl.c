@@ -376,13 +376,6 @@ decoder_loop_skip_process:
         PyErr_SetString(PyExc_NotImplementedError, "only 8-bit images are supported");
     }
 
-    if (decp->basic_info.have_animation) {
-        // get frame count by iterating over image out events
-        if (!_jxl_decoder_count_frames((PyObject *)decp)) {
-            PyErr_SetString(PyExc_OSError, "something went wrong when counting frames");
-        }
-    }
-
     return (PyObject *)decp;
 
     // on success we should never reach here
