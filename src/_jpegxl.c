@@ -220,15 +220,18 @@ _jxl_decoder_new(PyObject *self, PyObject *args) {
     Py_ssize_t _tmp_jxl_data_len;
     PyBytes_AsStringAndSize((PyObject *)jxl_string, (char **)&_tmp_jxl_data, &_tmp_jxl_data_len);
 
-    decp->jxl_data = malloc(_tmp_jxl_data_len);
-    memcpy(decp->jxl_data, _tmp_jxl_data, _tmp_jxl_data_len);
-    decp->jxl_data_len = _tmp_jxl_data_len;
+    uint8_t *jxl_data = malloc(_tmp_jxl_data_len);
+    memcpy(jxl_data, _tmp_jxl_data, _tmp_jxl_data_len);
+    Py_ssize_t jxl_data_len = _tmp_jxl_data_len;
 
-    decp->decoder = JxlDecoderCreate(NULL);
-    JxlDecoderSubscribeEvents(decp->decoder, JXL_DEC_BASIC_INFO | JXL_DEC_COLOR_ENCODING | JXL_DEC_FRAME | JXL_DEC_FULL_IMAGE);
+    JxlDecoder *decoder = JxlDecoderCreate(NULL);
+    JxlDecoderSubscribeEvents(decoder, JXL_DEC_BASIC_INFO | JXL_DEC_COLOR_ENCODING | JXL_DEC_FRAME | JXL_DEC_FULL_IMAGE);
 
-    decp->status = JxlDecoderSetInput(decp->decoder, decp->jxl_data, decp->jxl_data_len);
-    JxlDecoderCloseInput(decp->decoder);
+    JxlDecoderSetInput(decoder, jxl_data, jxl_data_len);
+    JxlDecoderCloseInput(decoder);
+
+    JxlDecoderStatus status = JxlDecoderProcessInput(decoder);
+    printf("status %d\n", status);
 
     return (PyObject *)decp;
 }
@@ -255,20 +258,8 @@ _jxl_decoder_get_next(PyObject *self) {
     JpegXlDecoderObject *decp = (JpegXlDecoderObject *)self;
     JxlFrameHeader fhdr = {};
 
-    printf("start\n");
-
-    // process events until next frame output is ready
-    while (decp->status != JXL_DEC_NEED_IMAGE_OUT_BUFFER) {
-        decp->status = JxlDecoderProcessInput(decp->decoder);
-        printf("pass %d\n", decp->status);
-
-        // every frame was decoded successfully
-        if (decp->status == JXL_DEC_SUCCESS) {
-            printf("exit1\n");
-            Py_RETURN_NONE;
-        }
-    }
-    Py_RETURN_NONE;
+    decp->status = JxlDecoderProcessInput(decp->decoder);
+    printf("pass %d\n", decp->status);
 }
 
 PyObject *

@@ -41,8 +41,6 @@ class JpegXlImageFile(ImageFile.ImageFile):
         self._size = (1, 1)
         self._mode = "RGB"
 
-        self._decoder.get_next()
-
 
 Image.register_open(JpegXlImageFile.format, JpegXlImageFile, _accept)
 Image.register_extension(JpegXlImageFile.format, ".jxl")
