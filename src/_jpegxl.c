@@ -437,14 +437,17 @@ _jxl_decoder_get_next(PyObject *self) {
     PyObject *ret;
     JxlFrameHeader fhdr = {};
 
+    printf("start\n");
     char *jxl_call_name;
 
     // process events until next frame output is ready
     while (decp->status != JXL_DEC_NEED_IMAGE_OUT_BUFFER) {
         decp->status = JxlDecoderProcessInput(decp->decoder);
+        printf("pass %d\n", decp->status);
 
         // every frame was decoded successfully
         if (decp->status == JXL_DEC_SUCCESS) {
+            printf("exit1\n");
             Py_RETURN_NONE;
         }
 
@@ -475,6 +478,7 @@ _jxl_decoder_get_next(PyObject *self) {
         uint8_t *_new_outbuf = realloc(decp->outbuf, decp->outbuf_len);
         if (!_new_outbuf) {
             PyErr_SetString(PyExc_OSError, "failed to allocate outbuf");
+            printf("exit2\n");
             goto end_with_custom_error;
         }
         decp->outbuf = _new_outbuf;
@@ -490,6 +494,7 @@ _jxl_decoder_get_next(PyObject *self) {
 
     if (decp->status != JXL_DEC_FULL_IMAGE) {
         PyErr_SetString(PyExc_OSError, "failed to read next frame");
+        printf("exit3\n");
         goto end_with_custom_error;
     }
 
@@ -506,6 +511,7 @@ _jxl_decoder_get_next(PyObject *self) {
     char err_msg[128];
 
 end:
+    printf("exit4\n");
     snprintf(
         err_msg,
         128,
