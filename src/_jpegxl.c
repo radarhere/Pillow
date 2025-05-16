@@ -242,7 +242,7 @@ _jxl_decoder_new(PyObject *self, PyObject *args) {
 
     decp->status = JxlDecoderSubscribeEvents(
         decp->decoder,
-        JXL_DEC_BASIC_INFO | JXL_DEC_COLOR_ENCODING | JXL_DEC_FRAME | JXL_DEC_BOX |
+        JXL_DEC_BASIC_INFO | JXL_DEC_COLOR_ENCODING | JXL_DEC_FRAME |
             JXL_DEC_FULL_IMAGE
     );
     _JXL_CHECK("JxlDecoderSubscribeEvents")
