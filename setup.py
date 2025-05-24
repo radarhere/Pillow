@@ -955,7 +955,10 @@ class pil_build_ext(build_ext):
         tk_libs = ["psapi"] if sys.platform in ("win32", "cygwin") else []
         self._update_extension("PIL._imagingtk", tk_libs)
 
+        print("Start parallel check. self.parallel =", self.parallel)
+        build_ext._build_extensions_parallel = lambda x: print("Parallel method called")
         build_ext.build_extensions(self)
+        int("Finish check")
 
         #
         # sanity checks
