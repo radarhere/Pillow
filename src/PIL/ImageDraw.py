@@ -363,7 +363,16 @@ class ImageDraw:
             elif self.im is not None:
                 # To avoid expanding the polygon outwards,
                 # use the fill as a mask
-                mask = Image.new("1", self.im.size)
+                size = self.im.size
+                if isinstance(xy[0], tuple):
+                    max_xy = tuple(
+                        max(math.ceil(point[i]) + 1 for point in xy) for i in range(2)
+                    )
+                    if min(max_xy) < 0:
+                        return
+                    if max_xy[0] < size[0] and max_xy[1] < size[1]:
+                        size = max_xy
+                mask = Image.new("1", size)
                 mask_ink = self._getink(1)[0]
 
                 fill_im = mask.copy()
@@ -377,10 +386,10 @@ class ImageDraw:
 
                 mask.paste(ink_im, mask=fill_im)
 
-                im = Image.new(self.mode, self.im.size)
+                im = Image.new(self.mode, size)
                 draw = Draw(im)
                 draw.draw.draw_polygon(xy, ink, 0, width)
-                self.im.paste(im.im, (0, 0) + im.size, mask.im)
+                self.im.paste(im.im, (0, 0) + size, mask.im)
 
     def regular_polygon(
         self,
