@@ -932,6 +932,7 @@ ImagingLibTiffSetField(ImagingCodecState state, ttag_t tag, ...) {
 
 int
 ImagingLibTiffEncodeCleanup(ImagingCodecState state) {
+    printf("libtiffencodecleanup\n");
     TIFFSTATE *clientstate = (TIFFSTATE *)state->context;
     TIFF *tiff = clientstate->tiff;
 
@@ -942,6 +943,7 @@ ImagingLibTiffEncodeCleanup(ImagingCodecState state) {
     if (clientstate->fp) {
         // Python will manage the closing of the file rather than libtiff
         // So only call TIFFCleanup
+        printf("tiffcleanup\n");
         TIFFCleanup(tiff);
     } else {
         // When tif_closeproc refers to our custom _tiffCloseProc though,

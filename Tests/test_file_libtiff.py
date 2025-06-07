@@ -1235,3 +1235,4 @@ class TestFileLibTiff(LibTiffTestCase):
             w = sizes[i]
             expected = Image.new("RGB", (w, w), "#f00")
             assert_image_similar(im, expected, 1)
+

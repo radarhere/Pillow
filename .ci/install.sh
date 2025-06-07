@@ -56,18 +56,6 @@ if [[ $(uname) != CYGWIN* ]]; then
         python3 -m pip install "setuptools>=77"
     fi
 
-    # webp
-    pushd depends && ./install_webp.sh && popd
-
-    # libimagequant
-    pushd depends && ./install_imagequant.sh && popd
-
-    # raqm
-    pushd depends && ./install_raqm.sh && popd
-
-    # libavif
-    pushd depends && ./install_libavif.sh && popd
-
     # extra test images
     pushd depends && ./install_extra_test_images.sh && popd
 else
