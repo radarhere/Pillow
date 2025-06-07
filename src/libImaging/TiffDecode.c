@@ -1032,9 +1032,13 @@ ImagingLibTiffEncode(Imaging im, ImagingCodecState state, UINT8 *buffer, int byt
                 TRACE(("Encode Error, row %d\n", state->y));
                 state->errcode = IMAGING_CODEC_BROKEN;
 
-                if (!clientstate->fp) {
+                if (clientstate->fp) {
+                    TIFFCleanup(tiff);
+                } else {
+                    TIFFClose(tiff);
                     free(clientstate->data);
                 }
+                clientstate->tiff = NULL;
                 return -1;
             }
             state->y++;
@@ -1048,9 +1052,13 @@ ImagingLibTiffEncode(Imaging im, ImagingCodecState state, UINT8 *buffer, int byt
                 TRACE(("Error flushing the tiff"));
                 // likely reason is memory.
                 state->errcode = IMAGING_CODEC_MEMORY;
-                if (!clientstate->fp) {
+                if (clientstate->fp) {
+                    TIFFCleanup(tiff);
+                } else {
+                    TIFFClose(tiff);
                     free(clientstate->data);
                 }
+                clientstate->tiff = NULL;
                 return -1;
             }
             // reset the clientstate metadata to use it to read out the buffer.
