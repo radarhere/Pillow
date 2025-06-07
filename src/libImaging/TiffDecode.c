@@ -1041,6 +1041,7 @@ ImagingLibTiffEncode(Imaging im, ImagingCodecState state, UINT8 *buffer, int byt
                 if (!clientstate->fp) {
                     free(clientstate->data);
                 }
+                clientstate->tiff = NULL;
                 return -1;
             }
             state->y++;
@@ -1062,6 +1063,7 @@ ImagingLibTiffEncode(Imaging im, ImagingCodecState state, UINT8 *buffer, int byt
                 if (!clientstate->fp) {
                     free(clientstate->data);
                 }
+                clientstate->tiff = NULL;
                 return -1;
             }
             TRACE(("Closing \n"));
@@ -1070,6 +1072,7 @@ ImagingLibTiffEncode(Imaging im, ImagingCodecState state, UINT8 *buffer, int byt
             } else {
                 TIFFClose(tiff);
             }
+            clientstate->tiff = NULL;
             // reset the clientstate metadata to use it to read out the buffer.
             clientstate->loc = 0;
             clientstate->size = clientstate->eof;  // redundant?
