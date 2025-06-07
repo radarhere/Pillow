@@ -942,7 +942,6 @@ ImagingLibTiffEncodeCleanup(ImagingCodecState state) {
     if (clientstate->fp) {
         // Python will manage the closing of the file rather than libtiff
         // So only call TIFFCleanup
-        TIFFCleanup(tiff);
     } else {
         // When tif_closeproc refers to our custom _tiffCloseProc though,
         // that is fine, as it does not close the file
