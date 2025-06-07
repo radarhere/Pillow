@@ -1033,7 +1033,9 @@ ImagingLibTiffEncode(Imaging im, ImagingCodecState state, UINT8 *buffer, int byt
                 state->errcode = IMAGING_CODEC_BROKEN;
 
                 if (!clientstate->fp) {
+                    TIFFClose(tiff);
                     free(clientstate->data);
+                    clientstate->tiff = NULL;
                 }
                 return -1;
             }
