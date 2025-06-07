@@ -694,6 +694,7 @@ class TestFileTiff:
             assert im.tag_v2[278] == 256
 
         im = hopper()
+        im.encoderinfo = {"tiffinfo": {278: 100}}
         im2 = Image.new("L", (128, 128))
         im2.encoderinfo = {"tiffinfo": {278: 256}}
         im3 = Image.new("L", (128, 128))
@@ -701,7 +702,7 @@ class TestFileTiff:
 
         with Image.open(outfile) as im:
             assert isinstance(im, TiffImagePlugin.TiffImageFile)
-            assert im.tag_v2[278] == 512
+            assert im.tag_v2[278] == 100
 
             im.seek(1)
             assert im.tag_v2[278] == 256
