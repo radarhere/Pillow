@@ -1036,9 +1036,6 @@ ImagingLibTiffEncode(Imaging im, ImagingCodecState state, UINT8 *buffer, int byt
                     TIFFCleanup(tiff);
                 } else {
                     TIFFClose(tiff);
-                }
-
-                if (!clientstate->fp) {
                     free(clientstate->data);
                 }
                 clientstate->tiff = NULL;
@@ -1059,8 +1056,6 @@ ImagingLibTiffEncode(Imaging im, ImagingCodecState state, UINT8 *buffer, int byt
                     TIFFCleanup(tiff);
                 } else {
                     TIFFClose(tiff);
-                }
-                if (!clientstate->fp) {
                     free(clientstate->data);
                 }
                 clientstate->tiff = NULL;
