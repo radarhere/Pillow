@@ -112,6 +112,7 @@ _encode_cleanup(ImagingEncoderObject *encoder, PyObject *args) {
 
     if (encoder->cleanup) {
         status = encoder->cleanup(&encoder->state);
+        encoder->cleanup = NULL;
     }
 
     return Py_BuildValue("i", status);
