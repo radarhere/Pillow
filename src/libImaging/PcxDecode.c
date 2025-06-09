@@ -67,15 +67,10 @@ ImagingPcxDecode(Imaging im, ImagingCodecState state, UINT8 *buf, Py_ssize_t byt
                 xsize = (state->xsize + 7) / 8;
                 bands = state->bits;
                 stride = state->bytes / state->bits;
-            } else if (state->bytes % state->xsize) {
-                printf("true %d %d\n", state->bytes, state->xsize);
+            } else if (state->bytes > 0) {
                 xsize = state->xsize;
                 bands = state->bytes / state->xsize;
-                if (bands != 0) {
-                    stride = state->bytes / bands;
-                }
-            } else {
-                printf("else %d %d\n", state->bytes, state->xsize);
+                stride = state->bytes / bands;
             }
             if (stride > xsize) {
                 int i;
