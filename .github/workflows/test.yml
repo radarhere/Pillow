@@ -19,6 +19,7 @@ jobs:
       matrix:
         std: [
           "-std=gnu17",
+          "-std=gnu2x",
           "-std=gnu23",
         ]
 
@@ -28,6 +29,8 @@ jobs:
     steps:
     - name: Ghostscript
       run: |
-        wget https://github.com/ArtifexSoftware/ghostpdl-downloads/releases/download/gs10051/ghostscript-10.05.1.tar.gz
-        tar -xvzf ghostscript-10.05.1.tar.gz
-        cd ghostscript-10.05.1 && CFLAGS="${{ matrix.std }}" ./configure --without-x
+        git clone https://github.com/ArtifexSoftware/ghostpdl
+        cd ghostpdl
+        export CFLAGS="${{ matrix.std }}"
+        ./autogen.sh
+        sudo make install
