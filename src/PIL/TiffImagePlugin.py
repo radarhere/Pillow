@@ -1936,6 +1936,8 @@ def _save(im: Image.Image, fp: IO[bytes], filename: str | bytes) -> None:
             # them to the custom dictionary.
             # Custom items are supported for int, float, unicode, string and byte
             # values. Other types and tuples require a tagtype.
+            if tag not in (318, 256, 257):
+                continue
             if tag not in TiffTags.LIBTIFF_CORE:
                 if not getattr(Image.core, "libtiff_support_custom_tags", False):
                     continue

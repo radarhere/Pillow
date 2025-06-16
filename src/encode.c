@@ -716,6 +716,7 @@ PyImaging_LibTiffEncoderNew(PyObject *self, PyObject *args) {
         // We already checked that tags is a 2-tuple list.
         key = PyTuple_GET_ITEM(item, 0);
         key_int = (int)PyLong_AsLong(key);
+        printf("key_int %d\n", key_int);
         value = PyTuple_GET_ITEM(item, 1);
         Py_DECREF(item);
 
