@@ -1955,7 +1955,9 @@ def _save(im: Image.Image, fp: IO[bytes], filename: str | bytes) -> None:
                     atts[tag] = value.encode("ascii", "replace") + b"\0"
                 elif isinstance(value, IFDRational):
                     atts[tag] = float(value)
-                elif isinstance(value, tuple) and all(isinstance(v, IFDRational) for v in value):
+                elif isinstance(value, tuple) and all(
+                    isinstance(v, IFDRational) for v in value
+                ):
                     atts[tag] = tuple(float(v) for v in value)
                 else:
                     atts[tag] = value

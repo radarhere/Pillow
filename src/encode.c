@@ -771,7 +771,12 @@ PyImaging_LibTiffEncoderNew(PyObject *self, PyObject *args) {
                 if (PyLong_Check(PyTuple_GetItem(value, 0))) {
                     type = TIFF_LONG;
                 } else if (PyFloat_Check(PyTuple_GetItem(value, 0))) {
-                    type = TIFF_FLOAT;
+                    if (key_int == TIFFTAG_WHITEPOINT ||
+                        key_int == TIFFTAG_PRIMARYCHROMATICITIES) {
+                        type = TIFF_RATIONAL;
+                    } else {
+                        type = TIFF_FLOAT;
+                    }
                 }
             }
         }
@@ -922,6 +927,8 @@ PyImaging_LibTiffEncoderNew(PyObject *self, PyObject *args) {
                     );
                     free(av);
                 }
+            } else if (type == TIFF_RATIONAL) {
+
             }
         } else {
             if (type == TIFF_SHORT) {
@@ -944,7 +951,7 @@ PyImaging_LibTiffEncoderNew(PyObject *self, PyObject *args) {
                 status = ImagingLibTiffSetField(
                     &encoder->state, (ttag_t)key_int, (FLOAT32)PyFloat_AsDouble(value)
                 );
-            } else if (type == TIFF_DOUBLE) {
+            } else if (type == TIFF_DOUBLE || type == TIFF_RATIONAL) {
                 status = ImagingLibTiffSetField(
                     &encoder->state, (ttag_t)key_int, (FLOAT64)PyFloat_AsDouble(value)
                 );
@@ -955,10 +962,6 @@ PyImaging_LibTiffEncoderNew(PyObject *self, PyObject *args) {
             } else if (type == TIFF_ASCII) {
                 status = ImagingLibTiffSetField(
                     &encoder->state, (ttag_t)key_int, PyBytes_AsString(value)
-                );
-            } else if (type == TIFF_RATIONAL) {
-                status = ImagingLibTiffSetField(
-                    &encoder->state, (ttag_t)key_int, (FLOAT64)PyFloat_AsDouble(value)
                 );
             } else if (type == TIFF_LONG8) {
                 status = ImagingLibTiffSetField(
