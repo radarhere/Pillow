@@ -770,12 +770,17 @@ PyImaging_LibTiffEncoderNew(PyObject *self, PyObject *args) {
                 // changed for backwards compatibility.
                 if (PyLong_Check(PyTuple_GetItem(value, 0))) {
                     type = TIFF_LONG;
+                    printf("long\n");
+                    if (key_int == TIFFTAG_WHITEPOINT ||
+                        key_int == TIFFTAG_PRIMARYCHROMATICITIES) {
+                        printf("hit\n");
+                        type = TIFF_RATIONAL;
+                    }
                 } else if (PyFloat_Check(PyTuple_GetItem(value, 0))) {
                     type = TIFF_FLOAT;
-                } else if (key_int == TIFFTAG_WHITEPOINT ||
-                    key_int == TIFFTAG_PRIMARYCHROMATICITIES) {
-                    type = TIFF_RATIONAL;
                 }
+            } else {
+                printf("else\n");
             }
         }
 
@@ -933,7 +938,7 @@ PyImaging_LibTiffEncoderNew(PyObject *self, PyObject *args) {
                 av = calloc(len, sizeof(double));
                 if (av) {
                     for (i = 0; i < len; i++) {
-                        av[i] = PyFloat_AsDouble(PyTuple_GetItem(value, i));
+                        av[i] = (double)PyFloat_AsDouble(PyTuple_GetItem(value, i));
                     }
                     status = ImagingLibTiffSetField(
                         &encoder->state, (ttag_t)key_int, len, av
