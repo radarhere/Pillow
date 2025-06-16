@@ -634,6 +634,7 @@ PyObject *
 PyImaging_LibTiffEncoderNew(PyObject *self, PyObject *args) {
     ImagingEncoderObject *encoder;
 
+    printf("outsideencode\n");
     char *mode;
     char *rawmode;
     char *compname;
@@ -938,7 +939,7 @@ PyImaging_LibTiffEncoderNew(PyObject *self, PyObject *args) {
                 av = calloc(len, sizeof(double));
                 if (av) {
                     for (i = 0; i < len; i++) {
-                        av[i] = (double)PyFloat_AsDouble(PyTuple_GetItem(value, i));
+                        av[i] = (double)i;
                     }
                     status = ImagingLibTiffSetField(
                         &encoder->state, (ttag_t)key_int, len, av

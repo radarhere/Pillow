@@ -39,6 +39,7 @@ class TestFileLibTiff(LibTiffTestCase):
         self, monkeypatch: pytest.MonkeyPatch, tmp_path: Path
     ) -> None:
         # issue 1597
+        print("start")
         with Image.open("Tests/images/rdf.tif") as im:
             out = tmp_path / "temp.tif"
 
