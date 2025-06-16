@@ -771,12 +771,10 @@ PyImaging_LibTiffEncoderNew(PyObject *self, PyObject *args) {
                 if (PyLong_Check(PyTuple_GetItem(value, 0))) {
                     type = TIFF_LONG;
                 } else if (PyFloat_Check(PyTuple_GetItem(value, 0))) {
-                    if (key_int == TIFFTAG_WHITEPOINT ||
-                        key_int == TIFFTAG_PRIMARYCHROMATICITIES) {
-                        type = TIFF_RATIONAL;
-                    } else {
-                        type = TIFF_FLOAT;
-                    }
+                    type = TIFF_FLOAT;
+                } else if (key_int == TIFFTAG_WHITEPOINT ||
+                    key_int == TIFFTAG_PRIMARYCHROMATICITIES) {
+                    type = TIFF_RATIONAL;
                 }
             }
         }
