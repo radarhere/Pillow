@@ -928,7 +928,20 @@ PyImaging_LibTiffEncoderNew(PyObject *self, PyObject *args) {
                     free(av);
                 }
             } else if (type == TIFF_RATIONAL) {
-
+                printf("torch %d %d\n", sizeof(FLOAT64), sizeof(double));
+                printf("len %d\n", len);
+                double *av;
+                /* malloc check ok, calloc checks for overflow */
+                av = calloc(len, sizeof(double));
+                if (av) {
+                    for (i = 0; i < len; i++) {
+                        av[i] = PyFloat_AsDouble(PyTuple_GetItem(value, i));
+                    }
+                    status = ImagingLibTiffSetField(
+                        &encoder->state, (ttag_t)key_int, len, av
+                    );
+                    free(av);
+                }
             }
         } else {
             if (type == TIFF_SHORT) {
