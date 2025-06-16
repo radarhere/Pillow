@@ -1959,7 +1959,7 @@ def _save(im: Image.Image, fp: IO[bytes], filename: str | bytes) -> None:
                     isinstance(v, IFDRational) for v in value
                 ):
                     print("Fives")
-                    atts[tag] = (1.1, 2.2, 3.3, 4.4)#tuple(float(v) for v in value)
+                    atts[tag] = (1, 2, 3, 4)#tuple(float(v) for v in value)
                 else:
                     atts[tag] = value
 
