@@ -143,7 +143,7 @@ function build_libavif {
             -DAVIF_CODEC_AOM_DECODE=OFF \
             -DAVIF_CODEC_DAV1D=LOCAL \
             -DCMAKE_INTERPROCEDURAL_OPTIMIZATION=$lto \
-            -DCMAKE_C_VISIBILITY_PRESET=hidden \
+            -DCMAKE_CXX_VISIBILITY_PRESET=hidden \
             -DCMAKE_BUILD_TYPE=$build_type \
             "${libavif_cmake_flags[@]}" \
             . \
