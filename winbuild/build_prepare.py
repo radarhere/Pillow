@@ -396,7 +396,7 @@ DEPS: dict[str, dict[str, Any]] = {
             f"{sys.executable} -m pip install meson",
             *cmds_cmake(
                 "avif_static",
-                "-DBUILD_SHARED_LIBS=OFF",
+                "-DBUILD_SHARED_LIBS=ON",
                 "-DAVIF_LIBSHARPYUV=LOCAL",
                 "-DAVIF_LIBYUV=LOCAL",
                 "-DAVIF_CODEC_AOM=LOCAL",
