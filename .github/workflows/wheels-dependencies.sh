@@ -139,7 +139,6 @@ function build_libavif {
             -DAVIF_LIBSHARPYUV=LOCAL \
             -DAVIF_LIBYUV=LOCAL \
             -DAVIF_CODEC_AOM=LOCAL \
-            -DCONFIG_AV1_HIGHBITDEPTH=0 \
             -DAVIF_CODEC_AOM_DECODE=OFF \
             -DAVIF_CODEC_DAV1D=LOCAL \
             -DCMAKE_INTERPROCEDURAL_OPTIMIZATION=$lto \
