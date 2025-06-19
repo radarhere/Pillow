@@ -760,6 +760,7 @@ def main() -> None:
         disabled += ["libimagequant"]
     if args.no_fribidi:
         disabled += ["fribidi"]
+    print("torch", args.architecture)
     if args.no_avif or args.architecture != "AMD64":
         disabled += ["libavif"]
 
