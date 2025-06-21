@@ -163,8 +163,6 @@ function build_zlib_ng {
 
 function build_brotli {
     if [ -e brotli-stamp ]; then return; fi
-    local name=brotli
-    local version=$BROTLI_VERSION
     local out_dir=$(fetch_unpack https://github.com/google/brotli/archive/v$BROTLI_VERSION.tar.gz brotli-$BROTLI_VERSION.tar.gz)
     (cd $out_dir \
         && cmake -DCMAKE_INSTALL_PREFIX=$BUILD_PREFIX -DCMAKE_INSTALL_LIBDIR=$BUILD_PREFIX/lib -DCMAKE_INSTALL_NAME_DIR=$BUILD_PREFIX/lib $HOST_CMAKE_FLAGS  . \
@@ -174,8 +172,6 @@ function build_brotli {
 
 function build_harfbuzz {
     if [ -e harfbuzz-stamp ]; then return; fi
-    local name=harfbuzz
-    local version=$HARFBUZZ_VERSION
 
     python3 -m pip install --disable-pip-version-check meson ninja
 
