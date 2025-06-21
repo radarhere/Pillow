@@ -173,7 +173,7 @@ function build_brotli {
 function build_harfbuzz {
     if [ -e harfbuzz-stamp ]; then return; fi
 
-    python3 -m pip install meson ninja
+    python3 -m pip install --disable-pip-version-check meson ninja
 
     local out_dir=$(fetch_unpack https://github.com/harfbuzz/harfbuzz/releases/download/$HARFBUZZ_VERSION/harfbuzz-$HARFBUZZ_VERSION.tar.xz harfbuzz-$HARFBUZZ_VERSION.tar.xz)
     (cd $out_dir \
@@ -298,7 +298,7 @@ if [[ -n "$IS_MACOS" ]]; then
 
     # Ensure cmake is available, and that the default prefix used by CMake is
     # the build prefix
-    python3 -m pip install --disable-pip-version-check cmake
+    python3 -m pip install cmake
     export CMAKE_PREFIX_PATH=$BUILD_PREFIX
 
     if [[ -n "$IOS_SDK" ]]; then
