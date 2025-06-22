@@ -124,9 +124,6 @@ PATH = "$(pwd)/build/deps/darwin/bin:$(dirname $(which python3)):/usr/bin:/bin:/
 # vendor version, and we can't distribute it due to licensing)
 config-settings = "raqm=disable imagequant=disable platform-guessing=disable"
 
-[tool.cibuildwheel.ios.enviroment]
-IPHONEOS_DEPLOYMENT_TARGET: "13.0"
-
 # iOS needs to be given a specific pytest invocation and list of test sources.
 test-sources = [
   "checks",
