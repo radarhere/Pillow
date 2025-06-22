@@ -110,7 +110,6 @@ jobs:
           CIBW_MANYLINUX_PYPY_X86_64_IMAGE: ${{ matrix.manylinux }}
           CIBW_MANYLINUX_X86_64_IMAGE: ${{ matrix.manylinux }}
           MACOSX_DEPLOYMENT_TARGET: ${{ matrix.macosx_deployment_target }}
-          IPHONEOS_DEPLOYMENT_TARGET: "13.0"
 
       - uses: actions/upload-artifact@v4
         with:
