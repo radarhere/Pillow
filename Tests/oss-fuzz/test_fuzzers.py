@@ -10,9 +10,9 @@ import pytest
 from PIL import Image, features
 from Tests.helper import skip_unless_feature
 
-if sys.platform.startswith("win32") or sys.platform in {"ios", "android"}:
+if sys.platform.startswith("win32") or sys.platform == "ios":
     pytest.skip(
-        "Fuzzer doesn't run on Windows or mobile",
+        "Fuzzer doesn't run on Windows or iOS",
         allow_module_level=True,
     )
 
