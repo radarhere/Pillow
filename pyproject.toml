@@ -128,10 +128,12 @@ config-settings = "raqm=disable imagequant=disable platform-guessing=disable"
 test-sources = [
   "checks",
   "Tests",
-  "pyproject.toml",
   "selftest.py",
 ]
-test-command = "python -m pytest -v checks/check_wheel.py Tests"
+test-command = [
+  "python -m selftest",
+  "python -m pytest -vv -x -W always checks/check_wheel.py Tests",
+]
 
 # There's no numpy wheel for iOS (yet...)
 test-requires = [  ]
