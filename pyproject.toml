@@ -125,11 +125,6 @@ PATH = "$(pwd)/build/deps/darwin/bin:$(dirname $(which python3)):/usr/bin:/bin:/
 config-settings = "raqm=disable imagequant=disable platform-guessing=disable"
 
 # iOS needs to be given a specific pytest invocation and list of test sources.
-test-sources = [
-  "checks",
-  "Tests",
-  "selftest.py",
-]
 test-command = [
   "python -m selftest",
   "python -m pytest -vv -x -W always checks/check_wheel.py Tests",
