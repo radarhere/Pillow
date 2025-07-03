@@ -3247,7 +3247,12 @@ class SupportsArrowArrayInterface(Protocol):
         raise NotImplementedError()
 
 
-def fromarray(obj: SupportsArrayInterface, mode: str | None = None) -> Image:
+def fromarray(
+    obj: SupportsArrayInterface,
+    mode: str | None = None,
+    *,
+    color_mode: str | None = None,
+) -> Image:
     """
     Creates an image memory from an object exporting the array interface
     (using the buffer protocol)::
@@ -3290,6 +3295,12 @@ def fromarray(obj: SupportsArrayInterface, mode: str | None = None) -> Image:
         im.getpixel((0, 0))  # (44, 1, 0)
 
       See: :ref:`concept-modes` for general information about modes.
+    :param color_mode: Optional mode to use when reading ``obj``. Since pixel values do
+      not contain information about palettes or color spaces, this can be used to place
+      grayscale L mode data within a P mode image, or read RGB data as YCbCr.
+      Keyword-only argument.
+
+      See: :ref:`concept-modes` for general information about modes.
     :returns: An image object.
 
     .. versionadded:: 1.1.6
@@ -3305,11 +3316,17 @@ def fromarray(obj: SupportsArrayInterface, mode: str | None = None) -> Image:
             msg = "Cannot handle this data type"
             raise TypeError(msg) from e
         try:
-            mode, rawmode = _fromarray_typemap[typekey]
+            mode, rawmode, color_modes = _fromarray_typemap[typekey]
         except KeyError as e:
             typekey_shape, typestr = typekey
             msg = f"Cannot handle this data type: {typekey_shape}, {typestr}"
             raise TypeError(msg) from e
+        if color_mode is not None:
+            if color_mode in color_modes:
+                mode = rawmode = color_mode
+            else:
+                msg = "Color mode invalid for mode"
+                raise ValueError(msg)
     else:
         deprecate("'mode' parameter", 13)
         rawmode = mode
@@ -3409,29 +3426,29 @@ def fromqpixmap(im: ImageQt.QPixmap) -> ImageFile.ImageFile:
 
 
 _fromarray_typemap = {
-    # (shape, typestr) => mode, rawmode
+    # (shape, typestr) => mode, rawmode, color modes
     # first two members of shape are set to one
-    ((1, 1), "|b1"): ("1", "1;8"),
-    ((1, 1), "|u1"): ("L", "L"),
-    ((1, 1), "|i1"): ("I", "I;8"),
-    ((1, 1), "<u2"): ("I", "I;16"),
-    ((1, 1), ">u2"): ("I", "I;16B"),
-    ((1, 1), "<i2"): ("I", "I;16S"),
-    ((1, 1), ">i2"): ("I", "I;16BS"),
-    ((1, 1), "<u4"): ("I", "I;32"),
-    ((1, 1), ">u4"): ("I", "I;32B"),
-    ((1, 1), "<i4"): ("I", "I;32S"),
-    ((1, 1), ">i4"): ("I", "I;32BS"),
-    ((1, 1), "<f4"): ("F", "F;32F"),
-    ((1, 1), ">f4"): ("F", "F;32BF"),
-    ((1, 1), "<f8"): ("F", "F;64F"),
-    ((1, 1), ">f8"): ("F", "F;64BF"),
-    ((1, 1, 2), "|u1"): ("LA", "LA"),
-    ((1, 1, 3), "|u1"): ("RGB", "RGB"),
-    ((1, 1, 4), "|u1"): ("RGBA", "RGBA"),
+    ((1, 1), "|b1"): ("1", "1;8", []),
+    ((1, 1), "|u1"): ("L", "L", ["P"]),
+    ((1, 1), "|i1"): ("I", "I;8", []),
+    ((1, 1), "<u2"): ("I", "I;16", []),
+    ((1, 1), ">u2"): ("I", "I;16B", []),
+    ((1, 1), "<i2"): ("I", "I;16S", []),
+    ((1, 1), ">i2"): ("I", "I;16BS", []),
+    ((1, 1), "<u4"): ("I", "I;32", []),
+    ((1, 1), ">u4"): ("I", "I;32B", []),
+    ((1, 1), "<i4"): ("I", "I;32S", []),
+    ((1, 1), ">i4"): ("I", "I;32BS", []),
+    ((1, 1), "<f4"): ("F", "F;32F", []),
+    ((1, 1), ">f4"): ("F", "F;32BF", []),
+    ((1, 1), "<f8"): ("F", "F;64F", []),
+    ((1, 1), ">f8"): ("F", "F;64BF", []),
+    ((1, 1, 2), "|u1"): ("LA", "LA", ["PA"]),
+    ((1, 1, 3), "|u1"): ("RGB", "RGB", ["YCbCr", "LAB", "HSV"]),
+    ((1, 1, 4), "|u1"): ("RGBA", "RGBA", ["RGBa"]),
     # shortcuts:
-    ((1, 1), f"{_ENDIAN}i4"): ("I", "I"),
-    ((1, 1), f"{_ENDIAN}f4"): ("F", "F"),
+    ((1, 1), f"{_ENDIAN}i4"): ("I", "I", []),
+    ((1, 1), f"{_ENDIAN}f4"): ("F", "F", []),
 }
 
 

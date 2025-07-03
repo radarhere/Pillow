@@ -118,3 +118,19 @@ def test_fromarray_palette() -> None:
     # Assert that the Python and C palettes match
     assert out.palette is not None
     assert len(out.palette.colors) == len(out.im.getpalette()) / 3
+
+
+def test_fromarray_color_mode() -> None:
+    a = numpy.array([[[1, 2, 3]]], dtype=numpy.uint8)
+    out = Image.fromarray(a, color_mode="YCbCr")
+    assert out.mode == "YCbCr"
+    assert out.getpixel((0, 0)) == (1, 2, 3)
+
+    a = numpy.array([[1]], dtype=numpy.uint8)
+    out = Image.fromarray(a, color_mode="P")
+    assert out.mode == "P"
+    assert out.palette is not None
+    assert len(out.palette.colors) == 0
+
+    with pytest.raises(ValueError, match="Color mode invalid for mode"):
+        Image.fromarray(a, color_mode="RGB")
