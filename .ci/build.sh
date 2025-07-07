@@ -4,4 +4,4 @@ set -e
 
 python3 -m coverage erase
 make clean
-make install-coverage
+python3 -m pip wheel .

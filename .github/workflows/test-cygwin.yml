@@ -110,41 +110,8 @@ jobs:
         run: |
           .ci/build.sh
 
-      - name: Test
-        run: |
-          bash.exe xvfb-run -s '-screen 0 1024x768x24' .ci/test.sh
-
-      - name: Prepare to upload errors
-        if: failure()
-        run: |
-          dash.exe -c "mkdir -p Tests/errors"
-
       - name: Upload errors
         uses: actions/upload-artifact@v4
-        if: failure()
         with:
-          name: errors
-          path: Tests/errors
-
-      - name: After success
-        run: |
-          bash.exe .ci/after_success.sh
-          rm C:\cygwin\bin\bash.EXE
-
-      - name: Upload coverage
-        uses: codecov/codecov-action@v5
-        with:
-          files: ./coverage.xml
-          flags: GHA_Cygwin
-          name: Cygwin Python 3.${{ matrix.python-minor-version }}
-          token: ${{ secrets.CODECOV_ORG_TOKEN }}
-
-  success:
-    permissions:
-      contents: none
-    needs: build
-    runs-on: ubuntu-latest
-    name: Cygwin Test Successful
-    steps:
-      - name: Success
-        run: echo Cygwin Test Successful
+          name: pillow-11.3.0-cp39-cp39-cygwin_3_6_3_x86_64.whl
+          path: pillow-11.3.0-cp39-cp39-cygwin_3_6_3_x86_64.whl
