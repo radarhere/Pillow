@@ -22,6 +22,7 @@ graft docs
 graft _custom_build
 
 # build/src control detritus
+exclude test.tif
 exclude .clang-format
 exclude .coveragerc
 exclude .editorconfig

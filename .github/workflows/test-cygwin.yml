@@ -130,19 +130,6 @@ jobs:
           name: errors
           path: Tests/errors
 
-      - name: After success
-        run: |
-          bash.exe .ci/after_success.sh
-          rm C:\cygwin\bin\bash.EXE
-
-      - name: Upload coverage
-        uses: codecov/codecov-action@v5
-        with:
-          files: ./coverage.xml
-          flags: GHA_Cygwin
-          name: Cygwin Python 3.${{ matrix.python-minor-version }}
-          token: ${{ secrets.CODECOV_ORG_TOKEN }}
-
   success:
     permissions:
       contents: none
