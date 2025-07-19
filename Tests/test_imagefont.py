@@ -202,10 +202,14 @@ def test_getlength(
 
     if layout_engine == ImageFont.Layout.BASIC:
         length = d.textlength(text, f)
+        embedded_length = d.textlength(text, f, embedded_color=True)
+        assert length == embedded_length
         assert length == length_basic
     else:
         # disable kerning, kerning metrics changed
         length = d.textlength(text, f, features=["-kern"])
+        embedded_length = d.textlength(text, f, features=["-kern"], embedded_color=True)
+        assert length == embedded_length
         assert length == length_raqm
 
 
