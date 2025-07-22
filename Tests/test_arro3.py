@@ -148,8 +148,7 @@ def test_lifetime2() -> None:
     assert compute.sum(arr_2).as_py() > 0
     del arr_2
 
-    img2 = img.copy()
-    px = img2.load()
+    px = img.load()
     assert px  # make mypy happy
     assert isinstance(px[0, 0], int)
 
