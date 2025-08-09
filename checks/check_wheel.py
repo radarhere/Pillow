@@ -28,7 +28,7 @@ def test_wheel_modules() -> None:
         expected_modules.remove("tkinter")
 
     elif platform.processor() == "ppc64le":
-        expected_modules -= {"littlecms2", "webp", "avif"}
+        expected_modules -= {"freetype2", "littlecms2", "webp", "avif"}
 
     assert set(features.get_supported_modules()) == expected_modules
 
@@ -60,6 +60,6 @@ def test_wheel_features() -> None:
         # fribidi and harfbuzz won't be available if raqm isn't available.
         expected_features -= {"raqm", "fribidi", "harfbuzz"}
     elif platform.processor() == "ppc64le":
-        expected_codecs -= {"raqm0", "fribidi", "harfbuzz"}
+        expected_features -= {"raqm0", "fribidi", "harfbuzz"}
 
     assert set(features.get_supported_features()) == expected_features
