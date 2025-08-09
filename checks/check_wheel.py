@@ -27,11 +27,16 @@ def test_wheel_modules() -> None:
         # tkinter is not available on iOS
         expected_modules.remove("tkinter")
 
+    elif platform.processor() == "ppc64le":
+        expected_modules -= {"littlecms2", "webp", "avif"}
+
     assert set(features.get_supported_modules()) == expected_modules
 
 
 def test_wheel_codecs() -> None:
     expected_codecs = {"jpg", "jpg_2000", "zlib", "libtiff"}
+    if platform.processor() == "ppc64le":
+        expected_codecs -= {"jpg_2000", "libtiff"}
 
     assert set(features.get_supported_codecs()) == expected_codecs
 

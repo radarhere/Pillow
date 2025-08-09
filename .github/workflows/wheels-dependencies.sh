@@ -276,36 +276,38 @@ function build {
     build_simple libxcb $LIBXCB_VERSION https://www.x.org/releases/individual/lib
 
     build_libjpeg_turbo
-    if [[ -n "$IS_MACOS" ]]; then
-        # Custom tiff build to include jpeg; by default, configure won't include
-        # headers/libs in the custom macOS/iOS prefix. Explicitly disable webp,
-        # libdeflate and zstd, because on x86_64 macs, it will pick up the
-        # Homebrew versions of those libraries from /usr/local.
-        build_simple tiff $TIFF_VERSION https://download.osgeo.org/libtiff tar.gz \
-            --with-jpeg-include-dir=$BUILD_PREFIX/include --with-jpeg-lib-dir=$BUILD_PREFIX/lib \
-            --disable-webp --disable-libdeflate --disable-zstd
-    else
-        build_tiff
-    fi
+    if [[ "$AUDITWHEEL_ARCH" != "ppc64le" ]]; then
+        if [[ -n "$IS_MACOS" ]]; then
+            # Custom tiff build to include jpeg; by default, configure won't include
+            # headers/libs in the custom macOS/iOS prefix. Explicitly disable webp,
+            # libdeflate and zstd, because on x86_64 macs, it will pick up the
+            # Homebrew versions of those libraries from /usr/local.
+            build_simple tiff $TIFF_VERSION https://download.osgeo.org/libtiff tar.gz \
+                --with-jpeg-include-dir=$BUILD_PREFIX/include --with-jpeg-lib-dir=$BUILD_PREFIX/lib \
+                --disable-webp --disable-libdeflate --disable-zstd
+        else
+            build_tiff
+        fi
 
-    build_libavif
-    build_libpng
-    build_lcms2
-    build_openjpeg
+        build_libavif
+        build_libpng
+        build_lcms2
+        build_openjpeg
 
-    webp_cflags="-O3 -DNDEBUG"
-    if [[ -n "$IS_MACOS" ]]; then
-        webp_cflags="$webp_cflags -Wl,-headerpad_max_install_names"
-    fi
-    webp_ldflags=""
-    if [[ -n "$IOS_SDK" ]]; then
-        webp_ldflags="$webp_ldflags -llzma -lz"
-    fi
-    CFLAGS="$CFLAGS $webp_cflags" LDFLAGS="$LDFLAGS $webp_ldflags" build_simple libwebp $LIBWEBP_VERSION \
-        https://storage.googleapis.com/downloads.webmproject.org/releases/webp tar.gz \
-        --enable-libwebpmux --enable-libwebpdemux
+        webp_cflags="-O3 -DNDEBUG"
+        if [[ -n "$IS_MACOS" ]]; then
+            webp_cflags="$webp_cflags -Wl,-headerpad_max_install_names"
+        fi
+        webp_ldflags=""
+        if [[ -n "$IOS_SDK" ]]; then
+            webp_ldflags="$webp_ldflags -llzma -lz"
+        fi
+        CFLAGS="$CFLAGS $webp_cflags" LDFLAGS="$LDFLAGS $webp_ldflags" build_simple libwebp $LIBWEBP_VERSION \
+            https://storage.googleapis.com/downloads.webmproject.org/releases/webp tar.gz \
+            --enable-libwebpmux --enable-libwebpdemux
 
-    build_brotli
+        build_brotli
+    fi
 
     if [[ -n "$IS_MACOS" ]]; then
         # Custom freetype build
