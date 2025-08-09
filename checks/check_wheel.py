@@ -59,5 +59,7 @@ def test_wheel_features() -> None:
         # Can't distribute raqm due to licensing, and there's no system version;
         # fribidi and harfbuzz won't be available if raqm isn't available.
         expected_features -= {"raqm", "fribidi", "harfbuzz"}
+    elif platform.processor() == "ppc64le":
+        expected_codecs -= {"raqm0", "fribidi", "harfbuzz"}
 
     assert set(features.get_supported_features()) == expected_features
