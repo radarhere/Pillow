@@ -761,6 +761,26 @@ font_getsize(FontObject *self, PyObject *args) {
     PyObject *features = Py_None;
     PyObject *string;
 
+    printf("start\n");
+    FT_Library library;
+    FT_Init_FreeType(&library);
+    FT_Face face = NULL;
+    FT_New_Face(library, "./p5.ttf", 0, &face);
+    FT_Set_Pixel_Sizes(face, 0, 200);
+    FT_Glyph glyph;
+    FT_BBox bbox;
+
+    FT_Load_Glyph(face, 396, FT_LOAD_DEFAULT);
+    FT_Get_Glyph(face->glyph, &glyph);
+    FT_Glyph_Get_CBox(glyph, FT_GLYPH_BBOX_PIXELS, &bbox);
+    printf("Glyph height without color %d\n", bbox.yMax - bbox.yMin);
+
+    FT_Load_Glyph(face, 396, FT_LOAD_DEFAULT | FT_LOAD_COLOR);
+    FT_Get_Glyph(face->glyph, &glyph);
+    FT_Glyph_Get_CBox(glyph, FT_GLYPH_BBOX_PIXELS, &bbox);
+    printf("Glyph height with color %d\n", bbox.yMax - bbox.yMin);
+    printf("end\n");
+
     /* calculate size and bearing for a given string */
 
     if (!PyArg_ParseTuple(
