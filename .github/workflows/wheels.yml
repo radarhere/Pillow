@@ -32,6 +32,7 @@ jobs:
             platform: macos
             os: macos-latest
             cibw_arch: arm64
+            build: "cp313-*"
             macosx_deployment_target: "11.0"
     steps:
       - uses: actions/checkout@v4

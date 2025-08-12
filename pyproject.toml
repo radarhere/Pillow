@@ -104,9 +104,7 @@ config-settings = "raqm=enable raqm=vendor fribidi=vendor imagequant=disable"
 
 test-command = "cd {project} && .github/workflows/wheels-test.sh"
 test-extras = "tests"
-test-requires = [
-  "numpy",
-]
+test-requires = [ ]
 xbuild-tools = [  ]
 
 [tool.cibuildwheel.macos]
