@@ -259,12 +259,14 @@ function build {
     if [ -z "$IS_ALPINE" ] && [ -z "$SANITIZER" ] && [ -z "$IS_MACOS" ]; then
         yum remove -y zlib-devel
     fi
+    echo "torch start"
     if [[ -n "$IS_MACOS" ]] && [[ "$MACOSX_DEPLOYMENT_TARGET" == "10.10" || "$MACOSX_DEPLOYMENT_TARGET" == "10.13" ]]; then
         build_new_zlib
     else
         build_zlib_ng
     fi
 
+    echo "torch zlib"
     build_simple xcb-proto 1.17.0 https://xorg.freedesktop.org/archive/individual/proto
     if [[ -n "$IS_MACOS" ]]; then
         build_simple xorgproto 2024.1 https://www.x.org/pub/individual/proto
@@ -274,8 +276,10 @@ function build {
         sed "s/\${pc_sysrootdir\}//" $BUILD_PREFIX/share/pkgconfig/xcb-proto.pc > $BUILD_PREFIX/lib/pkgconfig/xcb-proto.pc
     fi
     build_simple libxcb $LIBXCB_VERSION https://www.x.org/releases/individual/lib
+    echo "torch xcb"
 
     build_libjpeg_turbo
+    echo "torch jpeg"
     if [[ -n "$IS_MACOS" ]]; then
         # Custom tiff build to include jpeg; by default, configure won't include
         # headers/libs in the custom macOS/iOS prefix. Explicitly disable webp,
@@ -287,11 +291,16 @@ function build {
     else
         build_tiff
     fi
+    echo "torch tiff"
 
     build_libavif
+    echo "torch avif"
     build_libpng
+    echo "torch png"
     build_lcms2
+    echo "torch lcms2"
     build_openjpeg
+    echo "torch openjpeg"
 
     webp_cflags="-O3 -DNDEBUG"
     if [[ -n "$IS_MACOS" ]]; then
@@ -304,8 +313,10 @@ function build {
     CFLAGS="$CFLAGS $webp_cflags" LDFLAGS="$LDFLAGS $webp_ldflags" build_simple libwebp $LIBWEBP_VERSION \
         https://storage.googleapis.com/downloads.webmproject.org/releases/webp tar.gz \
         --enable-libwebpmux --enable-libwebpdemux
+    echo "torch webp"
 
     build_brotli
+    echo "torch brotli"
 
     if [[ -n "$IS_MACOS" ]]; then
         # Custom freetype build
@@ -313,12 +324,14 @@ function build {
     else
         build_freetype
     fi
+    echo "torch freetype"
 
     if [[ -z "$IOS_SDK" ]]; then
         # On iOS, there's no vendor-provided raqm, and we can't ship it due to
         # licensing, so there's no point building harfbuzz.
         build_harfbuzz
     fi
+    echo "torch harfbuzz"
 }
 
 function create_meson_cross_config {
