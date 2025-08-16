@@ -224,21 +224,11 @@ _jxl_decoder_new(PyObject *self, PyObject *args) {
     memcpy(decp->jxl_data, _tmp_jxl_data, _tmp_jxl_data_len);
     decp->jxl_data_len = _tmp_jxl_data_len;
 
-    size_t suggested_num_threads = JxlThreadParallelRunnerDefaultNumWorkerThreads();
-    decp->runner = JxlThreadParallelRunnerCreate(NULL, suggested_num_threads);
+    decp->runner = JxlThreadParallelRunnerCreate(NULL, 4);
     decp->decoder = JxlDecoderCreate(NULL);
 
-    decp->status = JxlDecoderSetParallelRunner(
-        decp->decoder, JxlThreadParallelRunner, decp->runner
-    );
+    decp->status = JxlDecoderSubscribeEvents(decp->decoder, JXL_DEC_BASIC_INFO | JXL_DEC_COLOR_ENCODING | JXL_DEC_FRAME | JXL_DEC_FULL_IMAGE);
 
-    decp->status = JxlDecoderSubscribeEvents(
-        decp->decoder,
-        JXL_DEC_BASIC_INFO | JXL_DEC_COLOR_ENCODING | JXL_DEC_FRAME |
-            JXL_DEC_FULL_IMAGE
-    );
-
-    // tell libjxl to decompress boxes (for example Exif is usually compressed)
     decp->status = JxlDecoderSetDecompressBoxes(decp->decoder, JXL_TRUE);
 
     _jxl_decoder_set_input((PyObject *)decp);
@@ -248,15 +238,11 @@ _jxl_decoder_new(PyObject *self, PyObject *args) {
         decp->status = JxlDecoderProcessInput(decp->decoder);
         printf("first status %d\n", decp->status);
 
-decoder_loop_skip_process:
-
         // got basic info
         if (decp->status == JXL_DEC_BASIC_INFO) {
             decp->status = JxlDecoderGetBasicInfo(decp->decoder, &decp->basic_info);
-
             _jxl_get_pixel_format(&decp->pixel_format, &decp->basic_info);
             decp->mode = _jxl_get_mode(&decp->basic_info);
-
             continue;
         }
 
