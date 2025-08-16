@@ -256,6 +256,7 @@ _jxl_decoder_new(PyObject *self, PyObject *args) {
     // decode everything up to the first frame
     do {
         decp->status = JxlDecoderProcessInput(decp->decoder);
+        printf("first status %d\n", decp->status);
 
 decoder_loop_skip_process:
 
