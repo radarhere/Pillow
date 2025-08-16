@@ -317,60 +317,6 @@ decoder_loop_skip_process:
             continue;
         }
 
-        if (decp->status == JXL_DEC_BOX) {
-            char btype[4];
-            decp->status = JxlDecoderGetBoxType(decp->decoder, btype, JXL_TRUE);
-            _JXL_CHECK("JxlDecoderGetBoxType");
-
-            bool is_box_exif = !memcmp(btype, "Exif", 4);
-            bool is_box_xmp = !memcmp(btype, "xml ", 4);
-            if (!is_box_exif && !is_box_xmp) {
-                // not exif/xmp box so continue
-                continue;
-            }
-
-            size_t cur_compr_box_size;
-            decp->status = JxlDecoderGetBoxSizeRaw(decp->decoder, &cur_compr_box_size);
-            _JXL_CHECK("JxlDecoderGetBoxSizeRaw");
-
-            uint8_t *final_jxl_buf = NULL;
-            Py_ssize_t final_jxl_buf_len = 0;
-
-            // cur_box_size is actually compressed box size
-            // it will also serve as our chunk size
-            do {
-                uint8_t *_new_jxl_buf =
-                    realloc(final_jxl_buf, final_jxl_buf_len + cur_compr_box_size);
-                if (!_new_jxl_buf) {
-                    PyErr_SetString(PyExc_OSError, "failed to allocate final_jxl_buf");
-                    goto end;
-                }
-                final_jxl_buf = _new_jxl_buf;
-
-                decp->status = JxlDecoderSetBoxBuffer(
-                    decp->decoder, final_jxl_buf + final_jxl_buf_len, cur_compr_box_size
-                );
-                _JXL_CHECK("JxlDecoderSetBoxBuffer");
-
-                decp->status = JxlDecoderProcessInput(decp->decoder);
-
-                size_t remaining = JxlDecoderReleaseBoxBuffer(decp->decoder);
-                final_jxl_buf_len += (cur_compr_box_size - remaining);
-            } while (decp->status == JXL_DEC_BOX_NEED_MORE_OUTPUT);
-
-            if (is_box_exif) {
-                decp->jxl_exif = final_jxl_buf;
-                decp->jxl_exif_len = final_jxl_buf_len;
-            } else {
-                decp->jxl_xmp = final_jxl_buf;
-                decp->jxl_xmp_len = final_jxl_buf_len;
-            }
-
-            // dirty hack: skip first step of decoding loop since
-            // we already did it in do...while above
-            goto decoder_loop_skip_process;
-        }
-
     } while (decp->status != JXL_DEC_FRAME);
 
     // couldn't determine Image mode or it is unsupported
