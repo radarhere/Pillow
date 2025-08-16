@@ -260,12 +260,6 @@ _jxl_decoder_new(PyObject *self, PyObject *args) {
 
 decoder_loop_skip_process:
 
-        // there was an error at JxlDecoderProcessInput stage
-        if (decp->status == JXL_DEC_ERROR) {
-            jxl_call_name = "JxlDecoderProcessInput";
-            goto end;
-        }
-
         // got basic info
         if (decp->status == JXL_DEC_BASIC_INFO) {
             decp->status = JxlDecoderGetBasicInfo(decp->decoder, &decp->basic_info);
