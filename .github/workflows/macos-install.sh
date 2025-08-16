@@ -6,7 +6,17 @@ if [[ "$ImageOS" == "macos13" ]]; then
     brew uninstall gradle maven
 fi
 brew install \
-    jpeg-turbo
+    aom \
+    dav1d \
+    freetype \
+    jpeg-turbo \
+    libraqm \
+    libtiff \
+    little-cms2 \
+    openjpeg \
+    rav1e \
+    svt-av1 \
+    webp
 export PKG_CONFIG_PATH="/usr/local/opt/openblas/lib/pkgconfig"
 
 python3 -m pip install coverage

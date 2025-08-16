@@ -439,12 +439,15 @@ _jxl_decoder_get_next(PyObject *self) {
 
     char *jxl_call_name;
 
+    printf("torchget_next %d\n", decp->status);
     // process events until next frame output is ready
     while (decp->status != JXL_DEC_NEED_IMAGE_OUT_BUFFER) {
         decp->status = JxlDecoderProcessInput(decp->decoder);
+        printf("status %d\n", decp->status);
 
         // every frame was decoded successfully
         if (decp->status == JXL_DEC_SUCCESS) {
+            printf("torchnone\n");
             Py_RETURN_NONE;
         }
 
@@ -495,6 +498,7 @@ _jxl_decoder_get_next(PyObject *self) {
 
     bytes = PyBytes_FromStringAndSize((char *)(decp->outbuf), decp->outbuf_len);
 
+    printf("torchsuccess\n");
     ret = Py_BuildValue("SIi", bytes, fhdr.duration, fhdr.is_last);
 
     Py_DECREF(bytes);

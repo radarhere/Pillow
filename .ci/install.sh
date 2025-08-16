@@ -17,10 +17,8 @@ aptget_update || aptget_update retry || aptget_update retry
 
 set -e
 
-sudo apt-get -qq install libfreetype6-dev liblcms2-dev libtiff-dev python3-tk\
-                         libjpeg-turbo8-dev libjxl-dev libopenjp2-7-dev\
-                         cmake\
-                         sway wl-clipboard libopenblas-dev nasm
+sudo apt-get -qq install python3-tk libjpeg-turbo8-dev libjxl-dev\
+                         cmake sway wl-clipboard
 
 python3 -m pip install --upgrade pip
 python3 -m pip install --upgrade wheel
