@@ -287,6 +287,34 @@ decoder_loop_skip_process:
 
     } while (decp->status != JXL_DEC_FRAME);
 
+    JxlFrameHeader fhdr = {};
+
+    printf("torchget_next %d\n", decp->status);
+    // process events until next frame output is ready
+    while (decp->status != JXL_DEC_NEED_IMAGE_OUT_BUFFER) {
+        decp->status = JxlDecoderProcessInput(decp->decoder);
+        printf("status %d\n", decp->status);
+
+        // every frame was decoded successfully
+        if (decp->status == JXL_DEC_SUCCESS) {
+            printf("torchnone\n");
+            Py_RETURN_NONE;
+        }
+
+        // this should only occur after rewind
+        if (decp->status == JXL_DEC_NEED_MORE_INPUT) {
+            _jxl_decoder_set_input((PyObject *)decp);
+            continue;
+        }
+
+        if (decp->status == JXL_DEC_FRAME) {
+            // decode frame header
+            decp->status = JxlDecoderGetFrameHeader(decp->decoder, &fhdr);
+            continue;
+        }
+    }
+    printf("single done\n");
+
     return (PyObject *)decp;
 }
 
