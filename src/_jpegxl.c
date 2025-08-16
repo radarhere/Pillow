@@ -152,8 +152,7 @@ void
 _jxl_decoder_set_input(PyObject *self) {
     JpegXlDecoderObject *decp = (JpegXlDecoderObject *)self;
 
-    decp->status =
-        JxlDecoderSetInput(decp->decoder, decp->jxl_data, decp->jxl_data_len);
+    decp->status = JxlDecoderSetInput(decp->decoder, decp->jxl_data, decp->jxl_data_len);
 
     // the input contains the whole jxl bitstream so it can be closed
     JxlDecoderCloseInput(decp->decoder);
@@ -242,7 +241,7 @@ _jxl_decoder_new(PyObject *self, PyObject *args) {
 
     decp->status = JxlDecoderSubscribeEvents(
         decp->decoder,
-        JXL_DEC_BASIC_INFO | JXL_DEC_COLOR_ENCODING | JXL_DEC_FRAME | JXL_DEC_BOX |
+        JXL_DEC_BASIC_INFO | JXL_DEC_COLOR_ENCODING | JXL_DEC_FRAME |
             JXL_DEC_FULL_IMAGE
     );
     _JXL_CHECK("JxlDecoderSubscribeEvents")
@@ -380,6 +379,7 @@ decoder_loop_skip_process:
     }
 
     if (decp->basic_info.have_animation) {
+        printf("has animation\n");
         // get frame count by iterating over image out events
         if (!_jxl_decoder_count_frames((PyObject *)decp)) {
             PyErr_SetString(PyExc_OSError, "something went wrong when counting frames");
