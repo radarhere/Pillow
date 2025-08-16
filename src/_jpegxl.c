@@ -287,35 +287,13 @@ decoder_loop_skip_process:
 
     } while (decp->status != JXL_DEC_FRAME);
 
-    // couldn't determine Image mode or it is unsupported
-    if (!decp->mode) {
-        PyErr_SetString(PyExc_NotImplementedError, "only 8-bit images are supported");
-        goto end_with_custom_error;
-    }
-
     if (decp->basic_info.have_animation) {
         printf("has animation\n");
         // get frame count by iterating over image out events
-        if (!_jxl_decoder_count_frames((PyObject *)decp)) {
-            PyErr_SetString(PyExc_OSError, "something went wrong when counting frames");
-            goto end_with_custom_error;
-        }
+        _jxl_decoder_count_frames((PyObject *)decp);
     }
 
     return (PyObject *)decp;
-
-    // on success we should never reach here
-
-    // set error message
-    char err_msg[128];
-
-end_with_custom_error:
-
-    // deallocate
-    _jxl_decoder_dealloc((PyObject *)decp);
-    PyObject_Del(decp);
-
-    return NULL;
 }
 
 PyObject *
@@ -378,10 +356,6 @@ _jxl_decoder_get_next(PyObject *self) {
     if (decp->outbuf_len < new_outbuf_len) {
         decp->outbuf_len = new_outbuf_len;
         uint8_t *_new_outbuf = realloc(decp->outbuf, decp->outbuf_len);
-        if (!_new_outbuf) {
-            PyErr_SetString(PyExc_OSError, "failed to allocate outbuf");
-            goto end_with_custom_error;
-        }
         decp->outbuf = _new_outbuf;
     }
 
@@ -391,11 +365,6 @@ _jxl_decoder_get_next(PyObject *self) {
 
     // decode image into output_buffer
     decp->status = JxlDecoderProcessInput(decp->decoder);
-
-    if (decp->status != JXL_DEC_FULL_IMAGE) {
-        PyErr_SetString(PyExc_OSError, "failed to read next frame");
-        goto end_with_custom_error;
-    }
 
     bytes = PyBytes_FromStringAndSize((char *)(decp->outbuf), decp->outbuf_len);
 
@@ -419,11 +388,6 @@ end:
         decp->status
     );
     PyErr_SetString(PyExc_OSError, err_msg);
-
-end_with_custom_error:
-
-    // no need to deallocate anything here
-    // user can just ignore error
 
     return NULL;
 }
