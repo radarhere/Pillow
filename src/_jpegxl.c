@@ -8,12 +8,6 @@
 #include <jxl/types.h>
 #include <jxl/thread_parallel_runner.h>
 
-#define _JXL_CHECK(call_name)              \
-    if (decp->status != JXL_DEC_SUCCESS) { \
-        jxl_call_name = call_name;         \
-        goto end;                          \
-    }
-
 void
 _jxl_get_pixel_format(JxlPixelFormat *pf, const JxlBasicInfo *bi) {
     pf->num_channels = bi->num_color_channels + bi->num_extra_channels;
@@ -314,16 +308,6 @@ decoder_loop_skip_process:
 
     // set error message
     char err_msg[128];
-
-end:
-    snprintf(
-        err_msg,
-        128,
-        "could not create decoder object. libjxl call: %s returned: %d",
-        jxl_call_name,
-        decp->status
-    );
-    PyErr_SetString(PyExc_OSError, err_msg);
 
 end_with_custom_error:
 
