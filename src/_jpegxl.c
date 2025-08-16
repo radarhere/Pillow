@@ -237,21 +237,17 @@ _jxl_decoder_new(PyObject *self, PyObject *args) {
     decp->status = JxlDecoderSetParallelRunner(
         decp->decoder, JxlThreadParallelRunner, decp->runner
     );
-    _JXL_CHECK("JxlDecoderSetParallelRunner")
 
     decp->status = JxlDecoderSubscribeEvents(
         decp->decoder,
         JXL_DEC_BASIC_INFO | JXL_DEC_COLOR_ENCODING | JXL_DEC_FRAME |
             JXL_DEC_FULL_IMAGE
     );
-    _JXL_CHECK("JxlDecoderSubscribeEvents")
 
     // tell libjxl to decompress boxes (for example Exif is usually compressed)
     decp->status = JxlDecoderSetDecompressBoxes(decp->decoder, JXL_TRUE);
-    _JXL_CHECK("JxlDecoderSetDecompressBoxes")
 
     _jxl_decoder_set_input((PyObject *)decp);
-    _JXL_CHECK("JxlDecoderSetInput")
 
     // decode everything up to the first frame
     do {
@@ -263,17 +259,8 @@ decoder_loop_skip_process:
         // got basic info
         if (decp->status == JXL_DEC_BASIC_INFO) {
             decp->status = JxlDecoderGetBasicInfo(decp->decoder, &decp->basic_info);
-            _JXL_CHECK("JxlDecoderGetBasicInfo");
 
             _jxl_get_pixel_format(&decp->pixel_format, &decp->basic_info);
-            if (decp->pixel_format.data_type != JXL_TYPE_UINT8 &&
-                decp->pixel_format.data_type != JXL_TYPE_UINT16) {
-                // only 8 bit integer value images are supported for now
-                PyErr_SetString(
-                    PyExc_NotImplementedError, "unsupported pixel data type"
-                );
-                goto end_with_custom_error;
-            }
             decp->mode = _jxl_get_mode(&decp->basic_info);
 
             continue;
@@ -289,14 +276,8 @@ decoder_loop_skip_process:
                 JXL_COLOR_PROFILE_TARGET_DATA,
                 &decp->jxl_icc_len
             );
-            _JXL_CHECK("JxlDecoderGetICCProfileSize");
 
             decp->jxl_icc = malloc(decp->jxl_icc_len);
-            if (!decp->jxl_icc) {
-                PyErr_SetString(PyExc_OSError, "jxl_icc malloc failed");
-                goto end_with_custom_error;
-            }
-
             decp->status = JxlDecoderGetColorAsICCProfile(
                 decp->decoder,
 #if JPEGXL_MINOR_VERSION < 9
@@ -306,7 +287,6 @@ decoder_loop_skip_process:
                 decp->jxl_icc,
                 decp->jxl_icc_len
             );
-            _JXL_CHECK("JxlDecoderGetColorAsICCProfile");
 
             continue;
         }
@@ -395,14 +375,12 @@ _jxl_decoder_get_next(PyObject *self) {
         // this should only occur after rewind
         if (decp->status == JXL_DEC_NEED_MORE_INPUT) {
             _jxl_decoder_set_input((PyObject *)decp);
-            _JXL_CHECK("JxlDecoderSetInput")
             continue;
         }
 
         if (decp->status == JXL_DEC_FRAME) {
             // decode frame header
             decp->status = JxlDecoderGetFrameHeader(decp->decoder, &fhdr);
-            _JXL_CHECK("JxlDecoderGetFrameHeader");
             continue;
         }
     }
@@ -411,7 +389,6 @@ _jxl_decoder_get_next(PyObject *self) {
     decp->status = JxlDecoderImageOutBufferSize(
         decp->decoder, &decp->pixel_format, &new_outbuf_len
     );
-    _JXL_CHECK("JxlDecoderImageOutBufferSize");
 
     // only allocate memory when current buffer is too small
     if (decp->outbuf_len < new_outbuf_len) {
@@ -427,7 +404,6 @@ _jxl_decoder_get_next(PyObject *self) {
     decp->status = JxlDecoderSetImageOutBuffer(
         decp->decoder, &decp->pixel_format, decp->outbuf, decp->outbuf_len
     );
-    _JXL_CHECK("JxlDecoderSetImageOutBuffer");
 
     // decode image into output_buffer
     decp->status = JxlDecoderProcessInput(decp->decoder);
