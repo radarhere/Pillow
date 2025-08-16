@@ -140,18 +140,6 @@ _jxl_decoder_dealloc(PyObject *self) {
     }
 }
 
-// sets input jxl bitstream loaded into jxl_data
-// has to be called after every rewind
-void
-_jxl_decoder_set_input(PyObject *self) {
-    JpegXlDecoderObject *decp = (JpegXlDecoderObject *)self;
-
-    decp->status = JxlDecoderSetInput(decp->decoder, decp->jxl_data, decp->jxl_data_len);
-
-    // the input contains the whole jxl bitstream so it can be closed
-    JxlDecoderCloseInput(decp->decoder);
-}
-
 PyObject *
 _jxl_decoder_rewind(PyObject *self) {
     JpegXlDecoderObject *decp = (JpegXlDecoderObject *)self;
@@ -231,7 +219,8 @@ _jxl_decoder_new(PyObject *self, PyObject *args) {
 
     decp->status = JxlDecoderSetDecompressBoxes(decp->decoder, JXL_TRUE);
 
-    _jxl_decoder_set_input((PyObject *)decp);
+    decp->status = JxlDecoderSetInput(decp->decoder, decp->jxl_data, decp->jxl_data_len);
+    JxlDecoderCloseInput(decp->decoder);
 
     // decode everything up to the first frame
     do {
@@ -295,7 +284,8 @@ _jxl_decoder_new(PyObject *self, PyObject *args) {
 
         // this should only occur after rewind
         if (decp->status == JXL_DEC_NEED_MORE_INPUT) {
-            _jxl_decoder_set_input((PyObject *)decp);
+            decp->status = JxlDecoderSetInput(decp->decoder, decp->jxl_data, decp->jxl_data_len);
+            JxlDecoderCloseInput(decp->decoder);
             continue;
         }
 
