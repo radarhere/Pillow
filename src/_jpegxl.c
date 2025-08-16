@@ -8,12 +8,6 @@
 #include <jxl/types.h>
 #include <jxl/thread_parallel_runner.h>
 
-#define _JXL_CHECK(call_name)              \
-    if (decp->status != JXL_DEC_SUCCESS) { \
-        jxl_call_name = call_name;         \
-        goto end;                          \
-    }
-
 void
 _jxl_get_pixel_format(JxlPixelFormat *pf, const JxlBasicInfo *bi) {
     pf->num_channels = bi->num_color_channels + bi->num_extra_channels;
@@ -230,185 +224,41 @@ _jxl_decoder_new(PyObject *self, PyObject *args) {
     memcpy(decp->jxl_data, _tmp_jxl_data, _tmp_jxl_data_len);
     decp->jxl_data_len = _tmp_jxl_data_len;
 
-    size_t suggested_num_threads = JxlThreadParallelRunnerDefaultNumWorkerThreads();
-    decp->runner = JxlThreadParallelRunnerCreate(NULL, suggested_num_threads);
+    decp->runner = JxlThreadParallelRunnerCreate(NULL, 4);
     decp->decoder = JxlDecoderCreate(NULL);
 
-    decp->status = JxlDecoderSetParallelRunner(
-        decp->decoder, JxlThreadParallelRunner, decp->runner
-    );
-    _JXL_CHECK("JxlDecoderSetParallelRunner")
+    decp->status = JxlDecoderSubscribeEvents(decp->decoder, JXL_DEC_BASIC_INFO | JXL_DEC_COLOR_ENCODING | JXL_DEC_FRAME | JXL_DEC_FULL_IMAGE);
 
-    decp->status = JxlDecoderSubscribeEvents(
-        decp->decoder,
-        JXL_DEC_BASIC_INFO | JXL_DEC_COLOR_ENCODING | JXL_DEC_FRAME |
-            JXL_DEC_FULL_IMAGE
-    );
-    _JXL_CHECK("JxlDecoderSubscribeEvents")
-
-    // tell libjxl to decompress boxes (for example Exif is usually compressed)
     decp->status = JxlDecoderSetDecompressBoxes(decp->decoder, JXL_TRUE);
-    _JXL_CHECK("JxlDecoderSetDecompressBoxes")
 
     _jxl_decoder_set_input((PyObject *)decp);
-    _JXL_CHECK("JxlDecoderSetInput")
 
-    // decode everything up to the first frame
-    do {
+    JxlFrameHeader fhdr = {};
+
+    printf("torchget_next %d\n", decp->status);
+    // process events until next frame output is ready
+    while (decp->status != JXL_DEC_NEED_IMAGE_OUT_BUFFER) {
         decp->status = JxlDecoderProcessInput(decp->decoder);
+        printf("status %d\n", decp->status);
 
-decoder_loop_skip_process:
-
-        // there was an error at JxlDecoderProcessInput stage
-        if (decp->status == JXL_DEC_ERROR) {
-            jxl_call_name = "JxlDecoderProcessInput";
-            goto end;
+        // every frame was decoded successfully
+        if (decp->status == JXL_DEC_SUCCESS) {
+            printf("torchnone\n");
+            Py_RETURN_NONE;
         }
 
-        // got basic info
-        if (decp->status == JXL_DEC_BASIC_INFO) {
-            decp->status = JxlDecoderGetBasicInfo(decp->decoder, &decp->basic_info);
-            _JXL_CHECK("JxlDecoderGetBasicInfo");
-
-            _jxl_get_pixel_format(&decp->pixel_format, &decp->basic_info);
-            if (decp->pixel_format.data_type != JXL_TYPE_UINT8 &&
-                decp->pixel_format.data_type != JXL_TYPE_UINT16) {
-                // only 8 bit integer value images are supported for now
-                PyErr_SetString(
-                    PyExc_NotImplementedError, "unsupported pixel data type"
-                );
-                goto end_with_custom_error;
-            }
-            decp->mode = _jxl_get_mode(&decp->basic_info);
-
+        // this should only occur after rewind
+        if (decp->status == JXL_DEC_NEED_MORE_INPUT) {
+            _jxl_decoder_set_input((PyObject *)decp);
             continue;
         }
 
-        // got color encoding
-        if (decp->status == JXL_DEC_COLOR_ENCODING) {
-            decp->status = JxlDecoderGetICCProfileSize(
-                decp->decoder,
-#if JPEGXL_MINOR_VERSION < 9
-                NULL,
-#endif
-                JXL_COLOR_PROFILE_TARGET_DATA,
-                &decp->jxl_icc_len
-            );
-            _JXL_CHECK("JxlDecoderGetICCProfileSize");
-
-            decp->jxl_icc = malloc(decp->jxl_icc_len);
-            if (!decp->jxl_icc) {
-                PyErr_SetString(PyExc_OSError, "jxl_icc malloc failed");
-                goto end_with_custom_error;
-            }
-
-            decp->status = JxlDecoderGetColorAsICCProfile(
-                decp->decoder,
-#if JPEGXL_MINOR_VERSION < 9
-                NULL,
-#endif
-                JXL_COLOR_PROFILE_TARGET_DATA,
-                decp->jxl_icc,
-                decp->jxl_icc_len
-            );
-            _JXL_CHECK("JxlDecoderGetColorAsICCProfile");
-
+        if (decp->status == JXL_DEC_FRAME) {
+            // decode frame header
+            decp->status = JxlDecoderGetFrameHeader(decp->decoder, &fhdr);
             continue;
         }
-
-        if (decp->status == JXL_DEC_BOX) {
-            char btype[4];
-            decp->status = JxlDecoderGetBoxType(decp->decoder, btype, JXL_TRUE);
-            _JXL_CHECK("JxlDecoderGetBoxType");
-
-            bool is_box_exif = !memcmp(btype, "Exif", 4);
-            bool is_box_xmp = !memcmp(btype, "xml ", 4);
-            if (!is_box_exif && !is_box_xmp) {
-                // not exif/xmp box so continue
-                continue;
-            }
-
-            size_t cur_compr_box_size;
-            decp->status = JxlDecoderGetBoxSizeRaw(decp->decoder, &cur_compr_box_size);
-            _JXL_CHECK("JxlDecoderGetBoxSizeRaw");
-
-            uint8_t *final_jxl_buf = NULL;
-            Py_ssize_t final_jxl_buf_len = 0;
-
-            // cur_box_size is actually compressed box size
-            // it will also serve as our chunk size
-            do {
-                uint8_t *_new_jxl_buf =
-                    realloc(final_jxl_buf, final_jxl_buf_len + cur_compr_box_size);
-                if (!_new_jxl_buf) {
-                    PyErr_SetString(PyExc_OSError, "failed to allocate final_jxl_buf");
-                    goto end;
-                }
-                final_jxl_buf = _new_jxl_buf;
-
-                decp->status = JxlDecoderSetBoxBuffer(
-                    decp->decoder, final_jxl_buf + final_jxl_buf_len, cur_compr_box_size
-                );
-                _JXL_CHECK("JxlDecoderSetBoxBuffer");
-
-                decp->status = JxlDecoderProcessInput(decp->decoder);
-
-                size_t remaining = JxlDecoderReleaseBoxBuffer(decp->decoder);
-                final_jxl_buf_len += (cur_compr_box_size - remaining);
-            } while (decp->status == JXL_DEC_BOX_NEED_MORE_OUTPUT);
-
-            if (is_box_exif) {
-                decp->jxl_exif = final_jxl_buf;
-                decp->jxl_exif_len = final_jxl_buf_len;
-            } else {
-                decp->jxl_xmp = final_jxl_buf;
-                decp->jxl_xmp_len = final_jxl_buf_len;
-            }
-
-            // dirty hack: skip first step of decoding loop since
-            // we already did it in do...while above
-            goto decoder_loop_skip_process;
-        }
-
-    } while (decp->status != JXL_DEC_FRAME);
-
-    // couldn't determine Image mode or it is unsupported
-    if (!decp->mode) {
-        PyErr_SetString(PyExc_NotImplementedError, "only 8-bit images are supported");
-        goto end_with_custom_error;
     }
-
-    if (decp->basic_info.have_animation) {
-        printf("has animation\n");
-        // get frame count by iterating over image out events
-        if (!_jxl_decoder_count_frames((PyObject *)decp)) {
-            PyErr_SetString(PyExc_OSError, "something went wrong when counting frames");
-            goto end_with_custom_error;
-        }
-    }
-
-    return (PyObject *)decp;
-
-    // on success we should never reach here
-
-    // set error message
-    char err_msg[128];
-
-end:
-    snprintf(
-        err_msg,
-        128,
-        "could not create decoder object. libjxl call: %s returned: %d",
-        jxl_call_name,
-        decp->status
-    );
-    PyErr_SetString(PyExc_OSError, err_msg);
-
-end_with_custom_error:
-
-    // deallocate
-    _jxl_decoder_dealloc((PyObject *)decp);
-    PyObject_Del(decp);
 
     return NULL;
 }
@@ -432,99 +282,6 @@ _jxl_decoder_get_info(PyObject *self) {
 
 PyObject *
 _jxl_decoder_get_next(PyObject *self) {
-    JpegXlDecoderObject *decp = (JpegXlDecoderObject *)self;
-    PyObject *bytes;
-    PyObject *ret;
-    JxlFrameHeader fhdr = {};
-
-    char *jxl_call_name;
-
-    printf("torchget_next %d\n", decp->status);
-    // process events until next frame output is ready
-    while (decp->status != JXL_DEC_NEED_IMAGE_OUT_BUFFER) {
-        decp->status = JxlDecoderProcessInput(decp->decoder);
-        printf("status %d\n", decp->status);
-
-        // every frame was decoded successfully
-        if (decp->status == JXL_DEC_SUCCESS) {
-            printf("torchnone\n");
-            Py_RETURN_NONE;
-        }
-
-        // this should only occur after rewind
-        if (decp->status == JXL_DEC_NEED_MORE_INPUT) {
-            _jxl_decoder_set_input((PyObject *)decp);
-            _JXL_CHECK("JxlDecoderSetInput")
-            continue;
-        }
-
-        if (decp->status == JXL_DEC_FRAME) {
-            // decode frame header
-            decp->status = JxlDecoderGetFrameHeader(decp->decoder, &fhdr);
-            _JXL_CHECK("JxlDecoderGetFrameHeader");
-            continue;
-        }
-    }
-
-    size_t new_outbuf_len;
-    decp->status = JxlDecoderImageOutBufferSize(
-        decp->decoder, &decp->pixel_format, &new_outbuf_len
-    );
-    _JXL_CHECK("JxlDecoderImageOutBufferSize");
-
-    // only allocate memory when current buffer is too small
-    if (decp->outbuf_len < new_outbuf_len) {
-        decp->outbuf_len = new_outbuf_len;
-        uint8_t *_new_outbuf = realloc(decp->outbuf, decp->outbuf_len);
-        if (!_new_outbuf) {
-            PyErr_SetString(PyExc_OSError, "failed to allocate outbuf");
-            goto end_with_custom_error;
-        }
-        decp->outbuf = _new_outbuf;
-    }
-
-    decp->status = JxlDecoderSetImageOutBuffer(
-        decp->decoder, &decp->pixel_format, decp->outbuf, decp->outbuf_len
-    );
-    _JXL_CHECK("JxlDecoderSetImageOutBuffer");
-
-    // decode image into output_buffer
-    decp->status = JxlDecoderProcessInput(decp->decoder);
-
-    if (decp->status != JXL_DEC_FULL_IMAGE) {
-        PyErr_SetString(PyExc_OSError, "failed to read next frame");
-        goto end_with_custom_error;
-    }
-
-    bytes = PyBytes_FromStringAndSize((char *)(decp->outbuf), decp->outbuf_len);
-
-    printf("torchsuccess\n");
-    ret = Py_BuildValue("SIi", bytes, fhdr.duration, fhdr.is_last);
-
-    Py_DECREF(bytes);
-    return ret;
-
-    // we also shouldn't reach here if frame read was ok
-
-    // set error message
-    char err_msg[128];
-
-end:
-    snprintf(
-        err_msg,
-        128,
-        "could not read frame. libjxl call: %s returned: %d",
-        jxl_call_name,
-        decp->status
-    );
-    PyErr_SetString(PyExc_OSError, err_msg);
-
-end_with_custom_error:
-
-    // no need to deallocate anything here
-    // user can just ignore error
-
-    return NULL;
 }
 
 PyObject *
