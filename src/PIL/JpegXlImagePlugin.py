@@ -40,40 +40,8 @@ class JpegXlImageFile(ImageFile.ImageFile):
 
     def _open(self) -> None:
         self._decoder = _jpegxl.JpegXlDecoder(self.fp.read())
-
-        (
-            self._size,
-            self._mode,
-            self.is_animated,
-            tps_num,
-            tps_denom,
-            self.info["loop"],
-            n_frames,
-        ) = self._decoder.get_info()
-
-        self._tps_dur_secs = 1
-        self.n_frames: int | None = 1
-        if self.is_animated:
-            self.n_frames = None
-            if n_frames > 0:
-                self.n_frames = n_frames
-                self._tps_dur_secs = tps_num / tps_denom
-
-        # TODO: handle libjxl time codes
-        self.__timestamp = 0
-
-        if icc := self._decoder.get_icc():
-            self.info["icc_profile"] = icc
-        if exif := self._decoder.get_exif():
-            # jpeg xl does some weird shenanigans when storing exif
-            # it omits first 6 bytes of tiff header but adds 4 byte offset instead
-            if len(exif) > 4:
-                exif_start_offset = struct.unpack(">I", exif[:4])[0]
-                self.info["exif"] = exif[exif_start_offset + 4 :]
-        if xmp := self._decoder.get_xmp():
-            self.info["xmp"] = xmp
-
-        self._rewind()
+        self._mode = "L"
+        self._size = (1, 1)
 
     def _get_next(self) -> tuple[bytes, float, float, bool]:
 
