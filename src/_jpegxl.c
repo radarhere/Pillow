@@ -190,7 +190,7 @@ _jxl_decoder_new(PyObject *self, PyObject *args) {
     JxlThreadParallelRunnerCreate(NULL, 4);
     JxlDecoder *decoder = JxlDecoderCreate(NULL);
 
-    JxlDecoderStatus status = JxlDecoderSubscribeEvents(decoder, JXL_DEC_BASIC_INFO | JXL_DEC_COLOR_ENCODING | JXL_DEC_FRAME | JXL_DEC_FULL_IMAGE);
+    JxlDecoderStatus status = JxlDecoderSubscribeEvents(decoder, JXL_DEC_BASIC_INFO | JXL_DEC_COLOR_ENCODING | JXL_DEC_FRAME);
 
     status = JxlDecoderSetDecompressBoxes(decoder, JXL_TRUE);
 
