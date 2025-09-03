@@ -21,7 +21,7 @@ from atheris.import_hook import instrument_imports
 with instrument_imports():
     import sys
 
-    import fuzzers
+    from . import fuzzers
 
 
 def TestOneInput(data: bytes) -> None:

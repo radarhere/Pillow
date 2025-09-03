@@ -3,12 +3,13 @@ from __future__ import annotations
 import subprocess
 import sys
 
-import fuzzers
 import packaging
 import pytest
 
 from PIL import Image, features
 from Tests.helper import skip_unless_feature
+
+from . import fuzzers
 
 if sys.platform.startswith("win32") or sys.platform == "ios":
     pytest.skip("Fuzzer doesn't run on Windows or iOS", allow_module_level=True)
