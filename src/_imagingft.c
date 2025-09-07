@@ -1380,7 +1380,7 @@ font_setvarname(FontObject *self, PyObject *args) {
 
 static PyObject *
 font_setvaraxes(FontObject *self, PyObject *args) {
-    unsigned int error;
+    int error;
 
     PyObject *axes, *item;
     Py_ssize_t i, num_coords;
