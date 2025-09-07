@@ -213,7 +213,7 @@ jobs:
       if: failure()
       with:
         name: errors
-        path: Tests/errors
+        path: out.png
 
     - name: After success
       run: |
