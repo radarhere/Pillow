@@ -93,7 +93,7 @@ ARCHIVE_SDIR=pillow-depends-main
 # Package versions for fresh source builds. Version numbers with "Patched"
 # annotations have a source code patch that is required for some platforms. If
 # you change those versions, ensure the patch is also updated.
-FREETYPE_VERSION=2.13.3
+FREETYPE_VERSION=2.14.0
 HARFBUZZ_VERSION=11.4.5
 LIBPNG_VERSION=1.6.50
 JPEGTURBO_VERSION=3.1.2
