@@ -293,22 +293,8 @@ function build {
         build_tiff
     fi
 
-    build_libavif
     build_libpng
     build_lcms2
-    build_openjpeg
-
-    webp_cflags="-O3 -DNDEBUG"
-    if [[ -n "$IS_MACOS" ]]; then
-        webp_cflags="$webp_cflags -Wl,-headerpad_max_install_names"
-    fi
-    webp_ldflags=""
-    if [[ -n "$IOS_SDK" ]]; then
-        webp_ldflags="$webp_ldflags -llzma -lz"
-    fi
-    CFLAGS="$CFLAGS $webp_cflags" LDFLAGS="$LDFLAGS $webp_ldflags" build_simple libwebp $LIBWEBP_VERSION \
-        https://storage.googleapis.com/downloads.webmproject.org/releases/webp tar.gz \
-        --enable-libwebpmux --enable-libwebpdemux
 
     build_brotli
 
