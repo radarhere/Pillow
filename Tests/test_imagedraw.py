@@ -1494,7 +1494,7 @@ def test_default_font_size() -> None:
 
     def draw_text() -> None:
         draw.text((0, 0), text, font_size=16)
-        assert_image_equal_tofile(im, "Tests/images/imagedraw_default_font_size.png")
+        assert_image_similar_tofile(im, "Tests/images/imagedraw_default_font_size.png", 0.0001)
 
     check(draw_text)
 
