@@ -271,7 +271,6 @@ function build {
 
     build_libjpeg_turbo
 
-    build_libpng
     build_lcms2
 
     build_brotli
@@ -281,12 +280,6 @@ function build {
         build_simple freetype $FREETYPE_VERSION https://download.savannah.gnu.org/releases/freetype tar.gz --with-harfbuzz=no
     else
         build_freetype
-    fi
-
-    if [[ -z "$IOS_SDK" ]]; then
-        # On iOS, there's no vendor-provided raqm, and we can't ship it due to
-        # licensing, so there's no point building harfbuzz.
-        build_harfbuzz
     fi
 }
 

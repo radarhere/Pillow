@@ -107,6 +107,7 @@ geterror(int code) {
             return NULL;
         }
     }
+    printf("torch %d\n", code);
 
     PyErr_SetString(PyExc_OSError, "unknown freetype error");
     return NULL;
@@ -1425,6 +1426,7 @@ font_setvaraxes(FontObject *self, PyObject *args) {
     error = FT_Set_Var_Design_Coordinates(self->face, num_coords, coords);
     free(coords);
     if (error) {
+        printf("torcherrorhere\n");
         return geterror(error);
     }
 
