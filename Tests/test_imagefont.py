@@ -52,4 +52,4 @@ def font(layout_engine: ImageFont.Layout) -> ImageFont.FreeTypeFont:
 def test_variation_set_by_axes(font: ImageFont.FreeTypeFont) -> None:
     font = ImageFont.truetype("Tests/fonts/AdobeVFPrototype.ttf", 36)
     print(font.get_variation_axes())
-    font.set_variation_by_axes([500, 50])
+    font.set_variation_by_axes([389, 0])
