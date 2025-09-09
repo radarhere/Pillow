@@ -271,10 +271,6 @@ function build {
 
     build_libjpeg_turbo
 
-    build_lcms2
-
-    build_brotli
-
     if [[ -n "$IS_MACOS" ]]; then
         # Custom freetype build
         build_simple freetype $FREETYPE_VERSION https://download.savannah.gnu.org/releases/freetype tar.gz --with-harfbuzz=no
