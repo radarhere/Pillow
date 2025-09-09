@@ -1380,13 +1380,17 @@ font_setvarname(FontObject *self, PyObject *args) {
 
 static PyObject *
 font_setvaraxes(FontObject *self, PyObject *args) {
-    int error;
-
+    FT_Face face = NULL;
+    FT_New_Face(library, "Tests/fonts/AdobeVFPrototype.ttf", 0, &face);
+    FT_Fixed *coords = (FT_Fixed *)malloc(2 * sizeof(FT_Fixed));
+    coords[0] = 500 * 65536;
+    coords[1] = 50 * 65536;
+    int error = FT_Set_Var_Design_Coordinates(face, 2, coords);
+    printf("Error %d\n", error);
     Py_RETURN_NONE;
 
     PyObject *axes, *item;
     Py_ssize_t i, num_coords;
-    FT_Fixed *coords;
     FT_Fixed coord;
     if (!PyArg_ParseTuple(args, "O", &axes)) {
         return NULL;
