@@ -1382,6 +1382,8 @@ static PyObject *
 font_setvaraxes(FontObject *self, PyObject *args) {
     int error;
 
+    Py_RETURN_NONE;
+
     PyObject *axes, *item;
     Py_ssize_t i, num_coords;
     FT_Fixed *coords;
