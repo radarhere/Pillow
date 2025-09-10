@@ -2,6 +2,7 @@
 
 set -e
 
+brew update
 if [[ "$ImageOS" == "macos13" ]]; then
     brew uninstall gradle maven
 fi
