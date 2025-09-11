@@ -88,13 +88,13 @@ jobs:
       env:
         GHA_PYTHON_VERSION: ${{ matrix.python-version }}
 
-    - name: Register gcc problem matcher
-      if: "matrix.os == 'ubuntu-latest' && matrix.python-version == '3.14'"
-      run: echo "::add-matcher::.github/problem-matchers/gcc.json"
-
     - name: Build
       run: |
         .ci/build.sh
+
+    - name: Prepare to upload errors
+      run: |
+        mkdir -p Tests/errors
 
     - name: Test
       run: |
@@ -112,35 +112,9 @@ jobs:
         PYTHONOPTIMIZE: ${{ matrix.PYTHONOPTIMIZE }}
         REVERSE: ${{ matrix.REVERSE }}
 
-    - name: Prepare to upload errors
-      if: failure()
-      run: |
-        mkdir -p Tests/errors
-
     - name: Upload errors
-      uses: actions/upload-artifact@v4
       if: failure()
+      uses: actions/upload-artifact@v4
       with:
-        name: errors
+        name: out
         path: Tests/errors
-
-    - name: After success
-      run: |
-        .ci/after_success.sh
-
-    - name: Upload coverage
-      uses: codecov/codecov-action@v5
-      with:
-        flags: ${{ matrix.os == 'ubuntu-latest' && 'GHA_Ubuntu' || 'GHA_macOS' }}
-        name: ${{ matrix.os }} Python ${{ matrix.python-version }}
-        token: ${{ secrets.CODECOV_ORG_TOKEN }}
-
-  success:
-    permissions:
-      contents: none
-    needs: build
-    runs-on: ubuntu-latest
-    name: Test Successful
-    steps:
-      - name: Success
-        run: echo Test Successful

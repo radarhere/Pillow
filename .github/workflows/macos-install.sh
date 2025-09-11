@@ -13,14 +13,11 @@ brew install \
     libraqm \
     libtiff \
     little-cms2 \
-    openjpeg \
     webp
 export PKG_CONFIG_PATH="/usr/local/opt/openblas/lib/pkgconfig"
 
 python3 -m pip install coverage
 python3 -m pip install defusedxml
-python3 -m pip install ipython
-python3 -m pip install olefile
 python3 -m pip install -U pytest
 python3 -m pip install -U pytest-cov
 python3 -m pip install -U pytest-timeout
