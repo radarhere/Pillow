@@ -10,25 +10,7 @@ on:
   #        │  │ │ │ │
   - cron: "42 1 * * 0,3"
   push:
-    paths:
-      - ".ci/requirements-cibw.txt"
-      - ".github/workflows/wheel*"
-      - "pyproject.toml"
-      - "setup.py"
-      - "wheels/*"
-      - "winbuild/build_prepare.py"
-      - "winbuild/fribidi.cmake"
-    tags:
-      - "*"
   pull_request:
-    paths:
-      - ".ci/requirements-cibw.txt"
-      - ".github/workflows/wheel*"
-      - "pyproject.toml"
-      - "setup.py"
-      - "wheels/*"
-      - "winbuild/build_prepare.py"
-      - "winbuild/fribidi.cmake"
   workflow_dispatch:
 
 permissions:
