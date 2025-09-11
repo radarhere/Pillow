@@ -1515,6 +1515,11 @@
     originOffsetY = FT_GET_SHORT();
 
     graphicType = FT_GET_TAG4();
+#ifdef FT_CONFIG_OPTION_USE_PNG
+    printf("graphicType png\n");
+#else
+    printf("graphicType no png\n");
+#endif
 
     switch ( graphicType )
     {
@@ -1578,6 +1583,7 @@
         }
       }
 #else
+      printf("torchwood unimplemented\n");
       error = FT_THROW( Unimplemented_Feature );
 #endif
       break;
@@ -1589,6 +1595,7 @@
       break;
 
     default:
+      printf("well default then\n");
       error = FT_THROW( Unimplemented_Feature );
       break;
     }

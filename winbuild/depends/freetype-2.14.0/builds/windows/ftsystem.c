@@ -336,6 +336,7 @@
     {
       FT_ERROR(( "FT_Stream_Open:" ));
       FT_ERROR(( " could not open `%s'\n", filepathname ));
+      printf("torch cannot1\n");
       return FT_THROW( Cannot_Open_Resource );
     }
 

@@ -1950,6 +1950,7 @@
                           FT_Long     face_index,
                           FT_Face    *aface )
   {
+      printf("torch cannot2\n");
     FT_Error   error  = FT_ERR( Cannot_Open_Resource );
     FT_Memory  memory = library->memory;
 
@@ -2150,8 +2151,10 @@
     else if ( FT_ERR_EQ( error, Invalid_Offset ) )
       FT_TRACE2(( "  Abort due to invalid offset in a POST fragment\n" ));
 
-    if ( error )
+    if ( error ) {
+      printf("torch cannot3\n");
       error = FT_ERR( Cannot_Open_Resource );
+    }
     FT_FREE( pfb_data );
 
   Exit:
