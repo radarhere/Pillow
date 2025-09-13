@@ -5,8 +5,6 @@ set -e
 brew uninstall freetype ant cairo fontconfig gradle harfbuzz kotlin maven openjdk selenium-server
 brew install libpng automake libtool jpeg-turbo gnu-sed
 
-export PATH="/opt/homebrew/opt/gnu-sed/libexec/gnubin:$PATH"
-
 git clone https://github.com/freetype/freetype.git
 cd freetype
 sh autogen.sh
