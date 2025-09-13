@@ -1055,7 +1055,6 @@ def test_colr(layout_engine: ImageFont.Layout) -> None:
 
     d.text((15, 5), "Bungee", font=font, embedded_color=True)
 
-    im.save("Tests/errors/colr_bungee.png")
     assert_image_similar_tofile(im, "Tests/images/colr_bungee.png", 21)
 
 
@@ -1072,7 +1071,6 @@ def test_colr_mask(layout_engine: ImageFont.Layout) -> None:
 
     d.text((15, 5), "Bungee", "black", font=font)
 
-    im.save("Tests/errors/colr_bungee_mask.png")
     assert_image_similar_tofile(im, "Tests/images/colr_bungee_mask.png", 22)
 
 
