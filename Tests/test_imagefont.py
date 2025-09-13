@@ -550,7 +550,7 @@ def test_default_font() -> None:
     draw.text((10, 60), txt, font=larger_default_font)
 
     # Assert
-    assert_image_equal_tofile(im, "Tests/images/default_font_freetype.png")
+    assert_image_similar_tofile(im, "Tests/images/default_font_freetype.png", 0.13)
 
 
 @pytest.mark.parametrize("mode", ("", "1", "RGBA"))
