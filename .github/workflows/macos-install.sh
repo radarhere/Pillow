@@ -2,40 +2,52 @@
 
 set -e
 
-if [[ "$ImageOS" == "macos13" ]]; then
-    brew uninstall gradle maven
+brew uninstall freetype ant cairo fontconfig gradle harfbuzz kotlin maven openjdk selenium-server
+brew install libpng automake libtool jpeg-turbo
+
+git clone https://github.com/freetype/freetype.git
+cd freetype
+
+echo "Log: 2.13.3 will pass"
+git checkout VER-2-13-3
+sh autogen.sh
+./configure --with-harfbuzz=no --with-png=yes && sudo make install
+
+cd ..
+make clean
+make install
+python3 -m PIL.report
+python3 demo.py
+
+cd freetype
+echo "Log: The last passing commit"
+git checkout VER-2-14-0
+git reset --hard HEAD~172
+
+sh autogen.sh
+./configure --with-harfbuzz=no --with-png=yes && sudo make install
+
+cd ..
+make clean
+make install
+python3 -m PIL.report
+python3 demo.py
+
+cd freetype
+if [[ $VERSION == "master" ]]; then
+  echo "Log: Master fails"
+  git checkout master
+else
+  echo "Log: The first failing commit"
+  git checkout VER-2-14-0
+  git reset --hard HEAD~171
+  git show
 fi
-brew install \
-    aom \
-    dav1d \
-    freetype \
-    ghostscript \
-    jpeg-turbo \
-    libimagequant \
-    libraqm \
-    libtiff \
-    little-cms2 \
-    openjpeg \
-    rav1e \
-    svt-av1 \
-    webp
-export PKG_CONFIG_PATH="/usr/local/opt/openblas/lib/pkgconfig"
+sh autogen.sh
+./configure --with-harfbuzz=no --with-png=yes && sudo make install
 
-python3 -m pip install coverage
-python3 -m pip install defusedxml
-python3 -m pip install ipython
-python3 -m pip install olefile
-python3 -m pip install -U pytest
-python3 -m pip install -U pytest-cov
-python3 -m pip install -U pytest-timeout
-python3 -m pip install pyroma
-python3 -m pip install numpy
-# optional test dependency, only install if there's a binary package.
-# fails on beta 3.14 and PyPy
-python3 -m pip install --only-binary=:all: pyarrow || true
-
-# libavif
-pushd depends && ./install_libavif.sh && popd
-
-# extra test images
-pushd depends && ./install_extra_test_images.sh && popd
+cd ..
+make clean
+make install
+python3 -m PIL.report
+python3 demo.py
