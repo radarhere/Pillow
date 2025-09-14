@@ -7,7 +7,7 @@ brew install libpng automake libtool jpeg-turbo
 
 git clone https://github.com/freetype/freetype.git
 cd freetype
-git checkout master
+git checkout sed
 sh autogen.sh
 ./configure --with-harfbuzz=no --with-png=yes && sudo make install
 
