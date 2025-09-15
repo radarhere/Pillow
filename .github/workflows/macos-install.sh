@@ -3,15 +3,9 @@
 set -e
 
 brew uninstall freetype ant cairo fontconfig gradle harfbuzz kotlin maven openjdk selenium-server
+HOMEBREW_NO_INSTALL_FROM_API=1 brew install --build-from-source radarhere/homebrew-freetypetap/freetype
 brew install libpng automake libtool jpeg-turbo
 
-git clone https://github.com/freetype/freetype.git
-cd freetype
-git checkout master
-sh autogen.sh
-./configure --with-harfbuzz=no --with-png=yes && sudo make install
-
-cd ..
 make clean
 make install
 python3 -m PIL.report
