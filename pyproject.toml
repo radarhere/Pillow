@@ -133,9 +133,6 @@ test-command = [
   "python -m pytest -vv -x -W always checks/check_wheel.py Tests",
 ]
 
-# There's no numpy wheel for iOS (yet...)
-test-requires = [  ]
-
 [[tool.cibuildwheel.overrides]]
 # iOS environment is isolated by cibuildwheel, but needs the dependencies
 select = "*_iphoneos"
@@ -153,7 +150,6 @@ test-requires = [  ]
 [[tool.cibuildwheel.overrides]]
 select = "*_ppc64le"
 config-settings = "raqm=disable fribidi=disable imagequant=disable"
-test-requires = [  ]
 
 [tool.black]
 exclude = "wheels/multibuild"
