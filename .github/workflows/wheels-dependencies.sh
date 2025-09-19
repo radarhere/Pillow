@@ -109,6 +109,10 @@ LIBXCB_VERSION=1.17.0
 BROTLI_VERSION=1.1.0  # Patched; next release won't need patching. See patch file.
 LIBAVIF_VERSION=1.3.0
 
+function macos_intel_cross_build_setup {
+    echo "nothing"
+}
+
 function build_pkg_config {
     if [ -e pkg-config-stamp ]; then return; fi
     # This essentially duplicates the Homebrew recipe.
