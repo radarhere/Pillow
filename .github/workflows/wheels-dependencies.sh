@@ -289,56 +289,9 @@ function build_zstd {
 
 function build {
     build_xz
-    if [ -z "$IS_ALPINE" ] && [ -z "$SANITIZER" ] && [ -z "$IS_MACOS" ]; then
-        yum remove -y zlib-devel
-    fi
     build_zlib_ng
 
     build_libjpeg_turbo
-    if [[ -n "$IS_MACOS" ]]; then
-        # Custom tiff build to include jpeg; by default, configure won't include
-        # headers/libs in the custom macOS/iOS prefix. Explicitly disable webp,
-        # libdeflate and zstd, because on x86_64 macs, it will pick up the
-        # Homebrew versions of those libraries from /usr/local.
-        build_simple tiff $TIFF_VERSION https://download.osgeo.org/libtiff tar.gz \
-            --with-jpeg-include-dir=$BUILD_PREFIX/include --with-jpeg-lib-dir=$BUILD_PREFIX/lib \
-            --disable-webp --disable-libdeflate --disable-zstd
-    else
-        build_zstd
-        build_tiff
-    fi
-
-    build_libavif
-    build_libpng
-    build_lcms2
-    build_openjpeg
-
-    webp_cflags="-O3 -DNDEBUG"
-    if [[ -n "$IS_MACOS" ]]; then
-        webp_cflags="$webp_cflags -Wl,-headerpad_max_install_names"
-    fi
-    webp_ldflags=""
-    if [[ -n "$IOS_SDK" ]]; then
-        webp_ldflags="$webp_ldflags -llzma -lz"
-    fi
-    CFLAGS="$CFLAGS $webp_cflags" LDFLAGS="$LDFLAGS $webp_ldflags" build_simple libwebp $LIBWEBP_VERSION \
-        https://storage.googleapis.com/downloads.webmproject.org/releases/webp tar.gz \
-        --enable-libwebpmux --enable-libwebpdemux
-
-    build_brotli
-
-    if [[ -n "$IS_MACOS" ]]; then
-        # Custom freetype build
-        build_simple freetype $FREETYPE_VERSION https://download.savannah.gnu.org/releases/freetype tar.gz --with-harfbuzz=no
-    else
-        build_freetype
-    fi
-
-    if [[ -z "$IOS_SDK" ]]; then
-        # On iOS, there's no vendor-provided raqm, and we can't ship it due to
-        # licensing, so there's no point building harfbuzz.
-        build_harfbuzz
-    fi
 }
 
 function create_meson_cross_config {
