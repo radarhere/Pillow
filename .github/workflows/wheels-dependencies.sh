@@ -294,16 +294,6 @@ function build {
     fi
     build_zlib_ng
 
-    build_simple xcb-proto 1.17.0 https://xorg.freedesktop.org/archive/individual/proto
-    if [[ -n "$IS_MACOS" ]]; then
-        build_simple xorgproto 2024.1 https://www.x.org/pub/individual/proto
-        build_simple libXau 1.0.12 https://www.x.org/pub/individual/lib
-        build_simple libpthread-stubs 0.5 https://xcb.freedesktop.org/dist
-    else
-        sed "s/\${pc_sysrootdir\}//" $BUILD_PREFIX/share/pkgconfig/xcb-proto.pc > $BUILD_PREFIX/lib/pkgconfig/xcb-proto.pc
-    fi
-    build_simple libxcb $LIBXCB_VERSION https://www.x.org/releases/individual/lib
-
     build_libjpeg_turbo
     if [[ -n "$IS_MACOS" ]]; then
         # Custom tiff build to include jpeg; by default, configure won't include
