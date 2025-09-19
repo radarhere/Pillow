@@ -110,7 +110,29 @@ BROTLI_VERSION=1.1.0  # Patched; next release won't need patching. See patch fil
 LIBAVIF_VERSION=1.3.0
 
 function macos_intel_cross_build_setup {
-    echo "nothing"
+    # Setup cross build for single arch arm_64 wheels
+    export PLAT="x86_64"
+    #export BUILD_PREFIX=/opt/arm64-builds
+    #sudo mkdir -p $BUILD_PREFIX/lib $BUILD_PREFIX/include
+    #sudo chown -R $USER $BUILD_PREFIX
+    update_env_for_build_prefix
+    #export _PYTHON_HOST_PLATFORM="macosx-11.0-arm64"
+    export CFLAGS+=" -arch x86_64"
+    export CXXFLAGS+=" -arch x86_64"
+    export CPPFLAGS+=" -arch x86_64"
+    [[ $ARCHFLAGS =~ "-arch x86_64" ]] || export ARCHFLAGS+=" -arch x86_64"
+    export FCFLAGS+=" -arch x86_64"
+    #export FC=$FC_ARM64
+    #export F90=${F90_ARM64:-${FC}}
+    #export F77=${F77_ARM64:-${FC}}
+    #export MACOSX_DEPLOYMENT_TARGET="10.0"
+    export CROSS_COMPILING=1
+
+    export LDFLAGS+=" -arch x86_64"
+    #export LDFLAGS+=" -arch arm64 -L$BUILD_PREFIX/lib -Wl,-rpath,$BUILD_PREFIX/lib ${FC_ARM64_LDFLAGS:-}"
+
+    # This would automatically let autoconf know that we are cross compiling for arm64 darwin
+    #export host_alias="aarch64-apple-darwin20.0.0"
 }
 
 function build_pkg_config {
