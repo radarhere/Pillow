@@ -7,7 +7,7 @@ from PIL import features
 
 
 def test_wheel_modules() -> None:
-    expected_modules = {"pil", "tkinter", "freetype2", "littlecms2", "webp"}
+    expected_modules = {"pil", "tkinter", "freetype2", "littlecms2", "webp", "avif"}
 
     if sys.platform == "win32":
         # tkinter is not available in cibuildwheel installed CPython on Windows
