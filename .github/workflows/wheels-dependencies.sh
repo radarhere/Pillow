@@ -279,7 +279,9 @@ function build_libavif {
             -DCMAKE_INSTALL_LIBDIR=$BUILD_PREFIX/lib \
             -DCMAKE_INSTALL_NAME_DIR=$BUILD_PREFIX/lib \
             -DBUILD_SHARED_LIBS=$build_shared \
-            -DAVIF_LIBYUV=OFF \
+            -DAVIF_LIBSHARPYUV=LOCAL \
+            -DAVIF_LIBYUV=LOCAL \
+            -DCMAKE_CROSSCOMPILING=1 \
             -DAVIF_CODEC_AOM=LOCAL \
             -DCONFIG_AV1_HIGHBITDEPTH=0 \
             -DCMAKE_INTERPROCEDURAL_OPTIMIZATION=$lto \
