@@ -8,8 +8,10 @@ if [[ "$OSTYPE" == "darwin"* ]]; then
     # testing purposes so that we can verify the fribidi shim works as expected.
     if [[ "$(uname -m)" == "x86_64" ]]; then
         HOMEBREW_PREFIX=/usr/local
+        $HOMEBREW_PREFIX/bin/brew install fribidi
     else
         HOMEBREW_PREFIX=/opt/homebrew
+        arch -arm64 $HOMEBREW_PREFIX/bin/brew install fribidi
     fi
 
     # Add the lib folder for fribidi so that the vendored library can be found.
