@@ -264,7 +264,8 @@ function build_libavif {
         echo "torch0"
         libavif_cmake_flags+=(
             -DAVIF_CODEC_AOM_DECODE=OFF \
-            -DAOM_TARGET_CPU=generic
+            -DAOM_TARGET_CPU=generic \
+            -DAVIF_CODEC_DAV1D=LOCAL
         )
     fi
 
