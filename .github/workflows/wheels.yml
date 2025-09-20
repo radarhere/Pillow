@@ -28,12 +28,18 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - name: "macOS 10.10 x86_64"
-            platform: macos
+          - name: "iOS x86_64 simulator"
+            platform: ios
             os: macos-14
-            cibw_arch: x86_64
-            build: "cp310*"
-            macosx_deployment_target: "10.10"
+            cibw_arch: x86_64_iphonesimulator
+          - name: "iOS x86_64 simulator"
+            platform: ios
+            os: macos-15
+            cibw_arch: x86_64_iphonesimulator
+          - name: "iOS x86_64 simulator"
+            platform: ios
+            os: macos-26
+            cibw_arch: x86_64_iphonesimulator
     steps:
       - uses: actions/checkout@v5
         with:
