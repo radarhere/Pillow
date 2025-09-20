@@ -291,12 +291,7 @@ function build_libavif {
             $HOST_CMAKE_FLAGS . )
     echo "torch2"
 
-    if [[ -n "$IOS_SDK" ]]; then
-        # libavif's CMake configuration generates a meson cross file... but it
-        # doesn't work for iOS cross-compilation. Copy in Pillow-generated
-        # meson-cross config to replace the cmake-generated version.
-        cp $WORKDIR/meson-cross.txt $out_dir/crossfile-apple.meson
-    fi
+    cp $WORKDIR/meson-cross.txt $out_dir/crossfile-apple.meson
 
     (cd $out_dir && make -j4 install)
     echo "torch3"
@@ -435,10 +430,10 @@ if [[ -n "$IS_MACOS" ]]; then
         # with some cross-building toolchains, because it introduces implicit
         # behavior into clang.
         unset IPHONEOS_DEPLOYMENT_TARGET
-
-        # Now that we know CC etc., we can create a meson cross-configuration file
-        create_meson_cross_config
     fi
+
+    # Now that we know CC etc., we can create a meson cross-configuration file
+    create_meson_cross_config
 fi
 
 wrap_wheel_builder build
