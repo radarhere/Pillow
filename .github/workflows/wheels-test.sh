@@ -11,7 +11,6 @@ if [[ "$OSTYPE" == "darwin"* ]]; then
     else
         HOMEBREW_PREFIX=/opt/homebrew
     fi
-    $HOMEBREW_PREFIX/bin/brew install fribidi
 
     # Add the lib folder for fribidi so that the vendored library can be found.
     # Don't use $HOMEWBREW_PREFIX/lib directly - use the lib folder where the
