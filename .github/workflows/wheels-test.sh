@@ -6,13 +6,8 @@ if [[ "$OSTYPE" == "darwin"* ]]; then
     # If Homebrew is on the path during the build, it may leak into the wheels.
     # However, we *do* need Homebrew to provide a copy of fribidi for
     # testing purposes so that we can verify the fribidi shim works as expected.
-    if [[ "$(uname -m)" == "x86_64" ]]; then
-        HOMEBREW_PREFIX=/usr/local
-        $HOMEBREW_PREFIX/bin/brew install fribidi
-    else
-        HOMEBREW_PREFIX=/opt/homebrew
-        arch -arm64 $HOMEBREW_PREFIX/bin/brew install fribidi
-    fi
+    HOMEBREW_PREFIX=/opt/homebrew
+    arch -arm64 $HOMEBREW_PREFIX/bin/brew install fribidi
 
     # Add the lib folder for fribidi so that the vendored library can be found.
     # Don't use $HOMEWBREW_PREFIX/lib directly - use the lib folder where the

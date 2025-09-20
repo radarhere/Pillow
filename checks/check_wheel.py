@@ -7,7 +7,7 @@ from PIL import features
 
 
 def test_wheel_modules() -> None:
-    expected_modules = {"pil", "tkinter"}
+    expected_modules = {"pil", "tkinter", "freetype2", "littlecms2", "webp"}
 
     if sys.platform == "win32":
         # tkinter is not available in cibuildwheel installed CPython on Windows
@@ -30,7 +30,7 @@ def test_wheel_modules() -> None:
 
 
 def test_wheel_codecs() -> None:
-    expected_codecs = {"jpg", "zlib"}
+    expected_codecs = {"jpg", "zlib", "libtiff"}
 
     assert set(features.get_supported_codecs()) == expected_codecs
 

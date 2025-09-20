@@ -327,7 +327,7 @@ function build {
     fi
 
     #build_libavif
-    #build_libpng
+    build_libpng
     build_lcms2
     #build_openjpeg
 
