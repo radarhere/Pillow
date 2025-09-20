@@ -309,10 +309,14 @@ function build_zstd {
 }
 
 function build {
+    echo "torch xz1"
     build_xz
+    echo "torch zlib"
     build_zlib_ng
+    echo "torch turbo"
 
     build_libjpeg_turbo
+    echo "torch tiff"
     if [[ -n "$IS_MACOS" ]]; then
         # Custom tiff build to include jpeg; by default, configure won't include
         # headers/libs in the custom macOS/iOS prefix. Explicitly disable webp,
@@ -325,6 +329,7 @@ function build {
         build_zstd
         build_tiff
     fi
+    echo "torch libpng"
 
     #build_libavif
     build_libpng
@@ -385,6 +390,10 @@ endian = 'little'
 EOF
 }
 
+echo "torchenv"
+printenv
+echo "torch envdone"
+
 # Perform all dependency builds in the build subfolder.
 mkdir -p $WORKDIR
 pushd $WORKDIR > /dev/null
@@ -426,6 +435,8 @@ if [[ -n "$IS_MACOS" ]]; then
         CPPFLAGS="$CPPFLAGS --sysroot=$IOS_SDK_PATH"
         CFLAGS="-target $IOS_HOST_TRIPLE --sysroot=$IOS_SDK_PATH -mios-version-min=$IPHONEOS_DEPLOYMENT_TARGET"
         CXXFLAGS="-target $IOS_HOST_TRIPLE --sysroot=$IOS_SDK_PATH -mios-version-min=$IPHONEOS_DEPLOYMENT_TARGET"
+        echo "torchcflags"
+        echo $CFLAGS
 
         # Having IPHONEOS_DEPLOYMENT_TARGET in the environment causes problems
         # with some cross-building toolchains, because it introduces implicit

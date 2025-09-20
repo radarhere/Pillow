@@ -28,15 +28,20 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - name: "iOS x86_64 simulator"
+          - name: "13 iOS x86_64 simulator"
+            platform: ios
+            os: macos-13
+            build: "cp313*"
+            cibw_arch: x86_64_iphonesimulator
+          - name: "14 iOS x86_64 simulator"
             platform: ios
             os: macos-14
             cibw_arch: x86_64_iphonesimulator
-          - name: "iOS x86_64 simulator"
+          - name: "15 iOS x86_64 simulator"
             platform: ios
             os: macos-15
             cibw_arch: x86_64_iphonesimulator
-          - name: "iOS x86_64 simulator"
+          - name: "26 iOS x86_64 simulator"
             platform: ios
             os: macos-26
             cibw_arch: x86_64_iphonesimulator
