@@ -114,7 +114,6 @@ function macos_intel_cross_build_setup {
     echo "torchwood"
     echo $HOST_CMAKE_FLAGS
     export PLAT="x86_64"
-    export BUILD_PREFIX=/opt/x86_64-builds
     sudo mkdir -p $BUILD_PREFIX/lib $BUILD_PREFIX/include
     sudo chown -R $USER $BUILD_PREFIX
     update_env_for_build_prefix
