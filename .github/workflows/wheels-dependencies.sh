@@ -308,6 +308,27 @@ function build_zstd {
     touch zstd-stamp
 }
 
+function build_openjpeg {
+    if [ -e openjpeg-stamp ]; then return; fi
+    build_zlib
+    build_libpng
+    build_tiff
+    build_lcms2
+    local cmake=$(get_modern_cmake)
+    local archive_prefix="v"
+    if [ $(lex_ver $OPENJPEG_VERSION) -lt $(lex_ver 2.1.1) ]; then
+        archive_prefix="version."
+    fi
+    local out_dir=$(fetch_unpack https://github.com/uclouvain/openjpeg/archive/${archive_prefix}${OPENJPEG_VERSION}.tar.gz)
+    echo "torchA"
+    (cd $out_dir \
+        && $cmake -DCMAKE_INSTALL_PREFIX=$BUILD_PREFIX -DCMAKE_INSTALL_LIBDIR=$BUILD_PREFIX/lib -DCMAKE_INSTALL_NAME_DIR=$BUILD_PREFIX/lib $HOST_CMAKE_FLAGS . \
+        && make -j4 \
+        && make install)
+    echo "torchB"
+    touch openjpeg-stamp
+}
+
 function build {
     build_xz
     build_zlib_ng
@@ -329,7 +350,7 @@ function build {
     #build_libavif
     build_libpng
     build_lcms2
-    #build_openjpeg
+    build_openjpeg
 
     webp_cflags="-O3 -DNDEBUG"
     if [[ -n "$IS_MACOS" ]]; then
