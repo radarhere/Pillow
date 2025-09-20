@@ -135,6 +135,8 @@ function macos_intel_cross_build_setup {
 
     # This would automatically let autoconf know that we are cross compiling for x86_64 darwin
     export host_alias="x86_64-apple-darwin20.0.0"
+    echo "torchsearch"
+    echo $PKG_CONFIG_PATH
 }
 
 function build_libjpeg_turbo {
@@ -146,7 +148,7 @@ function build_libjpeg_turbo {
     (cd libjpeg-turbo-${JPEGTURBO_VERSION} \
         && $cmake -G"Unix Makefiles" -DCMAKE_INSTALL_PREFIX=$BUILD_PREFIX \
             -DCMAKE_INSTALL_LIBDIR=$BUILD_PREFIX/lib -DCMAKE_INSTALL_NAME_DIR=$BUILD_PREFIX/lib \
-            -DCMAKE_SYSTEM_PROCESSOR=x86_64 . \
+            -DCMAKE_SYSTEM_PROCESSOR=x86_64 -DCMAKE_OSX_ARCHITECTURES=x86_64 . \
         && make -j4 \
         && make install)
 
