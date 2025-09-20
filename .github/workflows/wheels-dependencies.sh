@@ -112,6 +112,7 @@ LIBAVIF_VERSION=1.3.0
 function macos_intel_cross_build_setup {
     # Setup cross build for single arch arm_64 wheels
     echo "torchwood"
+    echo $HOST_CMAKE_FLAGS
     export PLAT="x86_64"
     export BUILD_PREFIX=/opt/x86_64-builds
     sudo mkdir -p $BUILD_PREFIX/lib $BUILD_PREFIX/include
@@ -128,12 +129,29 @@ function macos_intel_cross_build_setup {
     export F77=${F77_X86_64:-${FC}}
     export MACOSX_DEPLOYMENT_TARGET="10.10"
     export CROSS_COMPILING=1
-    export CMAKE_SYSTEM_PROCESSOR="x86_64"
+    export HOST_CMAKE_FLAGS="-DCMAKE_SYSTEM_PROCESSOR=x86_64"
 
     export LDFLAGS+=" -arch x86_64 -L$BUILD_PREFIX/lib -Wl,-rpath,$BUILD_PREFIX/lib ${FC_X86_64_LDFLAGS:-}"
 
     # This would automatically let autoconf know that we are cross compiling for x86_64 darwin
     export host_alias="x86_64-apple-darwin20.0.0"
+}
+
+function build_libjpeg_turbo {
+    if [ -e jpeg-stamp ]; then return; fi
+    local cmake=$(get_modern_cmake)
+    fetch_unpack https://github.com/libjpeg-turbo/libjpeg-turbo/releases/download/${JPEGTURBO_VERSION}/libjpeg-turbo-${JPEGTURBO_VERSION}.tar.gz
+    echo "torchsending"
+    echo $HOST_CMAKE_FLAGS
+    (cd libjpeg-turbo-${JPEGTURBO_VERSION} \
+        && $cmake -G"Unix Makefiles" -DCMAKE_INSTALL_PREFIX=$BUILD_PREFIX \
+            -DCMAKE_INSTALL_LIBDIR=$BUILD_PREFIX/lib -DCMAKE_INSTALL_NAME_DIR=$BUILD_PREFIX/lib \
+            $HOST_CMAKE_FLAGS . \
+        && make -j4 \
+        && make install)
+
+    # Prevent build_jpeg
+    touch jpeg-stamp
 }
 
 function build_pkg_config {
