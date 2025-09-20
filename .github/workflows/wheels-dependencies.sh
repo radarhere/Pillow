@@ -109,6 +109,11 @@ LIBXCB_VERSION=1.17.0
 BROTLI_VERSION=1.1.0  # Patched; next release won't need patching. See patch file.
 LIBAVIF_VERSION=1.3.0
 
+function macos_intel_cross_build_setup {
+    # Prevent multibuild from disabling cross compiling on arm64
+    :
+}
+
 function build_pkg_config {
     if [ -e pkg-config-stamp ]; then return; fi
     # This essentially duplicates the Homebrew recipe.
@@ -279,7 +284,11 @@ function build {
     fi
     build_simple libxcb $LIBXCB_VERSION https://www.x.org/releases/individual/lib
 
-    build_libjpeg_turbo
+    if [[ -n "$IS_MACOS" ]] && [[ "$PLAT" == "x86_64" ]]; then
+        HOST_CMAKE_FLAGS="-DCMAKE_OSX_ARCHITECTURES=x86_64" build_libjpeg_turbo
+    else
+        build_libjpeg_turbo
+    fi
     if [[ -n "$IS_MACOS" ]]; then
         # Custom tiff build to include jpeg; by default, configure won't include
         # headers/libs in the custom macOS/iOS prefix. Explicitly disable webp,
@@ -293,10 +302,14 @@ function build {
         build_tiff
     fi
 
-    build_libavif
+    if [[ -z "$IS_MACOS" ]] || [[ "$PLAT" == "arm64" ]]; then
+      build_libavif
+    fi
     build_libpng
     build_lcms2
-    build_openjpeg
+    if [[ -z "$IS_MACOS" ]] || [[ "$PLAT" == "arm64" ]]; then
+      build_openjpeg
+    fi
 
     webp_cflags="-O3 -DNDEBUG"
     if [[ -n "$IS_MACOS" ]]; then

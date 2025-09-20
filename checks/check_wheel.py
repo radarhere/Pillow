@@ -25,12 +25,17 @@ def test_wheel_modules() -> None:
     elif sys.platform == "ios":
         # tkinter is not available on iOS
         expected_modules.remove("tkinter")
+    elif sys.platform == "darwin" and platform.machine() == "x86_64":
+        expected_modules.remove("avif")
 
     assert set(features.get_supported_modules()) == expected_modules
 
 
 def test_wheel_codecs() -> None:
     expected_codecs = {"jpg", "jpg_2000", "zlib", "libtiff"}
+
+    if sys.platform == "darwin" and platform.machine() == "x86_64":
+        expected_codecs.remove("jpg_2000")
 
     assert set(features.get_supported_codecs()) == expected_codecs
 
@@ -47,8 +52,11 @@ def test_wheel_features() -> None:
 
     if sys.platform == "win32":
         expected_features.remove("xcb")
-    elif sys.platform == "ios":
-        # Can't distribute raqm due to licensing, and there's no system version;
+    elif (
+        sys.platform == "darwin" and platform.machine() == "x86_64"
+    ) or sys.platform == "ios":
+        # On iOS, can't distribute raqm due to licensing,
+        # and there's no system version;
         # fribidi and harfbuzz won't be available if raqm isn't available.
         expected_features -= {"raqm", "fribidi", "harfbuzz"}
 
