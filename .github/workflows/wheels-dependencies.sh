@@ -111,6 +111,7 @@ LIBAVIF_VERSION=1.3.0
 
 function macos_intel_cross_build_setup {
     # Setup cross build for single arch arm_64 wheels
+    echo "torchwood"
     export PLAT="x86_64"
     export BUILD_PREFIX=/opt/x86_64-builds
     sudo mkdir -p $BUILD_PREFIX/lib $BUILD_PREFIX/include
@@ -127,6 +128,7 @@ function macos_intel_cross_build_setup {
     export F77=${F77_X86_64:-${FC}}
     export MACOSX_DEPLOYMENT_TARGET="10.10"
     export CROSS_COMPILING=1
+    export CMAKE_SYSTEM_PROCESSOR="x86_64"
 
     export LDFLAGS+=" -arch x86_64 -L$BUILD_PREFIX/lib -Wl,-rpath,$BUILD_PREFIX/lib ${FC_X86_64_LDFLAGS:-}"
 
