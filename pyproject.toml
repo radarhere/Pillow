@@ -111,7 +111,7 @@ xbuild-tools = [  ]
 
 [tool.cibuildwheel.macos]
 # Disable platform guessing on macOS to avoid picking up Homebrew etc.
-config-settings = "raqm=enable raqm=vendor fribidi=vendor imagequant=disable platform-guessing=disable"
+config-settings = "platform-guessing=disable"
 
 [tool.cibuildwheel.macos.environment]
 # Isolate macOS build environment from Homebrew etc.
