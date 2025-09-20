@@ -976,20 +976,16 @@ def test_float_coord(layout_engine: ImageFont.Layout, fontmode: str) -> None:
 
 
 def test_cbdt(layout_engine: ImageFont.Layout) -> None:
-    try:
-        font = ImageFont.truetype(
-            "Tests/fonts/CBDTTestFont.ttf", size=64, layout_engine=layout_engine
-        )
+    font = ImageFont.truetype(
+        "Tests/fonts/CBDTTestFont.ttf", size=64, layout_engine=layout_engine
+    )
 
-        im = Image.new("RGB", (128, 96), "white")
-        d = ImageDraw.Draw(im)
+    im = Image.new("RGB", (128, 96), "white")
+    d = ImageDraw.Draw(im)
 
-        d.text((16, 16), "AB", font=font, embedded_color=True)
+    d.text((16, 16), "AB", font=font, embedded_color=True)
 
-        assert_image_equal_tofile(im, "Tests/images/cbdt.png")
-    except OSError as e:  # pragma: no cover
-        assert str(e) in ("unimplemented feature", "unknown file format")
-        pytest.skip("freetype compiled without libpng or CBDT support")
+    assert_image_equal_tofile(im, "Tests/images/cbdt.png")
 
 
 def test_cbdt_mask(layout_engine: ImageFont.Layout) -> None:
