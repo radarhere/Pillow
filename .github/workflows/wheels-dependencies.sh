@@ -327,9 +327,9 @@ function build {
     fi
 
     #build_libavif
-    build_libpng
+    #build_libpng
     build_lcms2
-    build_openjpeg
+    #build_openjpeg
 
     webp_cflags="-O3 -DNDEBUG"
     if [[ -n "$IS_MACOS" ]]; then
