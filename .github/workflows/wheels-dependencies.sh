@@ -261,6 +261,7 @@ function build_libavif {
     if [[ -n "$IOS_SDK" ]] && [[ "$PLAT" == "x86_64" ]]; then
         libavif_cmake_flags+=(-DAOM_TARGET_CPU=generic)
     else
+        echo "torch0"
         libavif_cmake_flags+=(
             -DAVIF_CODEC_AOM_DECODE=OFF \
             -DAVIF_CODEC_DAV1D=LOCAL
@@ -271,6 +272,7 @@ function build_libavif {
 
     # CONFIG_AV1_HIGHBITDEPTH=0 is a flag for libaom (included as a subproject
     # of libavif) that disables support for encoding high bit depth images.
+    echo "torch1"
     (cd $out_dir \
         && cmake \
             -DCMAKE_INSTALL_PREFIX=$BUILD_PREFIX \
@@ -287,6 +289,7 @@ function build_libavif {
             -DCMAKE_BUILD_TYPE=$build_type \
             "${libavif_cmake_flags[@]}" \
             $HOST_CMAKE_FLAGS . )
+    echo "torch2"
 
     if [[ -n "$IOS_SDK" ]]; then
         # libavif's CMake configuration generates a meson cross file... but it
@@ -296,6 +299,7 @@ function build_libavif {
     fi
 
     (cd $out_dir && make -j4 install)
+    echo "torch3"
 
     touch libavif-stamp
 }
@@ -326,7 +330,7 @@ function build {
         build_tiff
     fi
 
-    #build_libavif
+    build_libavif
     build_libpng
     build_lcms2
     #build_openjpeg
