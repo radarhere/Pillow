@@ -252,6 +252,7 @@ OPEN_INFO = {
     (II, 3, (1,), 1, (8,), ()): ("P", "P"),
     (MM, 3, (1,), 1, (8,), ()): ("P", "P"),
     (II, 3, (1,), 1, (8, 8), (0,)): ("P", "PX"),
+    (MM, 3, (1,), 1, (8, 8), (0,)): ("P", "PX"),
     (II, 3, (1,), 1, (8, 8), (2,)): ("PA", "PA"),
     (MM, 3, (1,), 1, (8, 8), (2,)): ("PA", "PA"),
     (II, 3, (1,), 2, (8,), ()): ("P", "P;R"),
@@ -1936,9 +1937,10 @@ def _save(im: Image.Image, fp: IO[bytes], filename: str | bytes) -> None:
                     types[tag] = TiffTags.LONG8
                 elif tag in ifd.tagtype:
                     types[tag] = ifd.tagtype[tag]
-                elif not (isinstance(value, (int, float, str, bytes))):
-                    continue
-                else:
+                elif isinstance(value, (int, float, str, bytes)) or (
+                    isinstance(value, tuple)
+                    and all(isinstance(v, (int, float, IFDRational)) for v in value)
+                ):
                     type = TiffTags.lookup(tag).type
                     if type:
                         types[tag] = type

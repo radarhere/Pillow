@@ -367,6 +367,14 @@ class TestFileLibTiff(LibTiffTestCase):
             assert isinstance(reloaded, TiffImagePlugin.TiffImageFile)
             assert reloaded.tag_v2[318] == pytest.approx((0.3127, 0.3289))
 
+        # Save tag by default
+        with Image.open("Tests/images/rdf.tif") as im:
+            out = tmp_path / "temp2.tif"
+            im.save(out)
+
+        with Image.open(out) as reloaded:
+            assert reloaded.tag_v2[318] == pytest.approx((0.3127, 0.3289999))
+
     def test_xmlpacket_tag(
         self, monkeypatch: pytest.MonkeyPatch, tmp_path: Path
     ) -> None:
