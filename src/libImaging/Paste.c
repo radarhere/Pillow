@@ -23,17 +23,27 @@
 
 #include "Imaging.h"
 
-#define PREPARE_PASTE_LOOP()        \
-    int y, y_end, offset;           \
-    if (imOut == imIn && dy > sy) { \
-        y = ysize - 1;              \
-        y_end = -1;                 \
-        offset = -1;                \
-    } else {                        \
-        y = 0;                      \
-        y_end = ysize;              \
-        offset = 1;                 \
+static inline void
+prepare_paste_loop(
+    Imaging imOut,
+    Imaging imIn,
+    int dy,
+    int sy,
+    int ysize,
+    int *y,
+    int *y_end,
+    int *offset
+) {
+    if (imOut == imIn && dy > sy) {
+        *y = ysize - 1;
+        *y_end = -1;
+        *offset = -1;
+    } else {
+        *y = 0;
+        *y_end = ysize;
+        *offset = 1;
     }
+}
 
 static inline void
 paste(
@@ -54,7 +64,8 @@ paste(
 
     xsize *= pixelsize;
 
-    PREPARE_PASTE_LOOP();
+    int y, y_end, offset;
+    prepare_paste_loop(imOut, imIn, dy, sy, ysize, &y, &y_end, &offset);
     for (; y != y_end; y += offset) {
         memcpy(imOut->image[y + dy] + dx, imIn->image[y + sy] + sx, xsize);
     }
@@ -75,9 +86,8 @@ paste_mask_1(
 ) {
     /* paste with mode "1" mask */
 
-    int x;
-
-    PREPARE_PASTE_LOOP();
+    int x, y, y_end, offset;
+    prepare_paste_loop(imOut, imIn, dy, sy, ysize, &y, &y_end, &offset);
     if (imOut->image8) {
         int in_i16 = strncmp(imIn->mode, "I;16", 4) == 0;
         int out_i16 = strncmp(imOut->mode, "I;16", 4) == 0;
@@ -138,10 +148,10 @@ paste_mask_L(
 ) {
     /* paste with mode "L" matte */
 
-    int x;
+    int x, y, y_end, offset;
     unsigned int tmp1;
 
-    PREPARE_PASTE_LOOP();
+    prepare_paste_loop(imOut, imIn, dy, sy, ysize, &y, &y_end, &offset);
     if (imOut->image8) {
         for (; y != y_end; y += offset) {
             UINT8 *out = imOut->image8[y + dy] + dx;
@@ -187,10 +197,10 @@ paste_mask_RGBA(
 ) {
     /* paste with mode "RGBA" matte */
 
-    int x;
+    int x, y, y_end, offset;
     unsigned int tmp1;
 
-    PREPARE_PASTE_LOOP();
+    prepare_paste_loop(imOut, imIn, dy, sy, ysize, &y, &y_end, &offset);
     if (imOut->image8) {
         for (; y != y_end; y += offset) {
             UINT8 *out = imOut->image8[y + dy] + dx;
@@ -236,10 +246,10 @@ paste_mask_RGBa(
 ) {
     /* paste with mode "RGBa" matte */
 
-    int x;
+    int x, y, y_end, offset;
     unsigned int tmp1;
 
-    PREPARE_PASTE_LOOP();
+    prepare_paste_loop(imOut, imIn, dy, sy, ysize, &y, &y_end, &offset);
     if (imOut->image8) {
         for (; y != y_end; y += offset) {
             UINT8 *out = imOut->image8[y + dy] + dx;
