@@ -30,7 +30,7 @@ jobs:
         include:
           - name: "iOS arm64 simulator"
             platform: ios
-            os: macos-14
+            os: macos-15
             cibw_arch: arm64_iphonesimulator
     steps:
       - uses: actions/checkout@v5
