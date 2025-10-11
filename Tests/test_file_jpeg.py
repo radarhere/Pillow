@@ -26,7 +26,6 @@ from .helper import (
     assert_image_equal_tofile,
     assert_image_similar,
     assert_image_similar_tofile,
-    cjpeg_available,
     djpeg_available,
     hopper,
     is_win32,
@@ -408,9 +407,8 @@ class TestFileJpeg:
 
         with Image.open("Tests/images/exif_gps.jpg") as im:
             assert isinstance(im, JpegImagePlugin.JpegImageFile)
-
             exif = im._getexif()
-            assert exif is not None
+        assert exif is not None
 
         for tag, value in expected_exif.items():
             assert value == exif[tag]
@@ -623,6 +621,24 @@ class TestFileJpeg:
                     None
                 )
             ]
+
+            for quality in range(101):
+                qtable_from_qtable_quality = self.roundtrip(
+                    im,
+                    qtables={0: standard_l_qtable, 1: standard_chrominance_qtable},
+                    quality=quality,
+                ).quantization
+
+                qtable_from_quality = self.roundtrip(im, quality=quality).quantization
+
+                if features.check_feature("libjpeg_turbo"):
+                    assert qtable_from_qtable_quality == qtable_from_quality
+                else:
+                    assert qtable_from_qtable_quality[0] == qtable_from_quality[0]
+                    assert (
+                        qtable_from_qtable_quality[1][1:] == qtable_from_quality[1][1:]
+                    )
+
             # list of qtable lists
             assert_image_similar(
                 im,
@@ -685,6 +701,7 @@ class TestFileJpeg:
 
     def test_save_multiple_16bit_qtables(self) -> None:
         with Image.open("Tests/images/hopper_16bit_qtables.jpg") as im:
+            assert isinstance(im, JpegImagePlugin.JpegImageFile)
             im2 = self.roundtrip(im, qtables="keep")
             assert isinstance(im, JpegImagePlugin.JpegImageFile)
             assert im.quantization == im2.quantization
@@ -727,14 +744,6 @@ class TestFileJpeg:
             img.load_djpeg()
             assert_image_similar_tofile(img, TEST_FILE, 5)
 
-    @pytest.mark.skipif(not cjpeg_available(), reason="cjpeg not available")
-    def test_save_cjpeg(self, tmp_path: Path) -> None:
-        with Image.open(TEST_FILE) as img:
-            tempfile = str(tmp_path / "temp.jpg")
-            JpegImagePlugin._save_cjpeg(img, BytesIO(), tempfile)
-            # Default save quality is 75%, so a tiny bit of difference is alright
-            assert_image_similar_tofile(img, tempfile, 17)
-
     def test_no_duplicate_0x1001_tag(self) -> None:
         # Arrange
         tag_ids = {v: k for k, v in ExifTags.TAGS.items()}
@@ -760,10 +769,13 @@ class TestFileJpeg:
 
         # Act
         # Shouldn't raise error
-        fn = "Tests/images/sugarshack_bad_mpo_header.jpg"
-        with pytest.warns(UserWarning, Image.open, fn) as im:
-            # Assert
-            assert im.format == "JPEG"
+        with pytest.warns(UserWarning, match="malformed MPO file"):
+            im = Image.open("Tests/images/sugarshack_bad_mpo_header.jpg")
+
+        # Assert
+        assert im.format == "JPEG"
+
+        im.close()
 
     @pytest.mark.parametrize("mode", ("1", "L", "RGB", "RGBX", "CMYK", "YCbCr"))
     def test_save_correct_modes(self, mode: str) -> None:
@@ -1110,14 +1122,6 @@ class TestFileJpeg:
         im = hopper("F")
 
         assert im._repr_jpeg_() is None
-
-    def test_deprecation(self) -> None:
-        with Image.open(TEST_FILE) as im:
-            assert isinstance(im, JpegImagePlugin.JpegImageFile)
-            with pytest.warns(DeprecationWarning):
-                assert im.huffman_ac == {}
-            with pytest.warns(DeprecationWarning):
-                assert im.huffman_dc == {}
 
 
 @pytest.mark.skipif(not is_win32(), reason="Windows only")

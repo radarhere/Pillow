@@ -768,9 +768,9 @@ class TestFilePng:
 
         with Image.open(test_file) as reloaded:
             assert isinstance(reloaded, PngImagePlugin.PngImageFile)
-            exif = reloaded._getexif()
-        assert exif is not None
-        assert exif[274] == 1
+            exif_data = reloaded._getexif()
+        assert exif_data is not None
+        assert exif_data[274] == 1
 
     @mark_if_feature_version(
         pytest.mark.valgrind_known_error, "libjpeg_turbo", "2.0", reason="Known Failing"
@@ -835,7 +835,7 @@ class TestFilePng:
         test_file = tmp_path / "out.png"
 
         im = hopper("I")
-        with pytest.warns(DeprecationWarning):
+        with pytest.warns(DeprecationWarning, match="Saving I mode images as PNG"):
             im.save(test_file)
 
         with Image.open(test_file) as reloaded:

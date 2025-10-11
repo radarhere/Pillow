@@ -64,7 +64,7 @@ static void
 get_pixel_16L(Imaging im, int x, int y, void *color) {
     UINT8 *in = (UINT8 *)&im->image[y][x + x];
 #ifdef WORDS_BIGENDIAN
-    UINT16 out = in[0] + (in[1] << 8);
+    UINT16 out = in[0] + ((UINT16)in[1] << 8);
     memcpy(color, &out, sizeof(out));
 #else
     memcpy(color, in, sizeof(UINT16));
@@ -77,34 +77,9 @@ get_pixel_16B(Imaging im, int x, int y, void *color) {
 #ifdef WORDS_BIGENDIAN
     memcpy(color, in, sizeof(UINT16));
 #else
-    UINT16 out = in[1] + (in[0] << 8);
+    UINT16 out = in[1] + ((UINT16)in[0] << 8);
     memcpy(color, &out, sizeof(out));
 #endif
-}
-
-static void
-get_pixel_BGR15(Imaging im, int x, int y, void *color) {
-    UINT8 *in = (UINT8 *)&im->image8[y][x * 2];
-    UINT16 pixel = in[0] + (in[1] << 8);
-    char *out = color;
-    out[0] = (pixel & 31) * 255 / 31;
-    out[1] = ((pixel >> 5) & 31) * 255 / 31;
-    out[2] = ((pixel >> 10) & 31) * 255 / 31;
-}
-
-static void
-get_pixel_BGR16(Imaging im, int x, int y, void *color) {
-    UINT8 *in = (UINT8 *)&im->image8[y][x * 2];
-    UINT16 pixel = in[0] + (in[1] << 8);
-    char *out = color;
-    out[0] = (pixel & 31) * 255 / 31;
-    out[1] = ((pixel >> 5) & 63) * 255 / 63;
-    out[2] = ((pixel >> 11) & 31) * 255 / 31;
-}
-
-static void
-get_pixel_BGR24(Imaging im, int x, int y, void *color) {
-    memcpy(color, &im->image8[y][x * 3], sizeof(UINT8) * 3);
 }
 
 static void
@@ -116,7 +91,8 @@ static void
 get_pixel_32L(Imaging im, int x, int y, void *color) {
     UINT8 *in = (UINT8 *)&im->image[y][x * 4];
 #ifdef WORDS_BIGENDIAN
-    INT32 out = in[0] + (in[1] << 8) + (in[2] << 16) + (in[3] << 24);
+    INT32 out =
+        in[0] + ((INT32)in[1] << 8) + ((INT32)in[2] << 16) + ((INT32)in[3] << 24);
     memcpy(color, &out, sizeof(out));
 #else
     memcpy(color, in, sizeof(INT32));
@@ -129,7 +105,8 @@ get_pixel_32B(Imaging im, int x, int y, void *color) {
 #ifdef WORDS_BIGENDIAN
     memcpy(color, in, sizeof(INT32));
 #else
-    INT32 out = in[3] + (in[2] << 8) + (in[1] << 16) + (in[0] << 24);
+    INT32 out =
+        in[3] + ((INT32)in[2] << 8) + ((INT32)in[1] << 16) + ((INT32)in[0] << 24);
     memcpy(color, &out, sizeof(out));
 #endif
 }
@@ -152,16 +129,6 @@ put_pixel_16B(Imaging im, int x, int y, const void *color) {
     UINT8 *out = (UINT8 *)&im->image8[y][x + x];
     out[0] = in[1];
     out[1] = in[0];
-}
-
-static void
-put_pixel_BGR1516(Imaging im, int x, int y, const void *color) {
-    memcpy(&im->image8[y][x * 2], color, 2);
-}
-
-static void
-put_pixel_BGR24(Imaging im, int x, int y, const void *color) {
-    memcpy(&im->image8[y][x * 3], color, 3);
 }
 
 static void
@@ -212,9 +179,6 @@ ImagingAccessInit(void) {
     ADD("F", get_pixel_32, put_pixel_32);
     ADD("P", get_pixel_8, put_pixel_8);
     ADD("PA", get_pixel_32_2bands, put_pixel_32);
-    ADD("BGR;15", get_pixel_BGR15, put_pixel_BGR1516);
-    ADD("BGR;16", get_pixel_BGR16, put_pixel_BGR1516);
-    ADD("BGR;24", get_pixel_BGR24, put_pixel_BGR24);
     ADD("RGB", get_pixel_32, put_pixel_32);
     ADD("RGBA", get_pixel_32, put_pixel_32);
     ADD("RGBa", get_pixel_32, put_pixel_32);

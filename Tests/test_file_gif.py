@@ -100,6 +100,18 @@ def test_l_mode_after_rgb() -> None:
         assert im.mode == "RGB"
 
 
+def test_l_mode_transparency_after_rgb() -> None:
+    with Image.open("Tests/images/no_palette_with_transparency_after_rgb.gif") as im:
+        expected = im.convert("RGB")
+        d = ImageDraw.Draw(expected)
+        d.rectangle([(0, 0), (64, 128)], fill="#000")
+
+        im.seek(1)
+        assert im.mode == "RGB"
+
+        assert_image_equal(im, expected)
+
+
 def test_palette_not_needed_for_second_frame() -> None:
     with Image.open("Tests/images/palette_not_needed_for_second_frame.gif") as im:
         im.seek(1)
@@ -1237,7 +1249,9 @@ def test_removed_transparency(tmp_path: Path) -> None:
         im.putpixel((x, 0), (x, 0, 0))
 
     im.info["transparency"] = (255, 255, 255)
-    with pytest.warns(UserWarning):
+    with pytest.warns(
+        UserWarning, match="Couldn't allocate palette entry for transparency"
+    ):
         im.save(out)
 
     with Image.open(out) as reloaded:
@@ -1259,7 +1273,7 @@ def test_rgb_transparency(tmp_path: Path) -> None:
     im = Image.new("RGB", (1, 1))
     im.info["transparency"] = b""
     ims = [Image.new("RGB", (1, 1))]
-    with pytest.warns(UserWarning):
+    with pytest.warns(UserWarning, match="should be converted to RGBA images"):
         im.save(out, save_all=True, append_images=ims)
 
     with Image.open(out) as reloaded:
@@ -1365,6 +1379,7 @@ def test_palette_save_all_P(tmp_path: Path) -> None:
 
     with Image.open(out) as im:
         # Assert that the frames are correct, and each frame has the same palette
+        assert isinstance(im, GifImagePlugin.GifImageFile)
         assert_image_equal(im.convert("RGB"), frames[0].convert("RGB"))
         assert isinstance(im, GifImagePlugin.GifImageFile)
         assert im.palette is not None
