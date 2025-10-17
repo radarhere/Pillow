@@ -84,7 +84,7 @@ jobs:
           pushd depends && ./install_extra_test_images.sh && popd
 
       - name: Build Pillow
-        run: .ci/build.sh
+        run: AR="ar" .ci/build.sh
 
       - name: Test Pillow
         run: .ci/test.sh
