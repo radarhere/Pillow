@@ -14,6 +14,7 @@ import shutil
 import struct
 import subprocess
 import sys
+print("torchpath", sys.path)
 import warnings
 from collections.abc import Iterator
 

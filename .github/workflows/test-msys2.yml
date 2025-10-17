@@ -43,7 +43,7 @@ jobs:
       MSYSTEM: ${{ matrix.msystem }}
       CHERE_INVOKING: 1
 
-    timeout-minutes: 30
+    timeout-minutes: 120
     name: MSYS2 ${{ matrix.msystem }}
 
     steps:
@@ -82,6 +82,10 @@ jobs:
           python3 -m pip install pyroma pytest pytest-cov pytest-timeout
 
           pushd depends && ./install_extra_test_images.sh && popd
+
+      - name: Find
+        run: |
+          find / -name llvm-ar
 
       - name: Build Pillow
         run: .ci/build.sh
