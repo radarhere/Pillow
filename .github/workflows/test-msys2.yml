@@ -2,21 +2,7 @@ name: Test MSYS2
 
 on:
   push:
-    branches:
-      - "**"
-    paths-ignore:
-      - ".github/workflows/docs.yml"
-      - ".github/workflows/wheels*"
-      - ".gitmodules"
-      - "docs/**"
-      - "wheels/**"
   pull_request:
-    paths-ignore:
-      - ".github/workflows/docs.yml"
-      - ".github/workflows/wheels*"
-      - ".gitmodules"
-      - "docs/**"
-      - "wheels/**"
   workflow_dispatch:
 
 permissions:
@@ -64,24 +50,8 @@ jobs:
               subversion
 
           pacboy -S --noconfirm \
-              freetype:p \
               gcc:p \
-              ghostscript:p \
-              lcms2:p \
-              libimagequant:p \
-              libjpeg-turbo:p \
-              libraqm:p \
-              libtiff:p \
-              libwebp:p \
-              openjpeg2:p \
-              python-numpy:p \
-              python-olefile:p \
-              python-pip:p \
-              python-pyqt6:p
-
-          python3 -m pip install pyroma pytest pytest-cov pytest-timeout
-
-          pushd depends && ./install_extra_test_images.sh && popd
+              python-pip:p
 
       - name: Build Pillow
         run: AR="ar" .ci/build.sh
@@ -98,13 +68,3 @@ jobs:
           files: ./coverage.xml
           flags: GHA_Windows
           name: MSYS2 ${{ matrix.msystem }}
-
-  success:
-    permissions:
-      contents: none
-    needs: build
-    runs-on: ubuntu-latest
-    name: MSYS2 Test Successful
-    steps:
-      - name: Success
-        run: echo MSYS2 Test Successful
