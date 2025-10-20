@@ -130,11 +130,8 @@ class Text:
 
         :return: Either width for horizontal text, or height for vertical text.
         """
-        if isinstance(self.text, str):
-            multiline = "\n" in self.text
-        else:
-            multiline = b"\n" in self.text
-        if multiline:
+        split_character = "\n" if isinstance(self.text, str) else b"\n"
+        if split_character in self.text:
             msg = "can't measure length of multiline text"
             raise ValueError(msg)
         return self.font.getlength(
