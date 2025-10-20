@@ -289,6 +289,7 @@ def test_save(test_file: str) -> None:
 
 
 def test_save_all() -> None:
+    im: Image.Image
     for test_file in test_files:
         with Image.open(test_file) as im:
             im_reloaded = roundtrip(im, save_all=True)

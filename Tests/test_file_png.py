@@ -93,6 +93,7 @@ class TestFilePng:
 
         hopper("RGB").save(test_file)
 
+        im: Image.Image
         with Image.open(test_file) as im:
             im.load()
             assert im.mode == "RGB"
@@ -103,6 +104,8 @@ class TestFilePng:
         for mode in ["1", "L", "P", "RGB", "I;16", "I;16B"]:
             im = hopper(mode)
             im.save(test_file)
+
+            reloaded: Image.Image
             with Image.open(test_file) as reloaded:
                 if mode == "I;16B":
                     reloaded = reloaded.convert(mode)
@@ -225,11 +228,11 @@ class TestFilePng:
         test_file = "Tests/images/pil123p.png"
         with Image.open(test_file) as im:
             assert_image(im, "P", (162, 150))
-            im = im.convert("RGBA")
-        assert_image(im, "RGBA", (162, 150))
+            rgba_im = im.convert("RGBA")
+        assert_image(rgba_im, "RGBA", (162, 150))
 
         # image has 124 unique alpha values
-        colors = im.getchannel("A").getcolors()
+        colors = rgba_im.getchannel("A").getcolors()
         assert colors is not None
         assert len(colors) == 124
 
@@ -239,11 +242,11 @@ class TestFilePng:
             assert im.info["transparency"] == (0, 255, 52)
 
             assert_image(im, "RGB", (64, 64))
-            im = im.convert("RGBA")
-        assert_image(im, "RGBA", (64, 64))
+            rgba_im = im.convert("RGBA")
+        assert_image(rgba_im, "RGBA", (64, 64))
 
         # image has 876 transparent pixels
-        colors = im.getchannel("A").getcolors()
+        colors = rgba_im.getchannel("A").getcolors()
         assert colors is not None
         assert colors[0][0] == 876
 
@@ -262,11 +265,11 @@ class TestFilePng:
             assert len(im.info["transparency"]) == 256
 
             assert_image(im, "P", (162, 150))
-            im = im.convert("RGBA")
-        assert_image(im, "RGBA", (162, 150))
+            rgba_im = im.convert("RGBA")
+        assert_image(rgba_im, "RGBA", (162, 150))
 
         # image has 124 unique alpha values
-        colors = im.getchannel("A").getcolors()
+        colors = rgba_im.getchannel("A").getcolors()
         assert colors is not None
         assert len(colors) == 124
 
@@ -285,13 +288,13 @@ class TestFilePng:
             assert im.info["transparency"] == 164
             assert im.getpixel((31, 31)) == 164
             assert_image(im, "P", (64, 64))
-            im = im.convert("RGBA")
-        assert_image(im, "RGBA", (64, 64))
+            rgba_im = im.convert("RGBA")
+        assert_image(rgba_im, "RGBA", (64, 64))
 
-        assert im.getpixel((31, 31)) == (0, 255, 52, 0)
+        assert rgba_im.getpixel((31, 31)) == (0, 255, 52, 0)
 
         # image has 876 transparent pixels
-        colors = im.getchannel("A").getcolors()
+        colors = rgba_im.getchannel("A").getcolors()
         assert colors is not None
         assert colors[0][0] == 876
 
@@ -778,7 +781,9 @@ class TestFilePng:
             im.save(test_file, exif=im.getexif())
 
         with Image.open(test_file) as reloaded:
+            assert isinstance(reloaded, PngImagePlugin.PngImageFile)
             exif = reloaded._getexif()
+        assert exif is not None
         assert exif[305] == "Adobe Photoshop CS Macintosh"
 
     def test_exif_argument(self, tmp_path: Path) -> None:
@@ -802,7 +807,6 @@ class TestFilePng:
 
     @pytest.mark.parametrize("buffer", (True, False))
     def test_save_stdout(self, buffer: bool, monkeypatch: pytest.MonkeyPatch) -> None:
-
         class MyStdOut:
             buffer = BytesIO()
 
@@ -811,7 +815,7 @@ class TestFilePng:
         monkeypatch.setattr(sys, "stdout", mystdout)
 
         with Image.open(TEST_PNG_FILE) as im:
-            im.save(sys.stdout, "PNG")
+            im.save(sys.stdout, "PNG")  # type: ignore[arg-type]
 
         if isinstance(mystdout, MyStdOut):
             mystdout = mystdout.buffer

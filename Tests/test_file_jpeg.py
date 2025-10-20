@@ -703,6 +703,7 @@ class TestFileJpeg:
         with Image.open("Tests/images/hopper_16bit_qtables.jpg") as im:
             assert isinstance(im, JpegImagePlugin.JpegImageFile)
             im2 = self.roundtrip(im, qtables="keep")
+            assert isinstance(im, JpegImagePlugin.JpegImageFile)
             assert im.quantization == im2.quantization
 
     def test_save_single_16bit_qtable(self) -> None:
@@ -1133,8 +1134,9 @@ class TestFileCloseW32:
             im.save(tmpfile)
 
         im = Image.open(tmpfile)
+        assert im.fp is not None
+        assert not im.fp.closed
         fp = im.fp
-        assert not fp.closed
         with pytest.raises(OSError):
             os.remove(tmpfile)
         im.load()
