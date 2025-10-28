@@ -302,7 +302,9 @@ function build {
     fi
 
     build_libavif
+    echo "torchbefore"
     build_libpng
+    echo "torchafter"
     build_lcms2
     build_openjpeg
 
