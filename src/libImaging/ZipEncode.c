@@ -411,11 +411,7 @@ ImagingZipEncodeCleanup(ImagingCodecState state) {
 
 const char *
 ImagingZipVersion(void) {
-#ifdef HAVE_ZLIBNG
-    return zlibng_version();
-#else
     return zlibVersion();
-#endif
 }
 
 #endif
