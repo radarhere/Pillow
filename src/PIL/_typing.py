@@ -9,12 +9,13 @@ TYPE_CHECKING = False
 if TYPE_CHECKING:
     from numbers import _IntegralLike as IntegralLike
 
+    NumpyArray: object
     try:
         import numpy.typing as npt
 
         NumpyArray = npt.NDArray[Any]
     except ImportError:
-        pass
+        NumpyArray = object
 
 if sys.version_info >= (3, 13):
     from types import CapsuleType
