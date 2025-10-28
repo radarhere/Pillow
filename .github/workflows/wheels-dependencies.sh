@@ -149,7 +149,7 @@ function build_zlib_ng {
     ORIGINAL_HOST_CONFIGURE_FLAGS=$HOST_CONFIGURE_FLAGS
     unset HOST_CONFIGURE_FLAGS
 
-    build_github zlib-ng/zlib-ng $ZLIB_NG_VERSION --zlib-compat
+    build_github zlib-ng/zlib-ng $ZLIB_NG_VERSION
 
     HOST_CONFIGURE_FLAGS=$ORIGINAL_HOST_CONFIGURE_FLAGS
 
