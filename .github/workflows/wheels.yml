@@ -29,18 +29,15 @@ jobs:
       fail-fast: false
       matrix:
         include:
+          - name: "macOS arm64"
+            platform: macos
+            os: macos-latest
+            cibw_arch: arm64
+            macosx_deployment_target: "11.0"
           - name: "iOS arm64 device"
             platform: ios
             os: macos-latest
             cibw_arch: arm64_iphoneos
-          - name: "iOS arm64 simulator"
-            platform: ios
-            os: macos-14
-            cibw_arch: arm64_iphonesimulator
-          - name: "iOS x86_64 simulator"
-            platform: ios
-            os: macos-15-intel
-            cibw_arch: x86_64_iphonesimulator
     steps:
       - uses: actions/checkout@v5
         with:

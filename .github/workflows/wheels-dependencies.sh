@@ -164,9 +164,12 @@ function build_zlib_ng {
 function build_brotli {
     if [ -e brotli-stamp ]; then return; fi
     local out_dir=$(fetch_unpack https://github.com/google/brotli/archive/v$BROTLI_VERSION.tar.gz brotli-$BROTLI_VERSION.tar.gz)
+    echo "torchstart"
     (cd $out_dir \
         && cmake -DCMAKE_INSTALL_PREFIX=$BUILD_PREFIX -DCMAKE_INSTALL_LIBDIR=$BUILD_PREFIX/lib -DCMAKE_INSTALL_NAME_DIR=$BUILD_PREFIX/lib $HOST_CMAKE_FLAGS . \
+        && echo "torchmid" \
         && make -j4 install)
+    echo "torchend"
     touch brotli-stamp
 }
 
