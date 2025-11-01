@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import NamedTuple, cast
+from typing import AnyStr, Generic, NamedTuple, cast
 
 from . import ImageFont
 from ._typing import _Ink
@@ -13,10 +13,10 @@ class _Line(NamedTuple):
     text: str | bytes
 
 
-class Text:
+class Text(Generic[AnyStr]):
     def __init__(
         self,
-        text: str | bytes,
+        text: AnyStr,
         font: (
             ImageFont.ImageFont
             | ImageFont.FreeTypeFont
@@ -56,7 +56,7 @@ class Text:
                          It should be a `BCP 47 language code`_.
                          Requires libraqm.
         """
-        self.text = text
+        self.text: AnyStr = text
         self.font = font or ImageFont.load_default()
 
         self.mode = mode
@@ -102,7 +102,7 @@ class Text:
         width: int,
         height: int | None = None,
         scaling: str | tuple[str, int] | None = None,
-    ) -> Text | None:
+    ) -> Text[AnyStr] | None:
         if not isinstance(self.font, ImageFont.FreeTypeFont):
             msg = "Only FreeTypeFont supported"
             raise ValueError(msg)
@@ -136,12 +136,6 @@ class Text:
         reached_end = False
         remaining_position = 0
 
-        def join_text(a: str | bytes, b: str | bytes) -> str | bytes:
-            if isinstance(a, str):
-                return a + cast(str, b)
-            else:
-                return a + cast(bytes, b)
-
         for i in range(len(self.text)):
             last_character = i == len(self.text) - 1
 
@@ -164,18 +158,18 @@ class Text:
 
             character = self.text[i : i + 1]
             if last_character:
-                word = join_text(word, character)
+                word += character
                 character = newline
             if character.isspace():
                 if not word or word.isspace():
                     # Do not use whitespace until a non-whitespace character is reached
                     # Trimming whitespace from the end of the line
-                    word = join_text(word, character)
+                    word += character
                 else:
                     # Append the word to the current line
                     if not wrapped_line:
                         word = word.lstrip()
-                    new_wrapped_line = join_text(wrapped_line, word)
+                    new_wrapped_line = wrapped_line + word
                     if getbbox(new_wrapped_line)[0] > width:
 
                         def split_word():
@@ -220,7 +214,7 @@ class Text:
                 wrapped_line = emptystring
             elif not character.isspace():
                 # Word is not finished yet
-                word = join_text(word, character)
+                word += character
 
         remaining_text = self.text[remaining_position:]
         if remaining_text:
