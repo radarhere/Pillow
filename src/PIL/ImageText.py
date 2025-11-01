@@ -1,6 +1,7 @@
 from __future__ import annotations
 
-from typing import AnyStr, Generic, NamedTuple, cast
+import re
+from typing import AnyStr, Generic, NamedTuple
 
 from . import ImageFont
 from ._typing import _Ink
@@ -14,97 +15,87 @@ class _Line(NamedTuple):
 
 
 class _Wrap(Generic[AnyStr]):
-    wrapped_lines: list[str] | list[bytes] = []
-    reached_end = False
-    remaining_position = 0
+    lines: list[AnyStr] = []
+    position = 0
+    offset = 0
 
-    def __init__(self, text: Text, width: int, height: int | None = None) -> None:
-        self.text = text
+    def __init__(
+        self, text: Text[AnyStr], width: int, height: int | None = None
+    ) -> None:
+        self.text: Text[AnyStr] = text
         self.width = width
         self.height = height
 
         emptystring = "" if isinstance(self.text.text, str) else b""
-        newline = "\n" if isinstance(self.text.text, str) else b"\n"
+        line = emptystring
 
-        wrapped_line = emptystring
-        self.word = emptystring
-
-        for i in range(len(self.text.text)):
-            self.i = i
-            self.last_character = i == len(self.text.text) - 1
-            character = self.text.text[i : i + 1]
-            if self.last_character:
-                self.word += character
-                character = newline
-            if character.isspace():
-                if not self.word or self.word.isspace():
-                    # Do not use whitespace until a non-whitespace character is reached
-                    # Trimming whitespace from the end of the line
-                    self.word += character
-                else:
-                    # Append the word to the current line
-                    if not wrapped_line:
-                        self.word = self.word.lstrip()
-                    new_wrapped_line = wrapped_line + self.word
-                    if self.text._get_bbox(new_wrapped_line)[2] > width:
-
-                        if wrapped_line:
-                            # This word does not fit on the line
-                            if not self.add_line(wrapped_line):
-                                self.reached_end = True
-                                break
-                            self.word = self.word.lstrip()
-                            if self.text._get_bbox(self.word)[2] > width:
-                                self.split_word()
-                            else:
-                                wrapped_line = self.word
-                        else:
-                            self.split_word()
-                        if self.reached_end:
-                            break
-                    else:
-                        # This word fits on the line
-                        wrapped_line = new_wrapped_line
-                        self.word = emptystring
-
-                    self.word = emptystring if character == newline else character
-
-            if character == newline:
-                if not self.add_line(wrapped_line):
+        for word in re.findall(
+            r"\s*\S+" if isinstance(self.text.text, str) else rb"\s*\S+", self.text.text
+        ):
+            newlines = re.findall(
+                r"\s*\n" if isinstance(self.text.text, str) else rb"\s*\n", word
+            )
+            if newlines:
+                if not self.add_line(line):
                     break
-                wrapped_line = emptystring
-            elif not character.isspace():
-                # Word is not finished yet
-                self.word += character
+                for i, line in enumerate(newlines):
+                    if i != 0 and not self.add_line(emptystring):
+                        break
+                    self.position += len(line)
+                    word = word[len(line) :]
+                line = emptystring
 
-    def add_line(self, wrapped_line: AnyStr) -> bool:
-        lines = cast(
-            list[str] | list[bytes], self.wrapped_lines + [wrapped_line.rstrip()]
-        )
+            new_line = line + word
+            if self.text._get_bbox(new_line)[2] <= width:
+                # This word fits on the line
+                line = new_line
+                continue
+
+            # This word does not fit on the line
+            if line and not self.add_line(line):
+                break
+
+            original_length = len(word)
+            word = word.lstrip()
+            self.offset = original_length - len(word)
+
+            if self.text._get_bbox(word)[2] <= width:
+                line = word
+            else:
+                word_left = self.split_word(word)
+                if word_left is None:
+                    break
+                line = word_left
+        else:
+            if line:
+                self.add_line(line)
+
+    def add_line(self, line: AnyStr) -> bool:
+        lines = self.lines + [line]
         if self.height is not None:
             last_line_y = self.text._split(lines=lines)[-1].y
-            last_line_height = self.text._get_bbox(wrapped_line)[3]
+            last_line_height = self.text._get_bbox(line)[3]
             if last_line_y + last_line_height > self.height:
                 return False
 
-        self.wrapped_lines = lines
-        self.remaining_position = self.i - len(self.word)
-        if self.last_character:
-            self.remaining_position += 1
+        self.lines = lines
+        self.position += len(line) + self.offset
+        self.offset = 0
         return True
 
-    def split_word(self) -> None:
+    def split_word(self, word: AnyStr) -> AnyStr | None:
         # This word is too long for a single line, so split it
-        j = len(self.word)
-        while j > 1 and self.text._get_bbox(self.word[:j])[2] > self.width:
-            j -= 1
-        if not self.add_line(self.word[:j]):
-            self.reached_end = True
-            return
-        self.word = self.word[j:]
-        self.wrapped_line = self.word
-        if self.text._get_bbox(self.wrapped_line)[2] > self.width:
-            self.split_word()
+        i = len(word)
+        while i > 1 and self.text._get_bbox(word[:i])[2] > self.width:
+            i -= 1
+        if not self.add_line(word[:i]):
+            return None
+
+        word = word[i:]
+        if self.text._get_bbox(word)[2] <= self.width:
+            return word
+
+        return self.split_word(word)
 
 
 class Text(Generic[AnyStr]):
@@ -208,10 +199,14 @@ class Text(Generic[AnyStr]):
             if height is None:
                 msg = "'scaling' requires 'height'"
                 raise ValueError(msg)
+            if isinstance(scaling, str):
+                limit = None
+            else:
+                scaling, limit = scaling
 
         wrap = _Wrap(self, width, height)
 
-        remaining_text = self.text[wrap.remaining_position :]
+        remaining_text = self.text[wrap.position :]
         if remaining_text:
             text = Text(
                 text=remaining_text,
@@ -228,10 +223,8 @@ class Text(Generic[AnyStr]):
         else:
             text = None
 
-        if isinstance(self.text, str):
-            self.text = "\n".join(cast(list[str], wrap.wrapped_lines))
-        else:
-            self.text = b"\n".join(cast(list[bytes], wrap.wrapped_lines))
+        newline = "\n" if isinstance(self.text, str) else b"\n"
+        self.text = newline.join(wrap.lines)
         return text
 
     def get_length(self) -> float:
@@ -416,7 +409,7 @@ class Text(Generic[AnyStr]):
         return parts
 
     def _get_bbox(
-        self, text: AnyStr, anchor: str | None = None
+        self, text: str | bytes, anchor: str | None = None
     ) -> tuple[float, float, float, float]:
         return self.font.getbbox(
             text,

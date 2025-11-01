@@ -91,6 +91,7 @@ def test_stroke() -> None:
         ("Hello World!", 25, "Hello\nWorl\nd!"),  # Split word across lines
         # Keep multiple spaces within a line
         ("Keep  multiple spaces", 75, "Keep  multiple\nspaces"),
+        (" Keep\n leading space", 100, " Keep\n leading space"),
     ),
 )
 @pytest.mark.parametrize("string", (True, False))
