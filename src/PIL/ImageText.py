@@ -34,14 +34,15 @@ class _Wrap(Generic[AnyStr]):
         self.height = height
         self.font = font
 
-        emptystring = "" if isinstance(self.text.text, str) else b""
+        input_text = self.text.text
+        emptystring = "" if isinstance(input_text, str) else b""
         line = emptystring
 
         for word in re.findall(
-            r"\s*\S+" if isinstance(self.text.text, str) else rb"\s*\S+", self.text.text
+            r"\s*\S+" if isinstance(input_text, str) else rb"\s*\S+", input_text
         ):
             newlines = re.findall(
-                r"\s*\n" if isinstance(self.text.text, str) else rb"\s*\n", word
+                r"\s*\n" if isinstance(input_text, str) else rb"\s*\n", word
             )
             if newlines:
                 if not self.add_line(line):
@@ -77,6 +78,7 @@ class _Wrap(Generic[AnyStr]):
         else:
             if line:
                 self.add_line(line)
+        self.remaining_text = input_text[self.position :]
 
     def add_line(self, line: AnyStr) -> bool:
         lines = self.lines + [line]
@@ -209,29 +211,46 @@ class Text(Generic[AnyStr]):
                 raise ValueError(msg)
 
             if isinstance(scaling, str):
-                limit = 0
+                limit = 1
             else:
                 scaling, limit = scaling
 
             font = self.font
-            size = (
-                math.ceil(font.size) if scaling == "shrink" else math.floor(font.size)
-            )
-            wrap = _Wrap(self, width, height, font)
-            print("start", size)
-            while wrap.position != len(self.text):
-                if size == limit:
+            wrap = _Wrap(self, width, height)
+            if scaling == "shrink":
+                if not wrap.remaining_text:
                     msg = "Text could not be scaled"
                     raise ValueError(msg)
-                size += -1 if scaling == "shrink" else 1
-                print("try", size)
-                font = self.font.font_variant(size=size)
-                wrap = _Wrap(self, width, height, font)
 
-        remaining_text = self.text[wrap.position :]
-        if remaining_text:
+                size = math.ceil(font.size)
+                while wrap.remaining_text:
+                    if size == max(limit, 1):
+                        msg = "Text could not be scaled"
+                        raise ValueError(msg)
+                    size -= 1
+                    font = self.font.font_variant(size=size)
+                    wrap = _Wrap(self, width, height, font)
+            else:
+                if wrap.remaining_text:
+                    msg = "Text could not be scaled"
+                    raise ValueError(msg)
+
+                size = math.floor(font.size)
+                while not wrap.remaining_text:
+                    if size == limit:
+                        msg = "Text could not be scaled"
+                        raise ValueError(msg)
+                    size += 1
+                    font = self.font.font_variant(size=size)
+                    last_wrap = wrap
+                    wrap = _Wrap(self, width, height, font)
+                size -= 1
+                wrap = last_wrap
+            self.font = font
+
+        if wrap.remaining_text:
             text = Text(
-                text=remaining_text,
+                text=wrap.remaining_text,
                 font=self.font,
                 mode=self.mode,
                 spacing=self.spacing,

@@ -1,0 +1,1 @@
+Do not split words when grow/shrink, do not allow single characters to exceed bbox when grow/shrink

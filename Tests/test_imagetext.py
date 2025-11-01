@@ -122,7 +122,7 @@ def test_wrap_height() -> None:
     assert text.text == "Text does\nnot fit"
 
 
-def test_wrap_scaling() -> None:
+def test_wrap_scaling_unsupported() -> None:
     font = ImageFont.load_default_imagefont()
     text = ImageText.Text("Hello World!", font)
     with pytest.raises(ValueError, match="'scaling' only supports FreeTypeFont"):
@@ -132,5 +132,20 @@ def test_wrap_scaling() -> None:
     with pytest.raises(ValueError, match="'scaling' requires 'height'"):
         text.wrap(50, scaling="shrink")
 
+
+def test_wrap_shrink() -> None:
+    # No scaling required
+    text = ImageText.Text("Hello World!")
     assert text.wrap(50, 50, "shrink") is None
     assert text.font.size == 10
+
+    text = ImageText.Text("Hello World!")
+    assert text.wrap(50, 15, "shrink") is None
+    assert text.font.size == 8
+
+
+def test_wrap_grow() -> None:
+    # No scaling required
+    text = ImageText.Text("Hello World!")
+    assert text.wrap(50, 50, "grow") is None
+    assert text.font.size == 21
