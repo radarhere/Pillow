@@ -100,6 +100,17 @@ def test_wrap(text: str, width: int, expected: str, string: bool) -> None:
     assert text.text == expected if string else expected.encode()
 
 
+def test_wrap_unsupported(font: ImageFont.FreeTypeFont) -> None:
+    transposed_font = ImageFont.TransposedFont(font)
+    text = ImageText.Text("Hello World!", transposed_font)
+    with pytest.raises(ValueError, match="Only FreeTypeFont supported"):
+        text.wrap(50)
+
+    text = ImageText.Text("Hello World!", direction="ttb")
+    with pytest.raises(ValueError, match="Only ltr direction supported"):
+        text.wrap(50)
+
+
 def test_wrap_height() -> None:
     text = ImageText.Text("Text does not fit within height")
     assert text.wrap(50, 25).text == " within height"
@@ -108,3 +119,12 @@ def test_wrap_height() -> None:
     text = ImageText.Text("Text does not fit singlelongword")
     assert text.wrap(50, 25).text == " singlelongword"
     assert text.text == "Text does\nnot fit"
+
+
+def test_wrap_scaling() -> None:
+    text = ImageText.Text("Hello World!")
+    with pytest.raises(ValueError, match="'scaling' requires 'height'"):
+        text.wrap(50, scaling="shrink")
+
+    assert text.wrap(50, 50, "shrink") is None
+    assert text.font.size == 10

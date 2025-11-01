@@ -101,7 +101,20 @@ class Text:
         self,
         width: int,
         height: int | None = None,
+        scaling: str | tuple[str, int] | None = None,
     ) -> Text | None:
+        if not isinstance(self.font, ImageFont.FreeTypeFont):
+            msg = "Only FreeTypeFont supported"
+            raise ValueError(msg)
+        if self.direction not in (None, "ltr"):
+            msg = "Only ltr direction supported"
+            raise ValueError(msg)
+
+        if scaling is not None:
+            if height is None:
+                msg = "'scaling' requires 'height'"
+                raise ValueError(msg)
+
         wrapped_lines: list[str] | list[bytes] = []
         emptystring = "" if isinstance(self.text, str) else b""
         newline = "\n" if isinstance(self.text, str) else b"\n"
