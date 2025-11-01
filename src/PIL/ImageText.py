@@ -1,10 +1,13 @@
 from __future__ import annotations
 
+import math
 import re
 from typing import AnyStr, Generic, NamedTuple
 
 from . import ImageFont
 from ._typing import _Ink
+
+Font = ImageFont.ImageFont | ImageFont.FreeTypeFont | ImageFont.TransposedFont
 
 
 class _Line(NamedTuple):
@@ -20,11 +23,16 @@ class _Wrap(Generic[AnyStr]):
     offset = 0
 
     def __init__(
-        self, text: Text[AnyStr], width: int, height: int | None = None
+        self,
+        text: Text[AnyStr],
+        width: int,
+        height: int | None = None,
+        font: Font | None = None,
     ) -> None:
         self.text: Text[AnyStr] = text
         self.width = width
         self.height = height
+        self.font = font
 
         emptystring = "" if isinstance(self.text.text, str) else b""
         line = emptystring
@@ -46,7 +54,7 @@ class _Wrap(Generic[AnyStr]):
                 line = emptystring
 
             new_line = line + word
-            if self.text._get_bbox(new_line)[2] <= width:
+            if self.text._get_bbox(new_line, self.font)[2] <= width:
                 # This word fits on the line
                 line = new_line
                 continue
@@ -59,7 +67,7 @@ class _Wrap(Generic[AnyStr]):
             word = word.lstrip()
             self.offset = original_length - len(word)
 
-            if self.text._get_bbox(word)[2] <= width:
+            if self.text._get_bbox(word, self.font)[2] <= width:
                 line = word
             else:
                 word_left = self.split_word(word)
@@ -74,7 +82,7 @@ class _Wrap(Generic[AnyStr]):
         lines = self.lines + [line]
         if self.height is not None:
             last_line_y = self.text._split(lines=lines)[-1].y
-            last_line_height = self.text._get_bbox(line)[3]
+            last_line_height = self.text._get_bbox(line, self.font)[3]
             if last_line_y + last_line_height > self.height:
                 return False
 
@@ -86,13 +94,13 @@ class _Wrap(Generic[AnyStr]):
     def split_word(self, word: AnyStr) -> AnyStr | None:
         # This word is too long for a single line, so split it
         i = len(word)
-        while i > 1 and self.text._get_bbox(word[:i])[2] > self.width:
+        while i > 1 and self.text._get_bbox(word[:i], self.font)[2] > self.width:
             i -= 1
         if not self.add_line(word[:i]):
             return None
 
         word = word[i:]
-        if self.text._get_bbox(word)[2] <= self.width:
+        if self.text._get_bbox(word, self.font)[2] <= self.width:
             return word
 
         return self.split_word(word)
@@ -102,12 +110,7 @@ class Text(Generic[AnyStr]):
     def __init__(
         self,
         text: AnyStr,
-        font: (
-            ImageFont.ImageFont
-            | ImageFont.FreeTypeFont
-            | ImageFont.TransposedFont
-            | None
-        ) = None,
+        font: Font | None = None,
         mode: str = "RGB",
         spacing: float = 4,
         direction: str | None = None,
@@ -188,23 +191,42 @@ class Text(Generic[AnyStr]):
         height: int | None = None,
         scaling: str | tuple[str, int] | None = None,
     ) -> Text[AnyStr] | None:
-        if not isinstance(self.font, ImageFont.FreeTypeFont):
-            msg = "Only FreeTypeFont supported"
+        if isinstance(self.font, ImageFont.TransposedFont):
+            msg = "TransposedFont not supported"
             raise ValueError(msg)
         if self.direction not in (None, "ltr"):
             msg = "Only ltr direction supported"
             raise ValueError(msg)
 
-        if scaling is not None:
+        if scaling is None:
+            wrap = _Wrap(self, width, height)
+        else:
+            if not isinstance(self.font, ImageFont.FreeTypeFont):
+                msg = "'scaling' only supports FreeTypeFont"
+                raise ValueError(msg)
             if height is None:
                 msg = "'scaling' requires 'height'"
                 raise ValueError(msg)
+
             if isinstance(scaling, str):
-                limit = None
+                limit = 0
             else:
                 scaling, limit = scaling
 
-        wrap = _Wrap(self, width, height)
+            font = self.font
+            size = (
+                math.ceil(font.size) if scaling == "shrink" else math.floor(font.size)
+            )
+            wrap = _Wrap(self, width, height, font)
+            print("start", size)
+            while wrap.position != len(self.text):
+                if size == limit:
+                    msg = "Text could not be scaled"
+                    raise ValueError(msg)
+                size += -1 if scaling == "shrink" else 1
+                print("try", size)
+                font = self.font.font_variant(size=size)
+                wrap = _Wrap(self, width, height, font)
 
         remaining_text = self.text[wrap.position :]
         if remaining_text:
@@ -409,9 +431,9 @@ class Text(Generic[AnyStr]):
         return parts
 
     def _get_bbox(
-        self, text: str | bytes, anchor: str | None = None
+        self, text: str | bytes, font: Font | None = None, anchor: str | None = None
     ) -> tuple[float, float, float, float]:
-        return self.font.getbbox(
+        return (font or self.font).getbbox(
             text,
             self._get_fontmode(),
             self.direction,
@@ -446,7 +468,7 @@ class Text(Generic[AnyStr]):
         """
         bbox: tuple[float, float, float, float] | None = None
         for x, y, anchor, text in self._split(xy, anchor, align):
-            bbox_line = self._get_bbox(text, anchor)
+            bbox_line = self._get_bbox(text, anchor=anchor)
             bbox_line = (
                 bbox_line[0] + x,
                 bbox_line[1] + y,

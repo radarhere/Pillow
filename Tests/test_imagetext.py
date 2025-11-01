@@ -104,7 +104,7 @@ def test_wrap(text: str, width: int, expected: str, string: bool) -> None:
 def test_wrap_unsupported(font: ImageFont.FreeTypeFont) -> None:
     transposed_font = ImageFont.TransposedFont(font)
     text = ImageText.Text("Hello World!", transposed_font)
-    with pytest.raises(ValueError, match="Only FreeTypeFont supported"):
+    with pytest.raises(ValueError, match="TransposedFont not supported"):
         text.wrap(50)
 
     text = ImageText.Text("Hello World!", direction="ttb")
@@ -123,6 +123,11 @@ def test_wrap_height() -> None:
 
 
 def test_wrap_scaling() -> None:
+    font = ImageFont.load_default_imagefont()
+    text = ImageText.Text("Hello World!", font)
+    with pytest.raises(ValueError, match="'scaling' only supports FreeTypeFont"):
+        text.wrap(50, scaling="shrink")
+
     text = ImageText.Text("Hello World!")
     with pytest.raises(ValueError, match="'scaling' requires 'height'"):
         text.wrap(50, scaling="shrink")
