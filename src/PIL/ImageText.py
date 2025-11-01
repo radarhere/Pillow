@@ -13,6 +13,110 @@ class _Line(NamedTuple):
     text: str | bytes
 
 
+class _Wrap(Generic[AnyStr]):
+    def get_bbox(text) -> tuple[float, float]:
+        _, _, right, bottom = self.font.getbbox(
+            text,
+            fontmode,
+            self.direction,
+            self.features,
+            self.language,
+            self.stroke_width,
+        )
+        return right, bottom
+
+    def __init__(self, text: ImageText) -> None:
+        wrapped_lines: list[str] | list[bytes] = []
+        emptystring = "" if isinstance(self.text, str) else b""
+        newline = "\n" if isinstance(self.text, str) else b"\n"
+        fontmode = self._get_fontmode()
+
+        wrapped_line = emptystring
+        word = emptystring
+        reached_end = False
+        remaining_position = 0
+
+        for i in range(len(self.text)):
+            last_character = i == len(self.text) - 1
+
+            def add_line() -> bool:
+                nonlocal wrapped_lines, remaining_position
+                lines = cast(
+                    list[str] | list[bytes], wrapped_lines + [wrapped_line.rstrip()]
+                )
+                if height is not None:
+                    last_line_y = self._split(lines=lines)[-1].y
+                    last_line_height = self.get_bbox(wrapped_line)[1]
+                    if last_line_y + last_line_height > height:
+                        return False
+
+                wrapped_lines = lines
+                remaining_position = i - len(word)
+                if last_character:
+                    remaining_position += 1
+                return True
+
+            character = self.text[i : i + 1]
+            if last_character:
+                word += character
+                character = newline
+            if character.isspace():
+                if not word or word.isspace():
+                    # Do not use whitespace until a non-whitespace character is reached
+                    # Trimming whitespace from the end of the line
+                    word += character
+                else:
+                    # Append the word to the current line
+                    if not wrapped_line:
+                        word = word.lstrip()
+                    new_wrapped_line = wrapped_line + word
+                    if self.get_bbox(new_wrapped_line)[0] > width:
+
+                        def split_word():
+                            nonlocal wrapped_line, word, reached_end
+                            # This word is too long for a single line, so split the word
+                            j = len(word)
+                            while j > 1 and self.get_bbox(word[:j])[0] > width:
+                                j -= 1
+                            wrapped_line = word[:j]
+                            if not add_line():
+                                reached_end = True
+                                return
+                            word = word[j:]
+                            wrapped_line = word
+                            if self.get_bbox(wrapped_line)[0] > width:
+                                split_word()
+
+                        if wrapped_line:
+                            # This word does not fit on the line
+                            if not add_line():
+                                reached_end = True
+                                break
+                            word = word.lstrip()
+                            if self.get_bbox(word)[0] > width:
+                                split_word()
+                            else:
+                                wrapped_line = word
+                        else:
+                            split_word()
+                        if reached_end:
+                            break
+                    else:
+                        # This word fits on the line
+                        wrapped_line = new_wrapped_line
+                        word = emptystring
+
+                    word = emptystring if character == newline else character
+
+            if character == newline:
+                if not add_line():
+                    break
+                wrapped_line = emptystring
+            elif not character.isspace():
+                # Word is not finished yet
+                word += character
+
+
 class Text(Generic[AnyStr]):
     def __init__(
         self,
@@ -115,106 +219,8 @@ class Text(Generic[AnyStr]):
                 msg = "'scaling' requires 'height'"
                 raise ValueError(msg)
 
-        wrapped_lines: list[str] | list[bytes] = []
-        emptystring = "" if isinstance(self.text, str) else b""
-        newline = "\n" if isinstance(self.text, str) else b"\n"
-        fontmode = self._get_fontmode()
+        wrap = _Wrap(self)
 
-        def getbbox(text) -> tuple[float, float]:
-            _, _, right, bottom = self.font.getbbox(
-                text,
-                fontmode,
-                self.direction,
-                self.features,
-                self.language,
-                self.stroke_width,
-            )
-            return right, bottom
-
-        wrapped_line = emptystring
-        word = emptystring
-        reached_end = False
-        remaining_position = 0
-
-        for i in range(len(self.text)):
-            last_character = i == len(self.text) - 1
-
-            def add_line() -> bool:
-                nonlocal wrapped_lines, remaining_position
-                lines = cast(
-                    list[str] | list[bytes], wrapped_lines + [wrapped_line.rstrip()]
-                )
-                if height is not None:
-                    last_line_y = self._split(lines=lines)[-1].y
-                    last_line_height = getbbox(wrapped_line)[1]
-                    if last_line_y + last_line_height > height:
-                        return False
-
-                wrapped_lines = lines
-                remaining_position = i - len(word)
-                if last_character:
-                    remaining_position += 1
-                return True
-
-            character = self.text[i : i + 1]
-            if last_character:
-                word += character
-                character = newline
-            if character.isspace():
-                if not word or word.isspace():
-                    # Do not use whitespace until a non-whitespace character is reached
-                    # Trimming whitespace from the end of the line
-                    word += character
-                else:
-                    # Append the word to the current line
-                    if not wrapped_line:
-                        word = word.lstrip()
-                    new_wrapped_line = wrapped_line + word
-                    if getbbox(new_wrapped_line)[0] > width:
-
-                        def split_word():
-                            nonlocal wrapped_line, word, reached_end
-                            # This word is too long for a single line, so split the word
-                            j = len(word)
-                            while j > 1 and getbbox(word[:j])[0] > width:
-                                j -= 1
-                            wrapped_line = word[:j]
-                            if not add_line():
-                                reached_end = True
-                                return
-                            word = word[j:]
-                            wrapped_line = word
-                            if getbbox(wrapped_line)[0] > width:
-                                split_word()
-
-                        if wrapped_line:
-                            # This word does not fit on the line
-                            if not add_line():
-                                reached_end = True
-                                break
-                            word = word.lstrip()
-                            if getbbox(word)[0] > width:
-                                split_word()
-                            else:
-                                wrapped_line = word
-                        else:
-                            split_word()
-                        if reached_end:
-                            break
-                    else:
-                        # This word fits on the line
-                        wrapped_line = new_wrapped_line
-                        word = emptystring
-
-                    word = emptystring if character == newline else character
-
-            if character == newline:
-                if not add_line():
-                    break
-                wrapped_line = emptystring
-            elif not character.isspace():
-                # Word is not finished yet
-                word += character
 
         remaining_text = self.text[remaining_position:]
         if remaining_text:
