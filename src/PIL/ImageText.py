@@ -45,7 +45,7 @@ class _Wrap(Generic[AnyStr]):
 
                         if wrapped_line:
                             # This word does not fit on the line
-                            if not self.add_line():
+                            if not self.add_line(wrapped_line):
                                 reached_end = True
                                 break
                             word = word.lstrip()
@@ -65,19 +65,19 @@ class _Wrap(Generic[AnyStr]):
                     word = emptystring if character == newline else character
 
             if character == newline:
-                if not self.add_line():
+                if not self.add_line(wrapped_line):
                     break
                 wrapped_line = emptystring
             elif not character.isspace():
                 # Word is not finished yet
                 word += character
 
-    def add_line(self) -> bool:
+    def add_line(self, wrapped_line: AnyStr) -> bool:
         lines = cast(
             list[str] | list[bytes], self.wrapped_lines + [wrapped_line.rstrip()]
         )
         if height is not None:
-            last_line_y = self._split(lines=lines)[-1].y
+            last_line_y = self.text._split(lines=lines)[-1].y
             last_line_height = self.text._get_bbox(wrapped_line)[3]
             if last_line_y + last_line_height > height:
                 return False
