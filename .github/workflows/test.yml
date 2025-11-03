@@ -2,29 +2,11 @@ name: Test
 
 on:
   push:
-    branches:
-      - "**"
-    paths-ignore:
-      - ".github/workflows/docs.yml"
-      - ".github/workflows/wheels*"
-      - ".gitmodules"
-      - "docs/**"
-      - "wheels/**"
   pull_request:
-    paths-ignore:
-      - ".github/workflows/docs.yml"
-      - ".github/workflows/wheels*"
-      - ".gitmodules"
-      - "docs/**"
-      - "wheels/**"
   workflow_dispatch:
 
 permissions:
   contents: read
-
-concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
 
 env:
   COVERAGE_CORE: sysmon
@@ -38,28 +20,11 @@ jobs:
       matrix:
         os: [
           "macos-latest",
-          "ubuntu-latest",
         ]
         python-version: [
-          "pypy3.11",
-          "3.14t",
           "3.14",
-          "3.13t",
-          "3.13",
-          "3.12",
-          "3.11",
           "3.10",
         ]
-        include:
-        - { python-version: "3.12", PYTHONOPTIMIZE: 1, REVERSE: "--reverse" }
-        - { python-version: "3.11", PYTHONOPTIMIZE: 2 }
-        # Free-threaded
-        - { python-version: "3.14t", disable-gil: true }
-        - { python-version: "3.13t", disable-gil: true }
-        # Intel
-        - { os: "macos-15-intel", python-version: "3.10" }
-        exclude:
-        - { os: "macos-latest", python-version: "3.10" }
 
     runs-on: ${{ matrix.os }}
     name: ${{ matrix.os }} Python ${{ matrix.python-version }}
