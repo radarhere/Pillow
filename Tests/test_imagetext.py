@@ -25,6 +25,7 @@ def font(layout_engine: ImageFont.Layout) -> ImageFont.FreeTypeFont:
     return ImageFont.truetype(FONT_PATH, 20, layout_engine=layout_engine)
 
 
+@skip_unless_feature("freetype2")
 def test_get_length(font: ImageFont.FreeTypeFont) -> None:
     assert ImageText.Text("A", font).get_length() == 12
     assert ImageText.Text("AB", font).get_length() == 24
@@ -37,6 +38,7 @@ def test_get_length(font: ImageFont.FreeTypeFont) -> None:
         text.get_length()
 
 
+@skip_unless_feature("freetype2")
 def test_get_bbox(font: ImageFont.FreeTypeFont) -> None:
     assert ImageText.Text("A", font).get_bbox() == (0, 4, 12, 16)
     assert ImageText.Text("AB", font).get_bbox() == (0, 4, 24, 16)
@@ -45,6 +47,7 @@ def test_get_bbox(font: ImageFont.FreeTypeFont) -> None:
     assert ImageText.Text("a", font).get_bbox() == (0, 7, 12, 16)
 
 
+@skip_unless_feature("freetype2")
 def test_standard_embedded_color(layout_engine: ImageFont.Layout) -> None:
     font = ImageFont.truetype(FONT_PATH, 40, layout_engine=layout_engine)
     text = ImageText.Text("Hello World!", font)
