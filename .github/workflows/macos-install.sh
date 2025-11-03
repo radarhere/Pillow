@@ -3,19 +3,8 @@
 set -e
 
 brew install \
-    aom \
-    dav1d \
-    freetype \
-    ghostscript \
-    jpeg-turbo \
-    libimagequant \
-    libraqm \
-    libtiff \
-    little-cms2 \
-    openjpeg \
-    rav1e \
-    svt-av1 \
-    webp
+    jpeg-turbo
+brew uninstall freetype2 ant cairo fontconfig gradle harfbuzz kotlin maven openjdk selenium-server
 export PKG_CONFIG_PATH="/usr/local/opt/openblas/lib/pkgconfig"
 
 python3 -m pip install coverage
@@ -26,13 +15,6 @@ python3 -m pip install -U pytest
 python3 -m pip install -U pytest-cov
 python3 -m pip install -U pytest-timeout
 python3 -m pip install pyroma
-python3 -m pip install numpy
-# optional test dependency, only install if there's a binary package.
-# fails on beta 3.14 and PyPy
-python3 -m pip install --only-binary=:all: pyarrow || true
-
-# libavif
-pushd depends && ./install_libavif.sh && popd
 
 # extra test images
 pushd depends && ./install_extra_test_images.sh && popd
