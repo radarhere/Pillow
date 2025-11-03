@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import pytest
 
-from PIL import Image, ImageDraw, ImageFont, ImageText
+from PIL import Image, ImageDraw, ImageFont, ImageText, features
 
 from .helper import assert_image_similar_tofile, skip_unless_feature
 
@@ -115,10 +115,11 @@ def test_wrap_long_word() -> None:
 
 
 def test_wrap_unsupported(font: ImageFont.FreeTypeFont) -> None:
-    transposed_font = ImageFont.TransposedFont(font)
-    text = ImageText.Text("Hello World!", transposed_font)
-    with pytest.raises(ValueError, match="TransposedFont not supported"):
-        text.wrap(50)
+    if features.check_module("freetype2"):
+        transposed_font = ImageFont.TransposedFont(font)
+        text = ImageText.Text("Hello World!", transposed_font)
+        with pytest.raises(ValueError, match="TransposedFont not supported"):
+            text.wrap(50)
 
     text = ImageText.Text("Hello World!", direction="ttb")
     with pytest.raises(ValueError, match="Only ltr direction supported"):
