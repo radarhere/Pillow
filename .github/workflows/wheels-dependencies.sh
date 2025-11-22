@@ -176,7 +176,7 @@ function build_jpegxl {
 
     local out_dir=$(fetch_unpack https://github.com/google/highway/archive/1.3.0.tar.gz)
     (cd $out_dir \
-        && meson setup --prefix=$BUILD_PREFIX --libdir=$BUILD_PREFIX/lib $HOST_MESON_FLAGS \
+        && meson setup . --prefix=$BUILD_PREFIX --libdir=$BUILD_PREFIX/lib $HOST_MESON_FLAGS \
         && meson install)
 
     local out_dir=$(fetch_unpack https://github.com/libjxl/libjxl/archive/v$JPEGXL_VERSION.tar.gz)
