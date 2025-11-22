@@ -173,10 +173,12 @@ function build_brotli {
 function build_jpegxl {
     if [ -e jpegxl-stamp ]; then return; fi
 
-    local out_dir=$(fetch_unpack https://github.com/google/highway/archive/1.3.0.tar.gz)
-    (cd $out_dir \
-        && cmake -DCMAKE_INSTALL_PREFIX=$BUILD_PREFIX -DCMAKE_INSTALL_LIBDIR=$BUILD_PREFIX/lib -DCMAKE_INSTALL_NAME_DIR=$BUILD_PREFIX/lib $HOST_CMAKE_FLAGS . \
-        && make install)
+    if [[ -z "$IOS_SDK" ]]; then
+        local out_dir=$(fetch_unpack https://github.com/google/highway/archive/1.3.0.tar.gz)
+        (cd $out_dir \
+            && cmake -DCMAKE_INSTALL_PREFIX=$BUILD_PREFIX -DCMAKE_INSTALL_LIBDIR=$BUILD_PREFIX/lib -DCMAKE_INSTALL_NAME_DIR=$BUILD_PREFIX/lib $HOST_CMAKE_FLAGS . \
+            && make install)
+    fi
 
     local out_dir=$(fetch_unpack https://github.com/libjxl/libjxl/archive/v$JPEGXL_VERSION.tar.gz)
     (cd $out_dir \
