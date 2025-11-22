@@ -118,9 +118,10 @@ V = {
     "FRIBIDI": "1.0.16",
     "HARFBUZZ": "11.2.1",
     "JPEGTURBO": "3.1.1",
+    "JPEGXL": "0.11.1",
     "LCMS2": "2.17",
     "LIBAVIF": "1.3.0",
-    "LIBIMAGEQUANT": "4.3.4",
+    "LIBIMAGEQUANT": "4.4.1",
     "LIBPNG": "1.6.50",
     "LIBWEBP": "1.6.0",
     "OPENJPEG": "2.5.3",
@@ -333,6 +334,19 @@ DEPS: dict[str, dict[str, Any]] = {
     "openjpeg": {
         "url": f"https://github.com/uclouvain/openjpeg/archive/v{V['OPENJPEG']}.tar.gz",
         "filename": f"openjpeg-{V['OPENJPEG']}.tar.gz",
+        "license": "LICENSE",
+        "build": [
+            *cmds_cmake(
+                "openjp2", "-DBUILD_CODEC:BOOL=OFF", "-DBUILD_SHARED_LIBS:BOOL=OFF"
+            ),
+            cmd_mkdir(rf"{{inc_dir}}\openjpeg-{V['OPENJPEG']}"),
+            cmd_copy(r"src\lib\openjp2\*.h", rf"{{inc_dir}}\openjpeg-{V['OPENJPEG']}"),
+        ],
+        "libs": [r"bin\*.lib"],
+    },
+    "jpegxl": {
+        "url": f"https://github.com/libjxl/libjxl/archive/v{V['JPEGXL']}.tar.gz",
+        "filename": f"libjxl-{V['JPEGXL']}.tar.gz",
         "license": "LICENSE",
         "build": [
             *cmds_cmake(
