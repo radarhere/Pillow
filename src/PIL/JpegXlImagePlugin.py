@@ -130,7 +130,7 @@ class JpegXlImageFile(ImageFile.ImageFile):
         self.__logical_frame = frame
 
     def load(self) -> Image.core.PixelAccess | None:
-        if self.__loaded != self.__logical_frame:
+        if self.__loaded != self.__logical_frame and parse_version(_jpegxl.libjxl_version) >= parse_version("0.9"):
             print("not loaded")
             self._seek(self.__logical_frame)
 
