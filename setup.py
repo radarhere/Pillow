@@ -141,7 +141,7 @@ _LIB_IMAGING = (
     "codec_fd",
 )
 
-DEBUG = False
+DEBUG = True
 
 
 class DependencyException(Exception):
@@ -1007,6 +1007,7 @@ class pil_build_ext(build_ext):
             self._remove_extension("PIL._avif")
 
         jpegxl = feature.get("jpegxl")
+        print("torch", jpegxl)
         if isinstance(jpegxl, str):
             # jxl and jxl_threads are required
             libs = [jpegxl, jpegxl + "_threads"]
