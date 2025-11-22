@@ -350,10 +350,8 @@ DEPS: dict[str, dict[str, Any]] = {
         "license": "LICENSE",
         "build": [
             *cmds_cmake(
-                "openjp2", "-DBUILD_CODEC:BOOL=OFF", "-DBUILD_SHARED_LIBS:BOOL=OFF"
-            ),
-            cmd_mkdir(rf"{{inc_dir}}\openjpeg-{V['OPENJPEG']}"),
-            cmd_copy(r"src\lib\openjp2\*.h", rf"{{inc_dir}}\openjpeg-{V['OPENJPEG']}"),
+                "libjxl", "-DBUILD_TESTING:BOOL=OFF"
+            )
         ],
         "libs": [r"bin\*.lib"],
     },
