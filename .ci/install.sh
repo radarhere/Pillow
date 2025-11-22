@@ -18,7 +18,7 @@ aptget_update || aptget_update retry || aptget_update retry
 set -e
 
 sudo apt-get -qq install python3-tk\
-                         libjpeg-turbo8-dev\
+                         libjpeg-turbo8-dev libhwy-dev libbrotli-dev liblcms2-dev libpng-dev\
                          cmake meson\
                          sway wl-clipboard libopenblas-dev nasm
 
