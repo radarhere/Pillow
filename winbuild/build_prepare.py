@@ -117,6 +117,7 @@ V = {
     "FREETYPE": "2.13.3",
     "FRIBIDI": "1.0.16",
     "HARFBUZZ": "11.2.1",
+    "HIGHWAY": "1.3.0",
     "JPEGTURBO": "3.1.1",
     "JPEGXL": "0.11.1",
     "LCMS2": "2.17",
@@ -343,6 +344,14 @@ DEPS: dict[str, dict[str, Any]] = {
             cmd_copy(r"src\lib\openjp2\*.h", rf"{{inc_dir}}\openjpeg-{V['OPENJPEG']}"),
         ],
         "libs": [r"bin\*.lib"],
+    },
+    "highway": {
+        "url": f"https://github.com/google/highway/archive/{V['HIGHWAY']}.tar.gz",
+        "filename": f"highway-{V['HIGHWAY']}.tar.gz",
+        "license": "LICENSE",
+        "build": [
+            *cmds_cmake("highway")
+        ],
     },
     "libjxl": {
         "url": f"https://github.com/libjxl/libjxl/archive/v{V['JPEGXL']}.tar.gz",

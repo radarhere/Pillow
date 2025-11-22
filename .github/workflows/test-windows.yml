@@ -158,6 +158,10 @@ jobs:
       if: steps.build-cache.outputs.cache-hit != 'true'
       run: "& winbuild\\build\\build_dep_lcms2.cmd"
 
+    - name: Build dependencies / highway
+      if: steps.build-cache.outputs.cache-hit != 'true'
+      run: "& winbuild\\build\\build_dep_highway.cmd"
+
     - name: Build dependencies / libjxl
       if: steps.build-cache.outputs.cache-hit != 'true'
       run: "& winbuild\\build\\build_dep_libjxl.cmd"
