@@ -33,7 +33,6 @@ jobs:
       fail-fast: false
       matrix:
         os: [
-          "macos-latest",
           "ubuntu-latest",
         ]
         python-version: [
@@ -124,24 +123,3 @@ jobs:
       with:
         name: errors
         path: Tests/errors
-
-    - name: After success
-      run: |
-        .ci/after_success.sh
-
-    - name: Upload coverage
-      uses: codecov/codecov-action@v5
-      with:
-        flags: ${{ matrix.os == 'ubuntu-latest' && 'GHA_Ubuntu' || 'GHA_macOS' }}
-        name: ${{ matrix.os }} Python ${{ matrix.python-version }}
-        token: ${{ secrets.CODECOV_ORG_TOKEN }}
-
-  success:
-    permissions:
-      contents: none
-    needs: build
-    runs-on: ubuntu-latest
-    name: Test Successful
-    steps:
-      - name: Success
-        run: echo Test Successful

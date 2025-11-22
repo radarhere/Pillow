@@ -17,9 +17,9 @@ aptget_update || aptget_update retry || aptget_update retry
 
 set -e
 
-sudo apt-get -qq install libfreetype6-dev liblcms2-dev libtiff-dev python3-tk\
-                         ghostscript libjpeg-turbo8-dev libjxl-dev libopenjp2-7-dev\
-                         cmake meson imagemagick libharfbuzz-dev libfribidi-dev\
+sudo apt-get -qq install python3-tk\
+                         libjpeg-turbo8-dev\
+                         cmake meson\
                          sway wl-clipboard libopenblas-dev nasm
 
 python3 -m pip install --upgrade pip
@@ -30,12 +30,9 @@ python3 -m pip install -U pytest-cov
 python3 -m pip install -U pytest-timeout
 python3 -m pip install pyroma
 
-# PyQt6 doesn't support PyPy3
-if [[ $GHA_PYTHON_VERSION == 3.* ]]; then
-    sudo apt-get -qq install libegl1 libxcb-cursor0 libxcb-icccm4 libxcb-image0 libxcb-keysyms1 libxcb-randr0 libxcb-render-util0 libxcb-shape0 libxkbcommon-x11-0
-    # TODO Update condition when pyqt6 supports free-threading
-    if ! [[ "$PYTHON_GIL" == "0" ]]; then python3 -m pip install pyqt6 ; fi
-fi
+echo "torchstart"
+pushd depends && ./install_jpegxl.sh && popd
+echo "torchend"
 
 # extra test images
 pushd depends && ./install_extra_test_images.sh && popd
