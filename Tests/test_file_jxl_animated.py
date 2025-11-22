@@ -1,10 +1,8 @@
 from __future__ import annotations
 
-import pytest
-
 from PIL import Image
 
-from .helper import assert_image_equal, skip_unless_feature
+from .helper import skip_unless_feature
 
 pytestmark = [skip_unless_feature("jpegxl")]
 

@@ -130,22 +130,23 @@ class JpegXlImageFile(ImageFile.ImageFile):
         self.__logical_frame = frame
 
     def load(self) -> Image.core.PixelAccess | None:
-        if self.__loaded != self.__logical_frame and parse_version(_jpegxl.libjxl_version) >= parse_version("0.9"):
-            print("not loaded")
-            self._seek(self.__logical_frame)
+        if self.__loaded != self.__logical_frame:
+            if parse_version(_jpegxl.libjxl_version) >= parse_version("0.9"):
+                print("not loaded")
+                self._seek(self.__logical_frame)
 
-            data, timestamp, duration, is_last = self._get_next()
-            print("done", len(data))
-            self.info["timestamp"] = timestamp
-            self.info["duration"] = duration
-            self.__loaded = self.__logical_frame
+                data, timestamp, duration, is_last = self._get_next()
+                print("done", len(data))
+                self.info["timestamp"] = timestamp
+                self.info["duration"] = duration
+                self.__loaded = self.__logical_frame
 
-            # Set tile
-            if self.fp and self._exclusive_fp:
-                self.fp.close()
-            # this is horribly memory inefficient
-            # you need probably 2*(raw image plane) bytes of memory
-            self.fp = BytesIO(data)
+                # Set tile
+                if self.fp and self._exclusive_fp:
+                    self.fp.close()
+                # this is horribly memory inefficient
+                # you need probably 2*(raw image plane) bytes of memory
+                self.fp = BytesIO(data)
             self.tile = [ImageFile._Tile("raw", (0, 0) + self.size, 0, self.mode)]
 
         return super().load()
