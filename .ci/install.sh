@@ -25,17 +25,10 @@ sudo apt-get -qq install libfreetype6-dev liblcms2-dev libtiff-dev python3-tk\
 python3 -m pip install --upgrade pip
 python3 -m pip install --upgrade wheel
 python3 -m pip install coverage
-python3 -m pip install defusedxml
-python3 -m pip install ipython
-python3 -m pip install numpy
-python3 -m pip install olefile
 python3 -m pip install -U pytest
 python3 -m pip install -U pytest-cov
 python3 -m pip install -U pytest-timeout
 python3 -m pip install pyroma
-# optional test dependency, only install if there's a binary package.
-# fails on beta 3.14 and PyPy
-python3 -m pip install --only-binary=:all: pyarrow || true
 
 # PyQt6 doesn't support PyPy3
 if [[ $GHA_PYTHON_VERSION == 3.* ]]; then
@@ -43,18 +36,6 @@ if [[ $GHA_PYTHON_VERSION == 3.* ]]; then
     # TODO Update condition when pyqt6 supports free-threading
     if ! [[ "$PYTHON_GIL" == "0" ]]; then python3 -m pip install pyqt6 ; fi
 fi
-
-# webp
-pushd depends && ./install_webp.sh && popd
-
-# libimagequant
-pushd depends && ./install_imagequant.sh && popd
-
-# raqm
-pushd depends && ./install_raqm.sh && popd
-
-# libavif
-pushd depends && ./install_libavif.sh && popd
 
 # extra test images
 pushd depends && ./install_extra_test_images.sh && popd
