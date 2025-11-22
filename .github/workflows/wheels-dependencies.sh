@@ -98,6 +98,7 @@ HARFBUZZ_VERSION=11.2.1
 LIBPNG_VERSION=1.6.50
 JPEGTURBO_VERSION=3.1.1
 OPENJPEG_VERSION=2.5.3
+JPEGXL_VERSION=0.11.1
 XZ_VERSION=5.8.1
 TIFF_VERSION=4.7.0
 LCMS2_VERSION=2.17
@@ -167,6 +168,21 @@ function build_brotli {
         && cmake -DCMAKE_INSTALL_PREFIX=$BUILD_PREFIX -DCMAKE_INSTALL_LIBDIR=$BUILD_PREFIX/lib -DCMAKE_INSTALL_NAME_DIR=$BUILD_PREFIX/lib $HOST_CMAKE_FLAGS . \
         && make install)
     touch brotli-stamp
+}
+
+function build_jpegxl {
+    if [ -e jpegxl-stamp ]; then return; fi
+
+    local out_dir=$(fetch_unpack https://github.com/google/highway/archive/1.3.0.tar.gz)
+    (cd $out_dir \
+        && cmake -DCMAKE_INSTALL_PREFIX=$BUILD_PREFIX -DCMAKE_INSTALL_LIBDIR=$BUILD_PREFIX/lib -DCMAKE_INSTALL_NAME_DIR=$BUILD_PREFIX/lib $HOST_CMAKE_FLAGS . \
+        && make install)
+
+    local out_dir=$(fetch_unpack https://github.com/libjxl/libjxl/archive/v$JPEGXL_VERSION.tar.gz)
+    (cd $out_dir \
+        && cmake -DCMAKE_INSTALL_PREFIX=$BUILD_PREFIX -DCMAKE_INSTALL_LIBDIR=$BUILD_PREFIX/lib -DCMAKE_INSTALL_NAME_DIR=$BUILD_PREFIX/lib -DJPEGXL_ENABLE_SJPEG=OFF -DJPEGXL_ENABLE_SKCMS=OFF -DBUILD_TESTING=OFF $HOST_CMAKE_FLAGS . \
+        && make install)
+    touch jpegxl-stamp
 }
 
 function build_harfbuzz {
@@ -319,6 +335,9 @@ function build {
         # licensing, so there's no point building harfbuzz.
         build_harfbuzz
     fi
+    echo "torchstart"
+    build_jpegxl
+    echo "torchdone"
 }
 
 function create_meson_cross_config {
