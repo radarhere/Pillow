@@ -79,6 +79,7 @@ class JpegXlImageFile(ImageFile.ImageFile):
     def _get_next(self) -> tuple[bytes, float, float, bool]:
 
         # Get next frame
+        print("call backend get_next")
         next_frame = self._decoder.get_next()
         self.__physical_frame += 1
 
@@ -130,9 +131,11 @@ class JpegXlImageFile(ImageFile.ImageFile):
 
     def load(self) -> Image.core.PixelAccess | None:
         if self.__loaded != self.__logical_frame:
+            print("not loaded")
             self._seek(self.__logical_frame)
 
             data, timestamp, duration, is_last = self._get_next()
+            print("done", len(data))
             self.info["timestamp"] = timestamp
             self.info["duration"] = duration
             self.__loaded = self.__logical_frame

@@ -14,8 +14,11 @@ def test_n_frames() -> None:
 
     with Image.open("Tests/images/hopper.jxl") as im:
         assert im.n_frames == 1
+        im.load()
         assert not im.is_animated
+    print("mid")
 
     with Image.open("Tests/images/iss634.jxl") as im:
         assert im.n_frames == 41
+        im.load()
         assert im.is_animated
