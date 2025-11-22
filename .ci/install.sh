@@ -18,8 +18,8 @@ aptget_update || aptget_update retry || aptget_update retry
 set -e
 
 sudo apt-get -qq install libfreetype6-dev liblcms2-dev libtiff-dev python3-tk\
-                         ghostscript libjpeg-turbo8-dev libjxl-dev libopenjp2-7-dev\
-                         cmake meson imagemagick libharfbuzz-dev libfribidi-dev\
+                         libjpeg-turbo8-dev libjxl-dev libopenjp2-7-dev\
+                         cmake meson imagemagick\
                          sway wl-clipboard libopenblas-dev nasm
 
 python3 -m pip install --upgrade pip
