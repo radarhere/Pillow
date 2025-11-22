@@ -446,8 +446,7 @@ _jxl_decoder_get_next(PyObject *self) {
 
         // every frame was decoded successfully
         if (decp->status == JXL_DEC_SUCCESS) {
-            printf("exit %d\n", decp->outbuf_len);
-            Py_RETURN_NONE;
+            break;
         }
 
         // this should only occur after rewind
