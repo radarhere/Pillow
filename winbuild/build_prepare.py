@@ -352,6 +352,8 @@ DEPS: dict[str, dict[str, Any]] = {
         "build": [
             *cmds_cmake("hwy")
         ],
+        "headers": [r"hwy\*.h"],
+        "libs": ["hwy.lib"],
     },
     "libjxl": {
         "url": f"https://github.com/libjxl/libjxl/archive/v{V['JPEGXL']}.tar.gz",
@@ -359,7 +361,7 @@ DEPS: dict[str, dict[str, Any]] = {
         "license": "LICENSE",
         "build": [
             *cmds_cmake(
-                "libjxl", "-DJPEGXL_ENABLE_SJPEG=OFF", "-DJPEGXL_ENABLE_SKCMS=OFF", "-DBUILD_TESTING:BOOL=OFF"
+                "libjxl", r"-DHWY_INCLUDE_DIR=..\highway-1.3.0", r"-DBROTLIENC_LIBRARY=..\lib", r"-DLCMS2_LIBRARY=..\lib", r"-DLCMS2_INCLUDE_DIR=..\inc", "-DJPEGXL_ENABLE_SJPEG=OFF", "-DJPEGXL_ENABLE_SKCMS=OFF", "-DBUILD_TESTING:BOOL=OFF"
             )
         ],
         "libs": [r"bin\*.lib"],
