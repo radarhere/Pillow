@@ -3,6 +3,8 @@ from __future__ import annotations
 import struct
 from io import BytesIO
 
+from packaging.version import parse as parse_version
+
 from . import Image, ImageFile
 
 try:
@@ -117,6 +119,11 @@ class JpegXlImageFile(ImageFile.ImageFile):
     def seek(self, frame: int) -> None:
         if not self._seek_check(frame):
             return
+
+        if parse_version(_jpegxl.libjxl_version) < parse_version("0.9"):
+            # https://github.com/libjxl/libjxl/issues/4400
+            msg = "Subsequent frames cannot be read without libjxl >= 0.9.0"
+            raise NotImplementedError(msg)
 
         # Set logical frame to requested position
         self.__logical_frame = frame
