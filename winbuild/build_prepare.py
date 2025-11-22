@@ -344,7 +344,7 @@ DEPS: dict[str, dict[str, Any]] = {
         ],
         "libs": [r"bin\*.lib"],
     },
-    "jpegxl": {
+    "libjxl": {
         "url": f"https://github.com/libjxl/libjxl/archive/v{V['JPEGXL']}.tar.gz",
         "filename": f"libjxl-{V['JPEGXL']}.tar.gz",
         "license": "LICENSE",
