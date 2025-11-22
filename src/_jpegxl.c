@@ -438,6 +438,7 @@ _jxl_decoder_get_next(PyObject *self) {
     JxlFrameHeader fhdr = {};
 
     char *jxl_call_name;
+    printf("start\n");
 
     // process events until next frame output is ready
     while (decp->status != JXL_DEC_NEED_IMAGE_OUT_BUFFER) {
@@ -445,6 +446,7 @@ _jxl_decoder_get_next(PyObject *self) {
 
         // every frame was decoded successfully
         if (decp->status == JXL_DEC_SUCCESS) {
+            printf("done\n");
             Py_RETURN_NONE;
         }
 
@@ -457,6 +459,7 @@ _jxl_decoder_get_next(PyObject *self) {
 
         if (decp->status == JXL_DEC_FRAME) {
             // decode frame header
+            printf("frame header\n");
             decp->status = JxlDecoderGetFrameHeader(decp->decoder, &fhdr);
             _JXL_CHECK("JxlDecoderGetFrameHeader");
             continue;
