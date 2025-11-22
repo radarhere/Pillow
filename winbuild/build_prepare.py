@@ -350,7 +350,7 @@ DEPS: dict[str, dict[str, Any]] = {
         "filename": f"highway-{V['HIGHWAY']}.tar.gz",
         "license": "LICENSE",
         "build": [
-            *cmds_cmake("highway")
+            *cmds_cmake("hwy")
         ],
     },
     "libjxl": {
