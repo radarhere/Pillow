@@ -350,7 +350,7 @@ DEPS: dict[str, dict[str, Any]] = {
         "license": "LICENSE",
         "build": [
             *cmds_cmake(
-                "libjxl", "-DBUILD_TESTING:BOOL=OFF"
+                "libjxl", "-DJPEGXL_ENABLE_SJPEG=OFF", "-DJPEGXL_ENABLE_SKCMS=OFF", "-DBUILD_TESTING:BOOL=OFF"
             )
         ],
         "libs": [r"bin\*.lib"],
