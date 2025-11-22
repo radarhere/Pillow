@@ -1,12 +1,13 @@
 from __future__ import annotations
 
 import pytest
+from packaging.version import parse as parse_version
 
-from PIL import Image
+from PIL import Image, features
 
-from .helper import assert_image_equal, skip_unless_feature
+from .helper import assert_image_equal, skip_unless_feature, skip_unless_feature_version
 
-pytestmark = [skip_unless_feature("jpegxl")]
+pytestmark = skip_unless_feature("jpegxl")
 
 
 def test_n_frames() -> None:
@@ -16,18 +17,28 @@ def test_n_frames() -> None:
         assert im.n_frames == 1
         assert not im.is_animated
 
-    with Image.open("Tests/images/iss634.jxl") as im:
-        assert im.n_frames == 41
-        assert im.is_animated
+    version = features.version("jpegxl")
+    assert version is not None
+    if parse_version(version) < parse_version("0.9"):
+        with pytest.raises(OSError):
+            with pytest.warns(UserWarning, match="libjxl >= 0.9.0 not installed"):
+                with Image.open("Tests/images/iss634.jxl") as im:
+                    pass
+    else:
+        with Image.open("Tests/images/iss634.jxl") as im:
+            assert im.n_frames == 41
+            assert im.is_animated
 
 
+@skip_unless_feature_version("jpegxl", "0.9.0")
 def test_float_duration() -> None:
     with Image.open("Tests/images/iss634.jxl") as im:
         im.load()
         assert im.info["duration"] == 70
 
 
-def test_seeking() -> None:
+@skip_unless_feature_version("jpegxl", "0.9.0")
+def test_seek() -> None:
     """
     Open an animated jxl file, and then try seeking through frames in reverse-order,
     verifying the durations are correct.
@@ -62,6 +73,7 @@ def test_seeking() -> None:
             im2.load()
 
 
+@skip_unless_feature_version("jpegxl", "0.9.0")
 def test_seek_errors() -> None:
     with Image.open("Tests/images/iss634.jxl") as im:
         with pytest.raises(EOFError):

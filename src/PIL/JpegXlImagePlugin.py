@@ -3,6 +3,8 @@ from __future__ import annotations
 import struct
 from io import BytesIO
 
+from packaging.version import parse as parse_version
+
 from . import Image, ImageFile
 
 try:
@@ -26,8 +28,15 @@ def _accept(prefix: bytes) -> bool | str:
     is_jxl = prefix.startswith(
         (b"\xff\x0a", b"\x00\x00\x00\x0c\x4a\x58\x4c\x20\x0d\x0a\x87\x0a")
     )
-    if is_jxl and not SUPPORTED:
-        return "image file could not be identified because JXL support not installed"
+    if is_jxl:
+        if not SUPPORTED:
+            return (
+                "image file could not be identified because JXL support not installed"
+            )
+        elif parse_version(_jpegxl.libjxl_version) < parse_version("0.9"):
+            # https://github.com/libjxl/libjxl/issues/4400
+            return "image file could not be identified because libjxl >= 0.9.0 not installed"
+
     return is_jxl
 
 
