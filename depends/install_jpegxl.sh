@@ -5,8 +5,6 @@
 pushd libjxl-0.11.1
 
 echo "torch1"
-./deps.sh
-echo "torch2"
 
 mkdir build
 cd build
@@ -14,6 +12,7 @@ export CMAKE_INSTALL_PREFIX=/usr/local
 export CMAKE_INSTALL_RPATH=/usr/local/lib
 cmake -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTING=OFF ..
 cmake --build . -- -j4
+echo "torch2"
 
 sudo cmake --install .
 
