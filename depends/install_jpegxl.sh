@@ -1,8 +1,8 @@
 #!/bin/bash
 
-./download-and-extract.sh libjxl-0.9.4 https://github.com/libjxl/libjxl/archive/refs/tags/v0.9.4.tar.gz
+./download-and-extract.sh libjxl-0.10.4 https://github.com/libjxl/libjxl/archive/refs/tags/v0.10.4.tar.gz
 
-pushd libjxl-0.9.4
+pushd libjxl-0.10.4
 
 echo "torch1"
 ./deps.sh
