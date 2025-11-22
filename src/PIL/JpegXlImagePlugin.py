@@ -130,12 +130,10 @@ class JpegXlImageFile(ImageFile.ImageFile):
         self.__logical_frame = frame
 
     def load(self) -> Image.core.PixelAccess | None:
-        if self.__loaded != self.__logical_frame and parse_version(_jpegxl.libjxl_version) >= parse_version("0.9"):
-            print("not loaded")
+        if self.__loaded != self.__logical_frame:
             self._seek(self.__logical_frame)
 
             data, timestamp, duration, is_last = self._get_next()
-            print("done", len(data))
             self.info["timestamp"] = timestamp
             self.info["duration"] = duration
             self.__loaded = self.__logical_frame
