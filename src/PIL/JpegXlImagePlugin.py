@@ -40,7 +40,8 @@ class JpegXlImageFile(ImageFile.ImageFile):
     __logical_frame = 0
 
     def _open(self) -> None:
-        self._decoder = _jpegxl.JpegXlDecoder(self.fp.read())
+        self.x = self.fp.read()
+        self._decoder = _jpegxl.JpegXlDecoder(self.x)
 
         (
             self._size,
@@ -139,7 +140,6 @@ class JpegXlImageFile(ImageFile.ImageFile):
                 print("done", len(data))
                 self.info["timestamp"] = timestamp
                 self.info["duration"] = duration
-                self.__loaded = self.__logical_frame
 
                 # Set tile
                 if self.fp and self._exclusive_fp:
@@ -147,6 +147,9 @@ class JpegXlImageFile(ImageFile.ImageFile):
                 # this is horribly memory inefficient
                 # you need probably 2*(raw image plane) bytes of memory
                 self.fp = BytesIO(data)
+            else:
+                self.fp = BytesIO(self.x)
+            self.__loaded = self.__logical_frame
             self.tile = [ImageFile._Tile("raw", (0, 0) + self.size, 0, self.mode)]
 
         return super().load()
