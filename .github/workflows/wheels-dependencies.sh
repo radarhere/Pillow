@@ -326,7 +326,7 @@ function build {
           build_simple sed 4.9 https://mirrors.middlendian.com/gnu/sed
         fi
 
-        build_simple freetype $FREETYPE_VERSION https://download.savannah.gnu.org/releases/freetype tar.gz --with-harfbuzz=no
+        build_freetype
     else
         build_freetype
     fi
