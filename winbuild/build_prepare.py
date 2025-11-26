@@ -117,6 +117,7 @@ V = {
     "FREETYPE": "2.13.3",
     "FRIBIDI": "1.0.16",
     "HARFBUZZ": "11.2.1",
+    "HIGHWAY": "1.3.0",
     "JPEGTURBO": "3.1.1",
     "JPEGXL": "0.11.1",
     "LCMS2": "2.17",
@@ -267,7 +268,7 @@ DEPS: dict[str, dict[str, Any]] = {
         "filename": f"brotli-{V['BROTLI']}.tar.gz",
         "license": "LICENSE",
         "build": [
-            *cmds_cmake(("brotlicommon", "brotlidec"), "-DBUILD_SHARED_LIBS:BOOL=OFF"),
+            *cmds_cmake(("brotlicommon", "brotlidec", "brotlienc"), "-DBUILD_SHARED_LIBS:BOOL=OFF"),
             cmd_xcopy(r"c\include", "{inc_dir}"),
         ],
         "libs": ["*.lib"],
@@ -344,18 +345,32 @@ DEPS: dict[str, dict[str, Any]] = {
         ],
         "libs": [r"bin\*.lib"],
     },
-    "jpegxl": {
+    "highway": {
+        "url": f"https://github.com/google/highway/archive/{V['HIGHWAY']}.tar.gz",
+        "filename": f"highway-{V['HIGHWAY']}.tar.gz",
+        "license": "LICENSE",
+        "build": [
+            *cmds_cmake("hwy")
+        ],
+        "headers": [r"hwy\*.h"],
+        "libs": ["hwy.lib"],
+    },
+    "libjxl": {
         "url": f"https://github.com/libjxl/libjxl/archive/v{V['JPEGXL']}.tar.gz",
         "filename": f"libjxl-{V['JPEGXL']}.tar.gz",
         "license": "LICENSE",
         "build": [
             *cmds_cmake(
-                "openjp2", "-DBUILD_CODEC:BOOL=OFF", "-DBUILD_SHARED_LIBS:BOOL=OFF"
+                "jxl", r"-DHWY_INCLUDE_DIR=..\highway-1.3.0", r"-DBROTLIENC_LIBRARY=..\..\lib\brotlienc", r"-DLCMS2_LIBRARY=..\..\lib\lcms2_static", r"-DLCMS2_INCLUDE_DIR=..\..\inc", "-DJPEGXL_ENABLE_SJPEG=OFF", "-DJPEGXL_ENABLE_SKCMS=OFF", "-DBUILD_TESTING:BOOL=OFF"
             ),
-            cmd_mkdir(rf"{{inc_dir}}\openjpeg-{V['OPENJPEG']}"),
-            cmd_copy(r"src\lib\openjp2\*.h", rf"{{inc_dir}}\openjpeg-{V['OPENJPEG']}"),
+            cmd_copy(r"lib\jxl.lib", "{lib_dir}"),
+            *cmds_cmake(
+                "jxl_threads", r"-DHWY_INCLUDE_DIR=..\highway-1.3.0", r"-DBROTLIENC_LIBRARY=..\..\lib\brotlienc", r"-DLCMS2_LIBRARY=..\..\lib\lcms2_static", r"-DLCMS2_INCLUDE_DIR=..\..\inc", "-DJPEGXL_ENABLE_SJPEG=OFF", "-DJPEGXL_ENABLE_SKCMS=OFF", "-DBUILD_TESTING:BOOL=OFF"
+            ),
+            cmd_mkdir(rf"{{inc_dir}}\jxl"),
+            cmd_copy(r"lib\include\jxl\*.h", rf"{{inc_dir}}\jxl"),
         ],
-        "libs": [r"bin\*.lib"],
+        "libs": [r"lib\jxl_threads.lib"],
     },
     "libimagequant": {
         "url": "https://github.com/ImageOptim/libimagequant/archive/{V['LIBIMAGEQUANT']}.tar.gz",

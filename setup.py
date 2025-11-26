@@ -141,7 +141,7 @@ _LIB_IMAGING = (
     "codec_fd",
 )
 
-DEBUG = False
+DEBUG = True
 
 
 class DependencyException(Exception):
@@ -779,8 +779,9 @@ class pil_build_ext(build_ext):
             if _find_include_file(self, "jxl/encode.h") and _find_include_file(
                 self, "jxl/decode.h"
             ):
-                if _find_library_file(self, "jxl"):
+                if _find_library_file(self, "jxl") and _find_library_file(self, "jxl_threads"):
                     feature.set("jpegxl", "jxl")
+                    print("torch1")
 
         if feature.want("imagequant"):
             _dbg("Looking for imagequant")
@@ -1011,6 +1012,7 @@ class pil_build_ext(build_ext):
             # jxl and jxl_threads are required
             libs = [jpegxl, jpegxl + "_threads"]
             self._update_extension("PIL._jpegxl", libs)
+            print("torch2")
         else:
             self._remove_extension("PIL._jpegxl")
 

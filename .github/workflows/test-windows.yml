@@ -22,10 +22,6 @@ on:
 permissions:
   contents: read
 
-concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
-
 env:
   COVERAGE_CORE: sysmon
 
@@ -35,11 +31,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python-version: ["pypy3.11", "3.11", "3.12", "3.13", "3.14"]
+        python-version: ["3.14"]
         architecture: ["x64"]
-        include:
-            # Test the oldest Python on 32-bit
-            - { python-version: "3.10", architecture: "x86" }
 
     timeout-minutes: 45
 
@@ -47,19 +40,19 @@ jobs:
 
     steps:
     - name: Checkout Pillow
-      uses: actions/checkout@v4
+      uses: actions/checkout@v5
       with:
         persist-credentials: false
 
     - name: Checkout cached dependencies
-      uses: actions/checkout@v4
+      uses: actions/checkout@v5
       with:
         persist-credentials: false
         repository: python-pillow/pillow-depends
         path: winbuild\depends
 
     - name: Checkout extra test images
-      uses: actions/checkout@v4
+      uses: actions/checkout@v5
       with:
         persist-credentials: false
         repository: python-pillow/test-images
@@ -67,7 +60,7 @@ jobs:
 
     # sets env: pythonLocation
     - name: Set up Python
-      uses: actions/setup-python@v5
+      uses: actions/setup-python@v6
       with:
         python-version: ${{ matrix.python-version }}
         allow-prereleases: true
@@ -97,8 +90,8 @@ jobs:
         choco install nasm --no-progress
         echo "C:\Program Files\NASM" >> $env:GITHUB_PATH
 
-        choco install ghostscript --version=10.5.1 --no-progress
-        echo "C:\Program Files\gs\gs10.05.1\bin" >> $env:GITHUB_PATH
+        choco install ghostscript --version=10.6.0 --no-progress
+        echo "C:\Program Files\gs\gs10.06.0\bin" >> $env:GITHUB_PATH
 
         # Install extra test images
         xcopy /S /Y Tests\test-images\* Tests\images
@@ -165,13 +158,17 @@ jobs:
       if: steps.build-cache.outputs.cache-hit != 'true'
       run: "& winbuild\\build\\build_dep_lcms2.cmd"
 
-    - name: Build dependencies / libjxl
-      if: steps.build-cache.outputs.cache-hit != 'true'
-      run: "& winbuild\\build\\build_dep_libjxl.cmd"
-
     - name: Build dependencies / OpenJPEG
       if: steps.build-cache.outputs.cache-hit != 'true'
       run: "& winbuild\\build\\build_dep_openjpeg.cmd"
+
+    - name: Build dependencies / highway
+      if: steps.build-cache.outputs.cache-hit != 'true'
+      run: "& winbuild\\build\\build_dep_highway.cmd"
+
+    - name: Build dependencies / libjxl
+      if: steps.build-cache.outputs.cache-hit != 'true'
+      run: "& winbuild\\build\\build_dep_libjxl.cmd"
 
     # GPL licensed
     - name: Build dependencies / libimagequant
@@ -220,7 +217,7 @@ jobs:
       shell: bash
 
     - name: Upload errors
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v5
       if: failure()
       with:
         name: errors
