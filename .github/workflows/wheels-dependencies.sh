@@ -320,7 +320,6 @@ function build {
         build_tiff
     fi
 
-    build_libavif
     build_libpng
     build_lcms2
     build_openjpeg
@@ -359,6 +358,7 @@ function build {
             build_jpegxl
         fi
     fi
+    build_libavif
 }
 
 function create_meson_cross_config {
