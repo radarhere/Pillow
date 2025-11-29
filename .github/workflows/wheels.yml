@@ -39,14 +39,6 @@ jobs:
             os: ubuntu-24.04-arm
             cibw_arch: aarch64
             build: "*manylinux*"
-          - name: "iOS arm64 simulator"
-            platform: ios
-            os: macos-latest
-            cibw_arch: arm64_iphonesimulator
-          - name: "iOS x86_64 simulator"
-            platform: ios
-            os: macos-15-intel
-            cibw_arch: x86_64_iphonesimulator
     steps:
       - uses: actions/checkout@v5
         with:

@@ -358,7 +358,6 @@ function build {
             build_jpegxl
         fi
     fi
-    build_libavif
 }
 
 function create_meson_cross_config {
