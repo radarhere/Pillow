@@ -3284,9 +3284,13 @@ def fromarray(obj: SupportsArrayInterface, mode: str | None = None) -> Image:
         try:
             typemode, rawmode, color_modes = _fromarray_typemap[typekey]
         except KeyError as e:
-            typekey_shape, typestr = typekey
-            msg = f"Cannot handle this data type: {typekey_shape}, {typestr}"
-            raise TypeError(msg) from e
+            if mode is not None:
+                typemode = None
+                color_modes = []
+            else:
+                typekey_shape, typestr = typekey
+                msg = f"Cannot handle this data type: {typekey_shape}, {typestr}"
+                raise TypeError(msg) from e
     if mode is not None:
         if mode != typemode and mode not in color_modes:
             deprecate("'mode' parameter for changing data types", 13)
