@@ -326,10 +326,10 @@ function build {
         # On iOS, there's no vendor-provided raqm, and we can't ship it due to
         # licensing, so there's no point building harfbuzz.
         build_harfbuzz
+    fi
 
-        if [[ "$MB_ML_VER" != 2014 ]]; then
-            build_jpegxl
-        fi
+    if [[ "$MB_ML_VER" != 2014 ]]; then
+        build_jpegxl
     fi
 
     webp_cflags="-O3 -DNDEBUG"

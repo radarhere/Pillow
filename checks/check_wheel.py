@@ -33,7 +33,7 @@ def test_wheel_modules() -> None:
 
     elif sys.platform == "ios":
         # tkinter is not available on iOS
-        expected_modules -= {"tkinter", "jpegxl"}
+        expected_modules.remove("tkinter")
     elif os.environ.get("AUDITWHEEL_POLICY") == "manylinux2014":
         expected_modules.remove("jpegxl")
 
