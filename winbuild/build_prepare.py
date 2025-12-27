@@ -334,19 +334,12 @@ DEPS: dict[str, dict[str, Any]] = {
         ],
         "libs": [r"bin\*.lib"],
     },
-    "highway": {
-        "url": f"https://github.com/google/highway/archive/{V['HIGHWAY']}.tar.gz",
-        "filename": f"highway-{V['HIGHWAY']}.tar.gz",
-        "license": "LICENSE",
-        "build": [*cmds_cmake("hwy", "-DBUILD_SHARED_LIBS:BOOL=OFF")],
-        "headers": [r"hwy\*.h"],
-        "libs": ["hwy.lib"],
-    },
     "libjxl": {
         "url": f"https://github.com/libjxl/libjxl/archive/v{V['JPEGXL']}.tar.gz",
         "filename": f"libjxl-{V['JPEGXL']}.tar.gz",
         "license": "LICENSE",
         "build": [
+            "vcpkg install highway",
             *cmds_cmake(
                 "jxl",
                 rf"-DHWY_INCLUDE_DIR=..\highway-{V['HIGHWAY']}",
