@@ -171,8 +171,24 @@ function build_jpegxl {
         && make -j4 install)
 
     local out_dir=$(fetch_unpack https://github.com/libjxl/libjxl/archive/v$JPEGXL_VERSION.tar.gz)
+    local ios_cmake_flags
+    if [[ -n "$IOS_SDK" ]]; then
+        ios_cmake_flags=(
+            -DHWY_LIBRARY=$BUILD_PREFIX/lib/libhwy.a \
+            -DHWY_INCLUDE_DIR=$BUILD_PREFIX/include/hwy \
+            -DBROTLI_INCLUDE_DIR=$BUILD_PREFIX/include \
+            -DBROTLICOMMON_LIBRARY=$BUILD_PREFIX/lib/libbrotlicommon.a \
+            -DBROTLIENC_LIBRARY=$BUILD_PREFIX/lib/libbrotlienc.a \
+            -DBROTLIDEC_LIBRARY=$BUILD_PREFIX/lib/libbrotlidec.a \
+            -DLCMS2_LIBRARY=$BUILD_PREFIX/lib/liblcms2.a \
+            -DLCMS2_INCLUDE_DIR=$BUILD_PREFIX/include \
+            -DPNG_LIBRARY=$BUILD_PREFIX/lib/libpng.a \
+            -DPNG_PNG_INCLUDE_DIR=$BUILD_PREFIX/include \
+            -DJPEGXL_ENABLE_TOOLS=OFF
+        )
+    fi
     (cd $out_dir \
-        && cmake -DCMAKE_INSTALL_PREFIX=$BUILD_PREFIX -DCMAKE_INSTALL_LIBDIR=$BUILD_PREFIX/lib -DCMAKE_INSTALL_NAME_DIR=$BUILD_PREFIX/lib -DHWY_INCLUDE_DIR=$BUILD_PREFIX/include/hwy -DJPEGXL_ENABLE_SJPEG=OFF -DJPEGXL_ENABLE_SKCMS=OFF -DBUILD_TESTING=OFF $HOST_CMAKE_FLAGS . \
+        && cmake -DCMAKE_INSTALL_PREFIX=$BUILD_PREFIX -DCMAKE_INSTALL_LIBDIR=$BUILD_PREFIX/lib -DCMAKE_INSTALL_NAME_DIR=$BUILD_PREFIX/lib -DJPEGXL_ENABLE_SJPEG=OFF -DJPEGXL_ENABLE_SKCMS=OFF -DBUILD_TESTING=OFF "${ios_cmake_flags[@]}" $HOST_CMAKE_FLAGS . \
         && make -j4 install)
     touch jpegxl-stamp
 }
