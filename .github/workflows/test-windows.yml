@@ -76,23 +76,11 @@ jobs:
       run: |
         python3 -m pip install --upgrade pip
 
-    - name: Install CPython dependencies
-      if: "!contains(matrix.python-version, 'pypy') && !contains(matrix.python-version, '3.14') && matrix.architecture != 'x86'"
-      run: |
-        python3 -m pip install PyQt6
-
-    - name: Install PyArrow dependency
-      run: |
-        python3 -m pip install --only-binary=:all: pyarrow || true
-
     - name: Install dependencies
       id: install
       run: |
         choco install nasm --no-progress
         echo "C:\Program Files\NASM" >> $env:GITHUB_PATH
-
-        choco install ghostscript --version=10.6.0 --no-progress
-        echo "C:\Program Files\gs\gs10.06.0\bin" >> $env:GITHUB_PATH
 
         # Install extra test images
         xcopy /S /Y Tests\test-images\* Tests\images

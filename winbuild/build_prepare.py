@@ -146,6 +146,8 @@ DEPS: dict[str, dict[str, Any]] = {
             },
         },
         "build": [
+            "vcpkg install highway",
+            "dir /vcpkg/packages/highway_x64-windows/",
             *cmds_cmake(
                 ("jpeg-static", "djpeg-static"),
                 "-DENABLE_SHARED:BOOL=FALSE",
@@ -338,9 +340,9 @@ DEPS: dict[str, dict[str, Any]] = {
         "filename": f"libjxl-{V['JPEGXL']}.tar.gz",
         "license": "LICENSE",
         "build": [
-            "vcpkg install highway",
             *cmds_cmake(
                 "jxl",
+                r"-DHWY_INCLUDE_DIR=..\..",
                 r"-DLCMS2_LIBRARY=..\..\lib\lcms2_static",
                 r"-DLCMS2_INCLUDE_DIR=..\..\inc",
                 "-DJPEGXL_STATIC:BOOL=ON",
