@@ -346,7 +346,7 @@ DEPS: dict[str, dict[str, Any]] = {
         "build": [
             *cmds_cmake(
                 "jxl",
-                r'-DHWY_LIBRARY="C:\vcpkg\packages\highway_x64-windows\lib"',
+                r'-DHWY_LIBRARY="C:\vcpkg\packages\highway_x64-windows\lib\hwy"',
                 r'-DHWY_INCLUDE_DIR="C:\vcpkg\packages\highway_x64-windows\include\hwy"',
                 r"-DLCMS2_LIBRARY=..\..\lib\lcms2_static",
                 r"-DLCMS2_INCLUDE_DIR=..\..\inc",
