@@ -356,6 +356,7 @@ DEPS: dict[str, dict[str, Any]] = {
         "filename": f"libjxl-{V['JPEGXL']}.tar.gz",
         "license": "LICENSE",
         "build": [
+            "vcpkg install highway",
             *cmds_cmake(
                 "jxl",
                 rf"-DHWY_INCLUDE_DIR=..\highway-{V['HIGHWAY']}",
