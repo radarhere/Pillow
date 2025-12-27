@@ -347,7 +347,7 @@ DEPS: dict[str, dict[str, Any]] = {
             *cmds_cmake(
                 "jxl",
                 r'-DHWY_LIBRARY="C:\vcpkg\packages\highway_x64-windows\lib\hwy"',
-                r'-DHWY_INCLUDE_DIR="C:\vcpkg\packages\highway_x64-windows\include\hwy"',
+                r'-DHWY_INCLUDE_DIR="C:\vcpkg\packages\highway_x64-windows\include"',
                 r"-DLCMS2_LIBRARY=..\..\lib\lcms2_static",
                 r"-DLCMS2_INCLUDE_DIR=..\..\inc",
                 "-DJPEGXL_STATIC:BOOL=ON",
