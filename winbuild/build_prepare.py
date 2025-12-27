@@ -362,6 +362,7 @@ DEPS: dict[str, dict[str, Any]] = {
                 "-DJPEGXL_ENABLE_TOOLS:BOOL=OFF",
                 '-DCMAKE_C_FLAGS="-DJXL_STATIC_DEFINE -DJXL_CMS_STATIC_DEFINE -DJXL_THREADS_STATIC_DEFINE"',
                 '-DCMAKE_CXX_FLAGS="-DJXL_STATIC_DEFINE -DJXL_CMS_STATIC_DEFINE -DJXL_THREADS_STATIC_DEFINE"',
+                '-DCMAKE_MSVC_RUNTIME_LIBRARY="MultiThreaded"',
             ),
             cmd_copy(r"lib\jxl.lib", "{lib_dir}"),
             *cmds_cmake(
