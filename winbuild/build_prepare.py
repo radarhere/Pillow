@@ -147,7 +147,7 @@ DEPS: dict[str, dict[str, Any]] = {
         },
         "build": [
             "vcpkg install highway",
-            "dir /vcpkg/packages/highway_x64-windows/",
+            r"dir C:/vcpkg/packages/highway_x64-windows/",
             *cmds_cmake(
                 ("jpeg-static", "djpeg-static"),
                 "-DENABLE_SHARED:BOOL=FALSE",
