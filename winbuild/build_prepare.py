@@ -338,7 +338,11 @@ DEPS: dict[str, dict[str, Any]] = {
         "url": f"https://github.com/google/highway/archive/{V['HIGHWAY']}.tar.gz",
         "filename": f"highway-{V['HIGHWAY']}.tar.gz",
         "license": "LICENSE",
-        "build": [*cmds_cmake("hwy", "-DBUILD_SHARED_LIBS:BOOL=OFF")],
+        "build": [
+            *cmds_cmake(
+                "hwy", "-DBUILD_SHARED_LIBS:BOOL=OFF", "-DHWY_FORCE_STATIC_LIBS:BOOL=ON"
+            )
+        ],
         "headers": [r"hwy\*.h"],
         "libs": ["hwy.lib"],
     },
@@ -386,7 +390,7 @@ DEPS: dict[str, dict[str, Any]] = {
             cmd_copy(r"lib\*.lib", "{lib_dir}"),
             cmd_mkdir(r"{inc_dir}\jxl"),
             cmd_copy(r"lib\include\jxl\*.h", r"{inc_dir}\jxl"),
-        ]
+        ],
     },
     "libimagequant": {
         "url": "https://github.com/ImageOptim/libimagequant/archive/{V['LIBIMAGEQUANT']}.tar.gz",
