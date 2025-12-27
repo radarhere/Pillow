@@ -42,7 +42,7 @@ jobs:
       run: |
         python3 -m pip install -U pip
         python3 -m pip install -U tox
-        python3 -m pip install -U ty
+        python3 -m pip install -U mypy ty
 
     - name: Lint
       run: tox -e lint
@@ -50,4 +50,4 @@ jobs:
         PRE_COMMIT_COLOR: always
 
     - name: Mypy
-      run: python3 -m ty check src
+      run: python3 -m mypy src
