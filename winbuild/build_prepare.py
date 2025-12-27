@@ -343,7 +343,8 @@ DEPS: dict[str, dict[str, Any]] = {
                 "hwy",
                 "-DBUILD_SHARED_LIBS:BOOL=OFF",
                 "-DHWY_FORCE_STATIC_LIBS:BOOL=ON",
-                "-DHWY_LIBRARY_TYPE=STATIC",
+                "-DHWY_LIBRARY_TYPE=STATIC:BOOL=ON",
+                "-DHWY_COMPILE_ONLY_STATIC:BOOL=ON",
             )
         ],
         "headers": [r"hwy\*.h"],
