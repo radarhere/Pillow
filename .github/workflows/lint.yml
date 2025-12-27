@@ -50,4 +50,4 @@ jobs:
         PRE_COMMIT_COLOR: always
 
     - name: Mypy
-      run: python3 -m ty check demo.py
+      run: python3 -m ty check src
