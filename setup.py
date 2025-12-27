@@ -146,7 +146,7 @@ _LIB_IMAGING = (
     "codec_fd",
 )
 
-DEBUG = False
+DEBUG = True
 
 
 class DependencyException(Exception):
@@ -1021,9 +1021,9 @@ class pil_build_ext(build_ext):
         if isinstance(jpegxl, str):
             libs = [jpegxl, jpegxl + "_threads"]
             args: list[str] | None = None
-            if sys.platform == "win32":
-                libs.extend(["brotlicommon", "brotlidec", "brotlienc", "hwy"])
-                args = ["-DJXL_STATIC_DEFINE"]
+            if True:
+                libs.extend(["kernel32", "brotlicommon", "brotlidec", "brotlienc", "hwy"])
+                args = ["-DJXL_STATIC_DEFINE", "-DJXL_THREADS_STATIC_DEFINE"]
             self._update_extension("PIL._jpegxl", libs, args=args)
         else:
             self._remove_extension("PIL._jpegxl")

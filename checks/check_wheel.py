@@ -14,7 +14,6 @@ def test_wheel_modules() -> None:
         "freetype2",
         "littlecms2",
         "webp",
-        "avif",
         "jpegxl",
     }
 

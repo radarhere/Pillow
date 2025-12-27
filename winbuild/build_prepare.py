@@ -74,8 +74,6 @@ def cmds_cmake(
                 "-DCMAKE_RULE_MESSAGES:BOOL=OFF",  # for NMake
                 "-DCMAKE_C_COMPILER=cl.exe",  # for Ninja
                 "-DCMAKE_CXX_COMPILER=cl.exe",  # for Ninja
-                "-DCMAKE_C_FLAGS=-nologo",
-                "-DCMAKE_CXX_FLAGS=-nologo",
                 *params,
                 '-G "{cmake_generator}"',
                 f'-B "{build_dir}"',
@@ -121,7 +119,6 @@ V = {
     "JPEGTURBO": "3.1.3",
     "JPEGXL": "0.11.1",
     "LCMS2": "2.17",
-    "LIBAVIF": "1.3.0",
     "LIBIMAGEQUANT": "4.4.1",
     "LIBPNG": "1.6.53",
     "LIBWEBP": "1.6.0",
@@ -300,7 +297,7 @@ DEPS: dict[str, dict[str, Any]] = {
         "libs": [r"objs\{msbuild_arch}\Release Static\freetype.lib"],
     },
     "lcms2": {
-        "url": f"{SF_PROJECTS}/lcms/files/lcms/{V['LCMS2']}/FILENAME/download",
+        "url": f"https://sourceforge.net/projects/lcms/files/lcms/{V['LCMS2']}/FILENAME/download",
         "filename": f"lcms2-{V['LCMS2']}.tar.gz",
         "license": "LICENSE",
         "patch": {
@@ -341,7 +338,8 @@ DEPS: dict[str, dict[str, Any]] = {
         "url": f"https://github.com/google/highway/archive/{V['HIGHWAY']}.tar.gz",
         "filename": f"highway-{V['HIGHWAY']}.tar.gz",
         "license": "LICENSE",
-        "build": [*cmds_cmake("hwy")],
+        "build": [*cmds_cmake("hwy", "-DBUILD_SHARED_LIBS:BOOL=OFF")],
+        "headers": [r"hwy\*.h"],
         "libs": ["hwy.lib"],
     },
     "libjxl": {
@@ -354,17 +352,43 @@ DEPS: dict[str, dict[str, Any]] = {
                 rf"-DHWY_INCLUDE_DIR=..\highway-{V['HIGHWAY']}",
                 r"-DLCMS2_LIBRARY=..\..\lib\lcms2_static",
                 r"-DLCMS2_INCLUDE_DIR=..\..\inc",
+                "-DJPEGXL_ENABLE_BENCHMARK:BOOL=OFF",
+                "-DJPEGXL_ENABLE_MANPAGES:BOOL=OFF",
                 "-DJPEGXL_ENABLE_SJPEG:BOOL=OFF",
                 "-DJPEGXL_ENABLE_SKCMS:BOOL=OFF",
                 "-DBUILD_TESTING:BOOL=OFF",
                 "-DBUILD_SHARED_LIBS:BOOL=OFF",
+                "-DJPEGXL_ENABLE_PLUGINS:BOOL=ON",
+                "-DJPEGXL_ENABLE_TOOLS:BOOL=OFF",
+                "-DJPEGXL_FORCE_SYSTEM_BROTLI:BOOL=ON",
+                "-DJPEGXL_FORCE_SYSTEM_GTEST:BOOL=ON",
+                '-DCMAKE_C_FLAGS="-DJXL_STATIC_DEFINE -DJXL_CMS_STATIC_DEFINE -DJXL_THREADS_STATIC_DEFINE"',
+                '-DCMAKE_CXX_FLAGS="-DJXL_STATIC_DEFINE -DJXL_CMS_STATIC_DEFINE -DJXL_THREADS_STATIC_DEFINE"',
             ),
             cmd_copy(r"lib\jxl.lib", "{lib_dir}"),
-            *cmds_cmake("jxl_threads"),
-            cmd_copy(r"lib\jxl_threads.lib", "{lib_dir}"),
+            *cmds_cmake(
+                "jxl_threads",
+                r"-DHWY_INCLUDE_DIR=..\highway-1.3.0",
+                r"-DBROTLIENC_LIBRARY=..\..\lib\brotlienc",
+                r"-DLCMS2_LIBRARY=..\..\lib\lcms2_static",
+                r"-DLCMS2_INCLUDE_DIR=..\..\inc",
+                "-DJPEGXL_ENABLE_BENCHMARK:BOOL=OFF",
+                "-DJPEGXL_ENABLE_MANPAGES:BOOL=OFF",
+                "-DJPEGXL_ENABLE_SJPEG:BOOL=OFF",
+                "-DJPEGXL_ENABLE_SKCMS:BOOL=OFF",
+                "-DBUILD_TESTING:BOOL=OFF",
+                "-DBUILD_SHARED_LIBS:BOOL=OFF",
+                "-DJPEGXL_ENABLE_PLUGINS:BOOL=ON",
+                "-DJPEGXL_ENABLE_TOOLS:BOOL=OFF",
+                "-DJPEGXL_FORCE_SYSTEM_BROTLI:BOOL=ON",
+                "-DJPEGXL_FORCE_SYSTEM_GTEST:BOOL=ON",
+                '-DCMAKE_C_FLAGS="-DJXL_STATIC_DEFINE -DJXL_CMS_STATIC_DEFINE -DJXL_THREADS_STATIC_DEFINE"',
+                '-DCMAKE_CXX_FLAGS="-DJXL_STATIC_DEFINE -DJXL_CMS_STATIC_DEFINE -DJXL_THREADS_STATIC_DEFINE"',
+            ),
+            cmd_copy(r"lib\*.lib", "{lib_dir}"),
             cmd_mkdir(r"{inc_dir}\jxl"),
             cmd_copy(r"lib\include\jxl\*.h", r"{inc_dir}\jxl"),
-        ],
+        ]
     },
     "libimagequant": {
         "url": "https://github.com/ImageOptim/libimagequant/archive/{V['LIBIMAGEQUANT']}.tar.gz",
@@ -408,29 +432,6 @@ DEPS: dict[str, dict[str, Any]] = {
             *cmds_cmake("fribidi", "-DARCH={architecture}"),
         ],
         "bins": [r"*.dll"],
-    },
-    "libavif": {
-        "url": f"https://github.com/AOMediaCodec/libavif/archive/v{V['LIBAVIF']}.tar.gz",
-        "filename": f"libavif-{V['LIBAVIF']}.tar.gz",
-        "license": "LICENSE",
-        "build": [
-            "rustup update",
-            f"{sys.executable} -m pip install meson",
-            *cmds_cmake(
-                "avif_static",
-                "-DBUILD_SHARED_LIBS=OFF",
-                "-DAVIF_LIBSHARPYUV=LOCAL",
-                "-DAVIF_LIBYUV=LOCAL",
-                "-DAVIF_CODEC_AOM=LOCAL",
-                "-DCONFIG_AV1_HIGHBITDEPTH=0",
-                "-DAVIF_CODEC_AOM_DECODE=OFF",
-                "-DAVIF_CODEC_DAV1D=LOCAL",
-                "-DCMAKE_INTERPROCEDURAL_OPTIMIZATION=ON",
-                build_type="MinSizeRel",
-            ),
-            cmd_xcopy("include", "{inc_dir}"),
-        ],
-        "libs": ["avif.lib"],
     },
 }
 
@@ -651,7 +652,7 @@ def build_dep(name: str, prefs: dict[str, str], verbose: bool) -> str:
         *get_footer(dep),
     ]
 
-    write_script(file, lines, prefs, verbose)
+    write_script(file, lines, prefs, True)
     return file
 
 
@@ -664,8 +665,6 @@ def build_dep_all(disabled: list[str], prefs: dict[str, str], verbose: bool) -> 
             print(f"Skipping disabled dependency {dep_name}")
             continue
         script = build_dep(dep_name, prefs, verbose)
-        if dep_name in ("highway", "libjxl"):
-            continue
         if gha_groups:
             lines.append(f"@echo ::group::Running {script}")
         lines.append(rf'cmd.exe /c "{{build_dir}}\{script}"')
