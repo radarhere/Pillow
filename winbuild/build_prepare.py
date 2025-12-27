@@ -115,7 +115,6 @@ V = {
     "FREETYPE": "2.14.1",
     "FRIBIDI": "1.0.16",
     "HARFBUZZ": "12.2.0",
-    "HIGHWAY": "1.3.0",
     "JPEGTURBO": "3.1.3",
     "JPEGXL": "0.11.1",
     "LCMS2": "2.17",
@@ -334,23 +333,6 @@ DEPS: dict[str, dict[str, Any]] = {
         ],
         "libs": [r"bin\*.lib"],
     },
-    "highway": {
-        "url": f"https://github.com/google/highway/archive/{V['HIGHWAY']}.tar.gz",
-        "filename": f"highway-{V['HIGHWAY']}.tar.gz",
-        "license": "LICENSE",
-        "build": [
-            *cmds_cmake(
-                "hwy",
-                "-DBUILD_SHARED_LIBS:BOOL=OFF",
-                "-DHWY_FORCE_STATIC_LIBS:BOOL=ON",
-                "-DHWY_LIBRARY_TYPE=STATIC:BOOL=ON",
-                "-DHWY_COMPILE_ONLY_STATIC:BOOL=ON",
-                "-DHWY_STATIC_DISPATCH:BOOL=ON",
-            )
-        ],
-        "headers": [r"hwy\*.h"],
-        "libs": ["hwy.lib"],
-    },
     "libjxl": {
         "url": f"https://github.com/libjxl/libjxl/archive/v{V['JPEGXL']}.tar.gz",
         "filename": f"libjxl-{V['JPEGXL']}.tar.gz",
@@ -359,7 +341,6 @@ DEPS: dict[str, dict[str, Any]] = {
             "vcpkg install highway",
             *cmds_cmake(
                 "jxl",
-                rf"-DHWY_INCLUDE_DIR=..\highway-{V['HIGHWAY']}",
                 r"-DLCMS2_LIBRARY=..\..\lib\lcms2_static",
                 r"-DLCMS2_INCLUDE_DIR=..\..\inc",
                 "-DJPEGXL_STATIC:BOOL=ON",
@@ -377,7 +358,6 @@ DEPS: dict[str, dict[str, Any]] = {
             cmd_copy(r"lib\jxl.lib", "{lib_dir}"),
             *cmds_cmake(
                 "jxl_threads",
-                r"-DHWY_INCLUDE_DIR=..\highway-1.3.0",
                 r"-DBROTLIENC_LIBRARY=..\..\lib\brotlienc",
                 r"-DLCMS2_LIBRARY=..\..\lib\lcms2_static",
                 r"-DLCMS2_INCLUDE_DIR=..\..\inc",
