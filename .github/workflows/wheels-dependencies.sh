@@ -175,7 +175,7 @@ function build_jpegxl {
     if [[ -n "$IOS_SDK" ]]; then
         ios_cmake_flags=(
             -DHWY_LIBRARY=$BUILD_PREFIX/lib/libhwy.a \
-            -DHWY_INCLUDE_DIR=$BUILD_PREFIX/include/hwy \
+            -DHWY_INCLUDE_DIR=$BUILD_PREFIX/include \
             -DBROTLI_INCLUDE_DIR=$BUILD_PREFIX/include \
             -DBROTLICOMMON_LIBRARY=$BUILD_PREFIX/lib/libbrotlicommon.a \
             -DBROTLIENC_LIBRARY=$BUILD_PREFIX/lib/libbrotlienc.a \
