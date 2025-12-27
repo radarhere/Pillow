@@ -344,10 +344,16 @@ DEPS: dict[str, dict[str, Any]] = {
         "filename": f"libjxl-{V['JPEGXL']}.tar.gz",
         "license": "LICENSE",
         "build": [
+            "vcpkg install highway",
+            r'dir "/vcpkg/packages/highway_x64-windows"',
+            r'dir "C:/vcpkg/packages/highway_x64-windows"',
+            r'dir "C:/vcpkg/packages/highway_x64-windows/lib"',
+            r'dir "C:/vcpkg/packages/highway_x64-windows/include"',
+            r'dir "C:/vcpkg/packages/highway_x64-windows/include/hwy"',
             *cmds_cmake(
                 "jxl",
-                r'-DHWY_LIBRARY="C:\vcpkg\packages\highway_x64-windows\lib\hwy.lib"',
-                r'-DHWY_INCLUDE_DIR="C:\vcpkg\packages\highway_x64-windows\include\hwy"',
+                r'-DHWY_LIBRARY="C:\vcpkg\packages\highway_x64-windows\lib\hwy"',
+                r'-DHWY_INCLUDE_DIR="C:\vcpkg\packages\highway_x64-windows\include"',
                 r"-DLCMS2_LIBRARY=..\..\lib\lcms2_static",
                 r"-DLCMS2_INCLUDE_DIR=..\..\inc",
                 "-DJPEGXL_STATIC:BOOL=ON",
@@ -362,6 +368,7 @@ DEPS: dict[str, dict[str, Any]] = {
                 '-DCMAKE_C_FLAGS="-DJXL_STATIC_DEFINE -DJXL_CMS_STATIC_DEFINE -DJXL_THREADS_STATIC_DEFINE"',
                 '-DCMAKE_CXX_FLAGS="-DJXL_STATIC_DEFINE -DJXL_CMS_STATIC_DEFINE -DJXL_THREADS_STATIC_DEFINE"',
             ),
+            cmd_copy(r"C:\vcpkg\packages\highway_x64-windows\lib\hwy.lib", "{lib_dir}"),
             cmd_copy(r"lib\jxl.lib", "{lib_dir}"),
             *cmds_cmake(
                 "jxl_threads",
