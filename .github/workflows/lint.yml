@@ -8,10 +8,6 @@ env:
 permissions:
   contents: read
 
-concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
-
 jobs:
   build:
 
@@ -46,6 +42,7 @@ jobs:
       run: |
         python3 -m pip install -U pip
         python3 -m pip install -U tox
+        python3 -m pip install -U ty
 
     - name: Lint
       run: tox -e lint
@@ -53,4 +50,4 @@ jobs:
         PRE_COMMIT_COLOR: always
 
     - name: Mypy
-      run: tox -e mypy
+      run: python3 -m ty check demo.py
