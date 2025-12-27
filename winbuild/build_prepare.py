@@ -340,7 +340,10 @@ DEPS: dict[str, dict[str, Any]] = {
         "license": "LICENSE",
         "build": [
             *cmds_cmake(
-                "hwy", "-DBUILD_SHARED_LIBS:BOOL=OFF", "-DHWY_FORCE_STATIC_LIBS:BOOL=ON"
+                "hwy",
+                "-DBUILD_SHARED_LIBS:BOOL=OFF",
+                "-DHWY_FORCE_STATIC_LIBS:BOOL=ON",
+                "-DHWY_LIBRARY_TYPE=STATIC",
             )
         ],
         "headers": [r"hwy\*.h"],
