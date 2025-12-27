@@ -21,7 +21,8 @@ if (!$?) { exit $LASTEXITCODE }
 & $venv\Scripts\$python selftest.py
 if (!$?) { exit $LASTEXITCODE }
 dir
-dir build
+dir build/lib.win32-cpython-310/PIL
 ./Dependencies_x64_Release/Dependencies.exe -depth 1 -modules ./build/lib.win32-cpython-310/PIL/_jpegxl.cp310-win32.pyd
+./Dependencies_x64_Release/Dependencies.exe -depth 1 -modules ./build/lib.win32-cpython-310/PIL/_webp.cp310-win32.pyd
 & $venv\Scripts\$python -m pytest -vv -x checks\check_wheel.py
 if (!$?) { exit $LASTEXITCODE }
