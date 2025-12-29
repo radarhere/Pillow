@@ -347,10 +347,6 @@ DEPS: dict[str, dict[str, Any]] = {
             *cmds_cmake(
                 "hwy",
                 "-DBUILD_SHARED_LIBS:BOOL=OFF",
-                "-DHWY_FORCE_STATIC_LIBS:BOOL=ON",
-                "-DHWY_LIBRARY_TYPE=STATIC",
-                "-DHWY_COMPILE_ONLY_STATIC:BOOL=ON",
-                "-DHWY_STATIC_DISPATCH:BOOL=ON",
                 '-DCMAKE_MSVC_RUNTIME_LIBRARY="MultiThreaded$<$<CONFIG:Debug>:Debug>"',
             )
         ],
