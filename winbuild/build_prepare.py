@@ -338,6 +338,11 @@ DEPS: dict[str, dict[str, Any]] = {
         "url": f"https://github.com/google/highway/archive/{V['HIGHWAY']}.tar.gz",
         "filename": f"highway-{V['HIGHWAY']}.tar.gz",
         "license": "LICENSE",
+        "patch": {
+            r"CMakeLists.txt": {
+                'set(HWY_LIBRARY_TYPE "SHARED")': 'set(HWY_LIBRARY_TYPE "STATIC")'
+            }
+        },
         "build": [
             *cmds_cmake(
                 "hwy",
