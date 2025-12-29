@@ -346,6 +346,7 @@ DEPS: dict[str, dict[str, Any]] = {
                 "-DHWY_LIBRARY_TYPE=STATIC:BOOL=ON",
                 "-DHWY_COMPILE_ONLY_STATIC:BOOL=ON",
                 "-DHWY_STATIC_DISPATCH:BOOL=ON",
+                "/MT",
             )
         ],
         "headers": [r"hwy\*.h"],
