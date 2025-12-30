@@ -29,12 +29,8 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - cibw_arch: x86
-            os: windows-latest
           - cibw_arch: AMD64
             os: windows-latest
-          - cibw_arch: ARM64
-            os: windows-11-arm
     steps:
       - uses: actions/checkout@v6
         with:
@@ -88,7 +84,7 @@ jobs:
           %pythonLocation%\python.exe -m cibuildwheel . --output-dir wheelhouse
         env:
           CIBW_ARCHS: ${{ matrix.cibw_arch }}
-          CIBW_BUILD: "cp310*"
+          CIBW_BUILD: "pp*"
           CIBW_BEFORE_ALL: "{package}\\winbuild\\build\\build_dep_all.cmd"
           CIBW_CACHE_PATH: "C:\\cibw"
           CIBW_ENABLE: cpython-prerelease cpython-freethreading pypy
