@@ -420,29 +420,6 @@ DEPS: dict[str, dict[str, Any]] = {
         ],
         "bins": [r"*.dll"],
     },
-    "libavif": {
-        "url": f"https://github.com/AOMediaCodec/libavif/archive/v{V['LIBAVIF']}.tar.gz",
-        "filename": f"libavif-{V['LIBAVIF']}.tar.gz",
-        "license": "LICENSE",
-        "build": [
-            "rustup update",
-            f"{sys.executable} -m pip install meson",
-            *cmds_cmake(
-                "avif_static",
-                "-DBUILD_SHARED_LIBS=OFF",
-                "-DAVIF_LIBSHARPYUV=LOCAL",
-                "-DAVIF_LIBYUV=LOCAL",
-                "-DAVIF_CODEC_AOM=LOCAL",
-                "-DCONFIG_AV1_HIGHBITDEPTH=0",
-                "-DAVIF_CODEC_AOM_DECODE=OFF",
-                "-DAVIF_CODEC_DAV1D=LOCAL",
-                "-DCMAKE_INTERPROCEDURAL_OPTIMIZATION=ON",
-                build_type="MinSizeRel",
-            ),
-            cmd_xcopy("include", "{inc_dir}"),
-        ],
-        "libs": ["avif.lib"],
-    },
 }
 
 
