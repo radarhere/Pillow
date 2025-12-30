@@ -343,7 +343,7 @@ DEPS: dict[str, dict[str, Any]] = {
         "license": "LICENSE",
         "patch": {
             r"CMakeLists.txt": {
-                "cmake_minimum_required(VERSION 3.10)": "cmake_minimum_required(VERSION 3.15)",  # noqa: E501
+                "cmake_minimum_required(VERSION 3.10)": "cmake_minimum_required(VERSION 3.30)",  # noqa: E501
             }
         },
         "build": [

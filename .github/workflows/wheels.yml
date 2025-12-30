@@ -23,7 +23,7 @@ env:
 jobs:
   windows:
     if: github.event_name != 'schedule' || github.repository_owner == 'python-pillow'
-    name: Windows ${{ matrix.cibw_arch }}
+    name: Windows ${{ matrix.cibw_arch }} ${{ matrix.build }}
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
@@ -31,10 +31,13 @@ jobs:
         include:
           - cibw_arch: x86
             os: windows-latest
+            build: "cp310*"
           - cibw_arch: AMD64
             os: windows-latest
-          - cibw_arch: ARM64
-            os: windows-11-arm
+            build: "cp310*"
+          - cibw_arch: AMD64
+            os: windows-latest
+            build: "pp*"
     steps:
       - uses: actions/checkout@v6
         with:
@@ -88,6 +91,7 @@ jobs:
           %pythonLocation%\python.exe -m cibuildwheel . --output-dir wheelhouse
         env:
           CIBW_ARCHS: ${{ matrix.cibw_arch }}
+          CIBW_BUILD: ${{ matrix.build }}
           CIBW_BEFORE_ALL: "{package}\\winbuild\\build\\build_dep_all.cmd"
           CIBW_CACHE_PATH: "C:\\cibw"
           CIBW_ENABLE: cpython-prerelease cpython-freethreading pypy
