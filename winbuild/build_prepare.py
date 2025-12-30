@@ -346,7 +346,6 @@ DEPS: dict[str, dict[str, Any]] = {
         "build": [
             *cmds_cmake(
                 "hwy",
-                "-DBUILD_SHARED_LIBS:BOOL=OFF",
                 '-DCMAKE_MSVC_RUNTIME_LIBRARY="MultiThreaded$<$<CONFIG:Debug>:Debug>"',
             )
         ],

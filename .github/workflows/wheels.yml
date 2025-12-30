@@ -31,6 +31,10 @@ jobs:
         include:
           - cibw_arch: x86
             os: windows-latest
+          - cibw_arch: AMD64
+            os: windows-latest
+          - cibw_arch: ARM64
+            os: windows-11-arm
     steps:
       - uses: actions/checkout@v6
         with:
