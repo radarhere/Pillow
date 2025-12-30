@@ -346,7 +346,9 @@ DEPS: dict[str, dict[str, Any]] = {
                 "cmake_minimum_required(VERSION 3.10)": "cmake_minimum_required(VERSION 3.15)",  # noqa: E501
             }
         },
-        "build": [*cmds_cmake("hwy")],
+        "build": [
+            *cmds_cmake("hwy", '-DCMAKE_MSVC_RUNTIME_LIBRARY="MultiThreadedDLL"')
+        ],
         "libs": ["hwy.lib"],
     },
     "libjxl": {
