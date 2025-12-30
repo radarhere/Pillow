@@ -1023,7 +1023,7 @@ class pil_build_ext(build_ext):
             args: list[str] | None = None
             if True:
                 libs.extend(
-                    ["brotlicommon", "brotlidec", "brotlienc", "hwy"]
+                    ["kernel32", "brotlicommon", "brotlidec", "brotlienc", "hwy"]
                 )
                 args = ["-DJXL_STATIC_DEFINE", "-DJXL_THREADS_STATIC_DEFINE"]
             self._update_extension("PIL._jpegxl", libs, args=args)
