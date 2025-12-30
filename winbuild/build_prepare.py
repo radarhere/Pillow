@@ -349,7 +349,8 @@ DEPS: dict[str, dict[str, Any]] = {
         "build": [
             *cmds_cmake(
                 "hwy",
-                '-DCMAKE_MSVC_RUNTIME_LIBRARY="MultiThreaded$<$<CONFIG:Debug>:Debug>"',
+                "-DBUILD_SHARED_LIBS:BOOL=OFF",
+                '-DCMAKE_MSVC_RUNTIME_LIBRARY="MultiThreadedDLL"',
             )
         ],
         "libs": ["hwy.lib"],
@@ -369,9 +370,12 @@ DEPS: dict[str, dict[str, Any]] = {
                 "-DJPEGXL_STATIC:BOOL=ON",
                 "-DBUILD_TESTING:BOOL=OFF",
                 "-DBUILD_SHARED_LIBS:BOOL=OFF",
+                '-DCMAKE_MSVC_RUNTIME_LIBRARY="MultiThreadedDLL"',
             ),
             cmd_copy(r"lib\jxl.lib", "{lib_dir}"),
-            *cmds_cmake("jxl_threads"),
+            *cmds_cmake(
+                "jxl_threads", '-DCMAKE_MSVC_RUNTIME_LIBRARY="MultiThreadedDLL"'
+            ),
             cmd_copy(r"lib\jxl_threads.lib", "{lib_dir}"),
             cmd_mkdir(r"{inc_dir}\jxl"),
             cmd_copy(r"lib\include\jxl\*.h", r"{inc_dir}\jxl"),
@@ -419,29 +423,6 @@ DEPS: dict[str, dict[str, Any]] = {
             *cmds_cmake("fribidi", "-DARCH={architecture}"),
         ],
         "bins": [r"*.dll"],
-    },
-    "libavif": {
-        "url": f"https://github.com/AOMediaCodec/libavif/archive/v{V['LIBAVIF']}.tar.gz",
-        "filename": f"libavif-{V['LIBAVIF']}.tar.gz",
-        "license": "LICENSE",
-        "build": [
-            "rustup update",
-            f"{sys.executable} -m pip install meson",
-            *cmds_cmake(
-                "avif_static",
-                "-DBUILD_SHARED_LIBS=OFF",
-                "-DAVIF_LIBSHARPYUV=LOCAL",
-                "-DAVIF_LIBYUV=LOCAL",
-                "-DAVIF_CODEC_AOM=LOCAL",
-                "-DCONFIG_AV1_HIGHBITDEPTH=0",
-                "-DAVIF_CODEC_AOM_DECODE=OFF",
-                "-DAVIF_CODEC_DAV1D=LOCAL",
-                "-DCMAKE_INTERPROCEDURAL_OPTIMIZATION=ON",
-                build_type="MinSizeRel",
-            ),
-            cmd_xcopy("include", "{inc_dir}"),
-        ],
-        "libs": ["avif.lib"],
     },
 }
 

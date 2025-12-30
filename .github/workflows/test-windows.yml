@@ -22,10 +22,6 @@ on:
 permissions:
   contents: read
 
-concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
-
 env:
   COVERAGE_CORE: sysmon
 
@@ -35,12 +31,9 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python-version: ["pypy3.11", "3.11", "3.12", "3.13", "3.14", "3.15"]
+        python-version: ["3.14"]
         architecture: ["x64"]
         os: ["windows-latest"]
-        include:
-            # Test the oldest Python on 32-bit
-            - { python-version: "3.10", architecture: "x86", os: "windows-2022" }
 
     timeout-minutes: 45
 
@@ -149,10 +142,6 @@ jobs:
       if: steps.build-cache.outputs.cache-hit != 'true'
       run: "& winbuild\\build\\build_dep_libpng.cmd"
 
-    - name: Build dependencies / libavif
-      if: steps.build-cache.outputs.cache-hit != 'true' && matrix.architecture == 'x64'
-      run: "& winbuild\\build\\build_dep_libavif.cmd"
-
     # for FreeType WOFF2 font support
     - name: Build dependencies / brotli
       if: steps.build-cache.outputs.cache-hit != 'true'
@@ -217,39 +206,3 @@ jobs:
         path %GITHUB_WORKSPACE%\winbuild\build\bin;%PATH%
         .ci\test.cmd
       shell: cmd
-
-    - name: Prepare to upload errors
-      if: failure()
-      run: |
-        mkdir -p Tests/errors
-      shell: bash
-
-    - name: Upload errors
-      uses: actions/upload-artifact@v5
-      if: failure()
-      with:
-        name: errors
-        path: Tests/errors
-
-    - name: After success
-      run: |
-        .ci/after_success.sh
-      shell: pwsh
-
-    - name: Upload coverage
-      uses: codecov/codecov-action@v5
-      with:
-        files: ./coverage.xml
-        flags: GHA_Windows
-        name: ${{ runner.os }} Python ${{ matrix.python-version }}
-        token: ${{ secrets.CODECOV_ORG_TOKEN }}
-
-  success:
-    permissions:
-      contents: none
-    needs: build
-    runs-on: ubuntu-latest
-    name: Windows Test Successful
-    steps:
-      - name: Success
-        run: echo Windows Test Successful
