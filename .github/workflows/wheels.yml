@@ -84,7 +84,7 @@ jobs:
           %pythonLocation%\python.exe -m cibuildwheel . --output-dir wheelhouse
         env:
           CIBW_ARCHS: ${{ matrix.cibw_arch }}
-          CIBW_BUILD: "pp*"
+          CIBW_BUILD: "cp310*"
           CIBW_BEFORE_ALL: "{package}\\winbuild\\build\\build_dep_all.cmd"
           CIBW_CACHE_PATH: "C:\\cibw"
           CIBW_ENABLE: cpython-prerelease cpython-freethreading pypy
