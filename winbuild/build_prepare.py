@@ -346,12 +346,7 @@ DEPS: dict[str, dict[str, Any]] = {
                 "cmake_minimum_required(VERSION 3.10)": "cmake_minimum_required(VERSION 3.15)",  # noqa: E501
             }
         },
-        "build": [
-            *cmds_cmake(
-                "hwy",
-                '-DCMAKE_MSVC_RUNTIME_LIBRARY="MultiThreaded$<$<CONFIG:Debug>:Debug>"',
-            )
-        ],
+        "build": [*cmds_cmake("hwy")],
         "libs": ["hwy.lib"],
     },
     "libjxl": {
@@ -369,6 +364,7 @@ DEPS: dict[str, dict[str, Any]] = {
                 "-DJPEGXL_STATIC:BOOL=ON",
                 "-DBUILD_TESTING:BOOL=OFF",
                 "-DBUILD_SHARED_LIBS:BOOL=OFF",
+                '-DCMAKE_MSVC_RUNTIME_LIBRARY="MultiThreadedDLL"',
             ),
             cmd_copy(r"lib\jxl.lib", "{lib_dir}"),
             *cmds_cmake("jxl_threads"),
