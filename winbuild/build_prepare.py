@@ -346,7 +346,7 @@ DEPS: dict[str, dict[str, Any]] = {
         "build": [
             *cmds_cmake(
                 "hwy",
-                '-DCMAKE_MSVC_RUNTIME_LIBRARY="MultiThreaded"',
+                '-DCMAKE_MSVC_RUNTIME_LIBRARY="MultiThreadedDLL"',
             )
         ],
         "headers": [r"hwy\*.h"],
