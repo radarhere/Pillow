@@ -359,6 +359,11 @@ DEPS: dict[str, dict[str, Any]] = {
         "url": f"https://github.com/libjxl/libjxl/archive/v{V['JPEGXL']}.tar.gz",
         "filename": f"libjxl-{V['JPEGXL']}.tar.gz",
         "license": "LICENSE",
+        "patch": {
+            r"CMakeLists.txt": {
+                "add_definitions(-DFJXL_ENABLE_AVX512=0)": "add_definitions(-DFJXL_ENABLE_AVX512=0)\nadd_definitions(/EHsc)"
+            }
+        },
         "build": [
             *cmds_cmake(
                 "jxl",
