@@ -39,8 +39,12 @@ def check_module(feature: str) -> bool:
         __import__(module)
         return True
     except ModuleNotFoundError:
+        if feature == "jpegxl":
+            raise
         return False
     except ImportError as ex:
+        if feature == "jpegxl":
+            raise
         warnings.warn(str(ex))
         return False
 
