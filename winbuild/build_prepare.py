@@ -369,7 +369,9 @@ DEPS: dict[str, dict[str, Any]] = {
                 '-DCMAKE_MSVC_RUNTIME_LIBRARY="MultiThreadedDLL"',
             ),
             cmd_copy(r"lib\jxl.lib", "{lib_dir}"),
-            *cmds_cmake("jxl_threads"),
+            *cmds_cmake(
+                "jxl_threads", '-DCMAKE_MSVC_RUNTIME_LIBRARY="MultiThreadedDLL"'
+            ),
             cmd_copy(r"lib\jxl_threads.lib", "{lib_dir}"),
             cmd_mkdir(r"{inc_dir}\jxl"),
             cmd_copy(r"lib\include\jxl\*.h", r"{inc_dir}\jxl"),
