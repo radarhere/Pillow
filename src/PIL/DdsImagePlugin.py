@@ -354,6 +354,8 @@ class DdsImageFile(ImageFile.ImageFile):
 
         # pixel format
         pfsize, pfflags, fourcc, bitcount = struct.unpack("<4I", header[68:84])
+        print()
+        print("bitcount is set to", bitcount, "in _open")
         n = 0
         rawmode = None
         if pfflags & DDPF.RGB:
@@ -511,6 +513,7 @@ class DdsRgbDecoder(ImageFile.PyDecoder):
 
         data = bytearray()
         bytecount = bitcount // 8
+        print("bitcount is", bitcount, "which means that bytecount is", bytecount, "within DdsRgbDecoder")
         dest_length = self.state.xsize * self.state.ysize * len(masks)
         # consume the data
         has_more = True
