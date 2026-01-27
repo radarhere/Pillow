@@ -56,8 +56,9 @@ def roundtrip(expected: Image.Image) -> None:
 def test_sanity(tmp_path: Path) -> None:
     # Segfault test
     app: QApplication | None = QApplication([])
-    ex = Example()  # noqa: F841
+    ex = Example()
     assert app  # Silence warning
+    assert ex  # Silence warning
 
     for mode in ("1", "RGB", "RGBA", "L", "P"):
         # to QPixmap
