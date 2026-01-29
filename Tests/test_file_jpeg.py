@@ -41,7 +41,6 @@ try:
 except ImportError:
     ElementTree = None
 
-
 TEST_FILE = "Tests/images/hopper.jpg"
 
 

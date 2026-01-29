@@ -21,13 +21,10 @@ if sys.version_info >= (3, 13):
 else:
     CapsuleType = object
 
-if TYPE_CHECKING:
-    from typing_extensions import Buffer
+if sys.version_info >= (3, 12):
+    from collections.abc import Buffer
 else:
-    if sys.version_info >= (3, 12):
-        from collections.abc import Buffer
-    else:
-        Buffer = Any
+    Buffer = Any
 
 
 _Ink = float | tuple[int, ...] | str
