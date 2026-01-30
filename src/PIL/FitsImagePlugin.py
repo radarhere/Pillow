@@ -14,7 +14,6 @@ import gzip
 import math
 
 from . import Image, ImageFile
-from ._typing import Buffer
 
 
 def _accept(prefix: bytes) -> bool:
@@ -127,7 +126,7 @@ class FitsImageFile(ImageFile.ImageFile):
 class FitsGzipDecoder(ImageFile.PyDecoder):
     _pulls_fd = True
 
-    def decode(self, buffer: Buffer | Image.SupportsArrayInterface) -> tuple[int, int]:
+    def decode(self, buffer: bytes | Image.SupportsArrayInterface) -> tuple[int, int]:
         assert self.fd is not None
         value = gzip.decompress(self.fd.read())
 

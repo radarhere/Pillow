@@ -322,7 +322,7 @@ class PdfStream:
         self.dictionary = dictionary
         self.buf = buf
 
-    def decode(self) -> Buffer:
+    def decode(self) -> bytes:
         try:
             filter = self.dictionary[b"Filter"]
         except KeyError:

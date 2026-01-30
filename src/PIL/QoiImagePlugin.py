@@ -14,7 +14,6 @@ from . import Image, ImageFile
 from ._binary import i32be as i32
 from ._binary import o8
 from ._binary import o32be as o32
-from ._typing import Buffer
 
 
 def _accept(prefix: bytes) -> bool:
@@ -52,7 +51,7 @@ class QoiDecoder(ImageFile.PyDecoder):
         hash_value = (r * 3 + g * 5 + b * 7 + a * 11) % 64
         self._previously_seen_pixels[hash_value] = value
 
-    def decode(self, buffer: Buffer | Image.SupportsArrayInterface) -> tuple[int, int]:
+    def decode(self, buffer: bytes | Image.SupportsArrayInterface) -> tuple[int, int]:
         assert self.fd is not None
 
         self._previously_seen_pixels = {}
