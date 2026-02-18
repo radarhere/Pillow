@@ -258,6 +258,7 @@ AvifEncoderNew(PyObject *self_, PyObject *args) {
         )) {
         return NULL;
     }
+    printf("torchstart\n");
 
     // Create a new animation encoder and picture frame
     avifImage *image = avifImageCreateEmpty();
@@ -302,6 +303,7 @@ AvifEncoderNew(PyObject *self_, PyObject *args) {
 
     image->depth = 8;
     image->alphaPremultiplied = alpha_premultiplied ? AVIF_TRUE : AVIF_FALSE;
+    printf("torchmid1\n");
 
     encoder = avifEncoderCreate();
     if (!encoder) {
@@ -348,6 +350,7 @@ AvifEncoderNew(PyObject *self_, PyObject *args) {
         goto end;
     }
     self->first_frame = 1;
+    printf("torchmid2\n");
 
     avifResult result;
     if (icc_buffer.len) {
@@ -383,6 +386,7 @@ AvifEncoderNew(PyObject *self_, PyObject *args) {
             goto end;
         }
     }
+    printf("torchmid3\n");
 
     if (xmp_buffer.len) {
         result = avifImageSetMetadataXMP(image, xmp_buffer.buf, xmp_buffer.len);
@@ -403,6 +407,7 @@ AvifEncoderNew(PyObject *self_, PyObject *args) {
 
     self->image = image;
     self->encoder = encoder;
+    printf("torchend\n");
 
 end:
     PyBuffer_Release(&icc_buffer);
