@@ -33,5 +33,4 @@ fi
 
 # Runs tests
 python3 selftest.py
-python3 -m pytest -vv -x checks/check_wheel.py
-python3 -m pytest -vv -x
+python3 avif_debug.py

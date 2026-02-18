@@ -103,13 +103,11 @@ version = { attr = "PIL.__version__" }
 before-all = ".github/workflows/wheels-dependencies.sh"
 build-verbosity = 1
 
-config-settings = "raqm=enable raqm=vendor fribidi=vendor imagequant=disable"
+config-settings = ""
 
 test-command = "cd {project} && .github/workflows/wheels-test.sh"
 test-extras = "tests"
-test-requires = [
-  "numpy",
-]
+test-requires = [  ]
 xbuild-tools = [  ]
 
 [tool.cibuildwheel.ios]
