@@ -23,7 +23,7 @@ def test_isolation():
     print("3. Attempting conversion via Pillow...", end=" ", flush=True)
     try:
         with Image.open("/tmp/killer_input.png") as p_img:
-            p_img.save("/tmp/pillow_output.avif", speed=6)
+            p_img.save("/tmp/pillow_output.avif")
             print("✅ Pillow SUCCESS")
     except Exception as e:
         print(f"❌ Pillow FAILED/CRASHED")
