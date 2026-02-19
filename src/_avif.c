@@ -262,59 +262,18 @@ AvifEncoderNew(PyObject *self_, PyObject *args) {
 
     // Create a new animation encoder and picture frame
     avifImage *image = avifImageCreateEmpty();
-    if (image == NULL) {
-        PyErr_SetString(PyExc_ValueError, "Image creation failed");
-        error = 1;
-        goto end;
-    }
-
-    if (strcmp(subsampling, "4:0:0") == 0) {
-        printf("400\n");
-        image->yuvFormat = AVIF_PIXEL_FORMAT_YUV400;
-    } else if (strcmp(subsampling, "4:2:0") == 0) {
-        printf("420\n");
-        image->yuvFormat = AVIF_PIXEL_FORMAT_YUV420;
-    } else if (strcmp(subsampling, "4:2:2") == 0) {
-        printf("422\n");
-        image->yuvFormat = AVIF_PIXEL_FORMAT_YUV422;
-    } else if (strcmp(subsampling, "4:4:4") == 0) {
-        printf("424\n");
-        image->yuvFormat = AVIF_PIXEL_FORMAT_YUV444;
-    } else {
-        PyErr_Format(PyExc_ValueError, "Invalid subsampling: %s", subsampling);
-        error = 1;
-        goto end;
-    }
-
     image->width = width;
     image->height = height;
-
     image->depth = 8;
-    printf("torchmid1\n");
+    image->matrixCoefficients = AVIF_MATRIX_COEFFICIENTS_BT601;
+    image->yuvFormat = AVIF_PIXEL_FORMAT_YUV420;
 
     encoder = avifEncoderCreate();
-    if (!encoder) {
-        PyErr_SetString(PyExc_MemoryError, "Can't allocate encoder");
-        error = 1;
-        goto end;
-    }
 
     self = PyObject_New(AvifEncoderObject, &AvifEncoder_Type);
-    if (!self) {
-        PyErr_SetString(PyExc_RuntimeError, "could not create encoder object");
-        error = 1;
-        goto end;
-    }
     self->first_frame = 1;
-    image->matrixCoefficients = AVIF_MATRIX_COEFFICIENTS_BT601;
-
     self->image = image;
     self->encoder = encoder;
-    error = 1;
-    goto end;
-    printf("torchend\n");
-
-end:
 
     return (PyObject *)self;
 }
@@ -361,56 +320,17 @@ _encoder_add(AvifEncoderObject *self, PyObject *args) {
         return NULL;
     }
 
-    if (image->width != width || image->height != height) {
-        PyErr_Format(
-            PyExc_ValueError,
-            "Image sequence dimensions mismatch, %ux%u != %ux%u",
-            image->width,
-            image->height,
-            width,
-            height
-        );
-        return NULL;
-    }
-
-    printf("first\n");
     frame = image;
 
     avifRGBImage rgb;
     avifRGBImageSetDefaults(&rgb, frame);
     rgb.format = AVIF_RGB_FORMAT_RGBA;
-    result = avifRGBImageAllocatePixels(&rgb);
-    if (result != AVIF_RESULT_OK) {
-        PyErr_Format(
-            exc_type_for_avif_result(result),
-            "Pixel allocation failed: %s",
-            avifResultToString(result)
-        );
-        error = 1;
-        goto end;
-    }
-    if (rgb.rowBytes * rgb.height != size) {
-        PyErr_Format(
-            PyExc_RuntimeError,
-            "rgb data has incorrect size: %u * %u (%u) != %u",
-            rgb.rowBytes,
-            rgb.height,
-            rgb.rowBytes * rgb.height,
-            size
-        );
-        error = 1;
-        goto end;
-    }
-    // rgb.pixels is safe for writes
+    avifRGBImageAllocatePixels(&rgb);
     memset(rgb.pixels, 255, rgb.rowBytes * frame->height);
 
-    result = avifImageRGBToYUV(frame, &rgb);
+    avifImageRGBToYUV(frame, &rgb);
 
-    PyErr_Format(
-        exc_type_for_avif_result(result),
-        "Conversion to YUV failed: %s",
-        avifResultToString(result)
-    );
+    PyErr_SetString(PyExc_RuntimeError, "end with error");
     return NULL;
 
 end:
