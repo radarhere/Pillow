@@ -417,12 +417,6 @@ AvifEncoderNew(PyObject *self_, PyObject *args) {
 
 end:
     if (error) {
-        if (image) {
-            avifImageDestroy(image);
-        }
-        if (encoder) {
-            avifEncoderDestroy(encoder);
-        }
         if (self) {
             PyObject_Del(self);
         }
