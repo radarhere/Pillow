@@ -303,7 +303,6 @@ _encoder_add(AvifEncoderObject *self, PyObject *args) {
     avifResult result;
 
     avifEncoder *encoder = self->encoder;
-    avifImage *image = self->image;
     avifImage *frame = NULL;
 
     if (!PyArg_ParseTuple(
@@ -320,7 +319,7 @@ _encoder_add(AvifEncoderObject *self, PyObject *args) {
         return NULL;
     }
 
-    frame = image;
+    frame = self->image;
 
     avifRGBImage rgb;
     avifRGBImageSetDefaults(&rgb, frame);
