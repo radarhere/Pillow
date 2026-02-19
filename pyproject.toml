@@ -98,13 +98,12 @@ dynamic.version = { attr = "PIL.__version__" }
 [tool.cibuildwheel]
 before-all = ".github/workflows/wheels-dependencies.sh"
 build-verbosity = 1
-config-settings = "raqm=enable raqm=vendor fribidi=vendor imagequant=disable"
+config-settings = ""
 test-command = "cd {project} && .github/workflows/wheels-test.sh"
 test-extras = "tests"
-test-requires = [
-  "numpy",
-]
+test-requires = []
 xbuild-tools = []
+
 # Disable platform guessing on iOS, and disable raqm (since there won't be a
 # vendor version, and we can't distribute it due to licensing)
 ios.config-settings = "raqm=disable imagequant=disable platform-guessing=disable"
