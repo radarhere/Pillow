@@ -276,14 +276,6 @@ def _save(
     finally:
         pass
 
-    # Get the final output from the encoder
-    data = enc.finish()
-    if data is None:
-        msg = "cannot write file as AVIF (encoder returned None)"
-        raise OSError(msg)
-
-    fp.write(data)
-
 
 Image.register_open(AvifImageFile.format, AvifImageFile, _accept)
 if SUPPORTED:
