@@ -532,22 +532,14 @@ _encoder_add(AvifEncoderObject *self, PyObject *args) {
 
     result = avifImageRGBToYUV(frame, &rgb);
 
-    if (result != AVIF_RESULT_OK) {
-        PyErr_Format(
-            exc_type_for_avif_result(result),
-            "Conversion to YUV failed: %s",
-            avifResultToString(result)
-        );
-        error = 1;
-        goto end;
-    }
+    PyErr_Format(
+        exc_type_for_avif_result(result),
+        "Conversion to YUV failed: %s",
+        avifResultToString(result)
+    );
+    return NULL;
 
 end:
-    avifRGBImageFreePixels(&rgb);
-    if (!self->first_frame) {
-        avifImageDestroy(frame);
-    }
-
     if (error) {
         return NULL;
     }
