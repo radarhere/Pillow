@@ -259,6 +259,7 @@ def _save(
                     frame_duration = duration
 
                 # Append the frame to the animation encoder
+                print("enc add", rawmode)
                 enc.add(
                     frame.tobytes("raw", rawmode),
                     frame_duration,

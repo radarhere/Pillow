@@ -441,7 +441,6 @@ _encoder_add(AvifEncoderObject *self, PyObject *args) {
     unsigned int is_single_frame;
     int error = 0;
 
-    avifRGBImage rgb;
     avifResult result;
 
     avifEncoder *encoder = self->encoder;
@@ -474,35 +473,12 @@ _encoder_add(AvifEncoderObject *self, PyObject *args) {
         return NULL;
     }
 
-    if (self->first_frame) {
-        // If we don't have an image populated with yuv planes, this is the first frame
-        frame = image;
-    } else {
-        frame = avifImageCreateEmpty();
-        if (image == NULL) {
-            PyErr_SetString(PyExc_ValueError, "Image creation failed");
-            return NULL;
-        }
+    printf("first\n");
+    frame = image;
 
-        frame->width = width;
-        frame->height = height;
-        frame->colorPrimaries = image->colorPrimaries;
-        frame->transferCharacteristics = image->transferCharacteristics;
-        frame->matrixCoefficients = image->matrixCoefficients;
-        frame->yuvRange = image->yuvRange;
-        frame->yuvFormat = image->yuvFormat;
-        frame->depth = image->depth;
-        frame->alphaPremultiplied = image->alphaPremultiplied;
-    }
-
+    avifRGBImage rgb;
     avifRGBImageSetDefaults(&rgb, frame);
-
-    if (strcmp(mode, "RGBA") == 0) {
-        rgb.format = AVIF_RGB_FORMAT_RGBA;
-    } else {
-        rgb.format = AVIF_RGB_FORMAT_RGB;
-    }
-
+    rgb.format = AVIF_RGB_FORMAT_RGBA;
     result = avifRGBImageAllocatePixels(&rgb);
     if (result != AVIF_RESULT_OK) {
         PyErr_Format(
@@ -513,7 +489,6 @@ _encoder_add(AvifEncoderObject *self, PyObject *args) {
         error = 1;
         goto end;
     }
-
     if (rgb.rowBytes * rgb.height != size) {
         PyErr_Format(
             PyExc_RuntimeError,
@@ -526,7 +501,6 @@ _encoder_add(AvifEncoderObject *self, PyObject *args) {
         error = 1;
         goto end;
     }
-
     // rgb.pixels is safe for writes
     memcpy(rgb.pixels, rgb_bytes, size);
 
