@@ -274,7 +274,7 @@ def _save(
                     break
 
     finally:
-        im.seek(cur_idx)
+        pass
 
     # Get the final output from the encoder
     data = enc.finish()
