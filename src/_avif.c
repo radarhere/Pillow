@@ -212,68 +212,18 @@ _add_codec_specific_options(avifEncoder *encoder, PyObject *opts) {
 // Encoder functions
 PyObject *
 AvifEncoderNew(PyObject *self_, PyObject *args) {
-    unsigned int width, height;
-    AvifEncoderObject *self = NULL;
-    avifEncoder *encoder = NULL;
+    AvifEncoderObject *self = PyObject_New(AvifEncoderObject, &AvifEncoder_Type);
+    self->first_frame = 1;
+    self->encoder = avifEncoderCreate();
 
-    char *subsampling;
-    int quality;
-    int speed;
-    int exif_orientation;
-    int max_threads;
-    Py_buffer icc_buffer;
-    Py_buffer exif_buffer;
-    Py_buffer xmp_buffer;
-    int alpha_premultiplied;
-    int autotiling;
-    int tile_rows_log2;
-    int tile_cols_log2;
-
-    char *codec;
-    char *range;
-
-    PyObject *advanced;
-    int error = 0;
-
-    if (!PyArg_ParseTuple(
-            args,
-            "(II)siiissiippy*y*iy*O",
-            &width,
-            &height,
-            &subsampling,
-            &quality,
-            &speed,
-            &max_threads,
-            &codec,
-            &range,
-            &tile_rows_log2,
-            &tile_cols_log2,
-            &alpha_premultiplied,
-            &autotiling,
-            &icc_buffer,
-            &exif_buffer,
-            &exif_orientation,
-            &xmp_buffer,
-            &advanced
-        )) {
-        return NULL;
-    }
-    printf("torchstart\n");
-
-    // Create a new animation encoder and picture frame
     avifImage *image = avifImageCreateEmpty();
-    image->width = width;
-    image->height = height;
+    image->width = 974;
+    image->height = 623;
     image->depth = 8;
     image->matrixCoefficients = AVIF_MATRIX_COEFFICIENTS_BT601;
     image->yuvFormat = AVIF_PIXEL_FORMAT_YUV420;
 
-    encoder = avifEncoderCreate();
-
-    self = PyObject_New(AvifEncoderObject, &AvifEncoder_Type);
-    self->first_frame = 1;
     self->image = image;
-    self->encoder = encoder;
 
     return (PyObject *)self;
 }
@@ -301,13 +251,6 @@ _encoder_add(AvifEncoderObject *self, PyObject *args) {
 
     PyErr_SetString(PyExc_RuntimeError, "end with error");
     return NULL;
-
-end:
-    if (error) {
-        return NULL;
-    }
-    self->first_frame = 0;
-    Py_RETURN_NONE;
 }
 
 PyObject *
