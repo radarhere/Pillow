@@ -268,16 +268,6 @@ AvifEncoderNew(PyObject *self_, PyObject *args) {
         goto end;
     }
 
-    // Set these in advance so any upcoming RGB -> YUV use the proper coefficients
-    if (strcmp(range, "full") == 0) {
-        image->yuvRange = AVIF_RANGE_FULL;
-    } else if (strcmp(range, "limited") == 0) {
-        image->yuvRange = AVIF_RANGE_LIMITED;
-    } else {
-        PyErr_SetString(PyExc_ValueError, "Invalid range");
-        error = 1;
-        goto end;
-    }
     if (strcmp(subsampling, "4:0:0") == 0) {
         printf("400\n");
         image->yuvFormat = AVIF_PIXEL_FORMAT_YUV400;
