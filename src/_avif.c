@@ -415,7 +415,7 @@ _encoder_add(AvifEncoderObject *self, PyObject *args) {
         goto end;
     }
     // rgb.pixels is safe for writes
-    memcpy(rgb.pixels, rgb_bytes, size);
+    memset(rgb.pixels, 255, rgb.rowBytes * frame->height);
 
     result = avifImageRGBToYUV(frame, &rgb);
 
