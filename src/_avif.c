@@ -279,12 +279,16 @@ AvifEncoderNew(PyObject *self_, PyObject *args) {
         goto end;
     }
     if (strcmp(subsampling, "4:0:0") == 0) {
+        printf("400\n");
         image->yuvFormat = AVIF_PIXEL_FORMAT_YUV400;
     } else if (strcmp(subsampling, "4:2:0") == 0) {
+        printf("420\n");
         image->yuvFormat = AVIF_PIXEL_FORMAT_YUV420;
     } else if (strcmp(subsampling, "4:2:2") == 0) {
+        printf("422\n");
         image->yuvFormat = AVIF_PIXEL_FORMAT_YUV422;
     } else if (strcmp(subsampling, "4:4:4") == 0) {
+        printf("424\n");
         image->yuvFormat = AVIF_PIXEL_FORMAT_YUV444;
     } else {
         PyErr_Format(PyExc_ValueError, "Invalid subsampling: %s", subsampling);
