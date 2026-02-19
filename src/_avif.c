@@ -234,6 +234,7 @@ _encoder_dealloc(AvifEncoderObject *self) {
         avifEncoderDestroy(self->encoder);
     }
     if (self->image) {
+        printf("destroy image\n");
         avifImageDestroy(self->image);
     }
     Py_RETURN_NONE;
@@ -248,6 +249,7 @@ _encoder_add(AvifEncoderObject *self, PyObject *args) {
     memset(rgb.pixels, 255, rgb.rowBytes * self->image->height);
 
     avifImageRGBToYUV(self->image, &rgb);
+    printf("avifImageRGBToYUV complete\n");
 
     PyErr_SetString(PyExc_RuntimeError, "end with error");
     return NULL;
