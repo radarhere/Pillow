@@ -410,6 +410,9 @@ AvifEncoderNew(PyObject *self_, PyObject *args) {
 
     self->image = image;
     self->encoder = encoder;
+    PyErr_SetString(PyExc_RuntimeError, "end return");
+    error = 1;
+    goto end;
     printf("torchend\n");
 
 end:
