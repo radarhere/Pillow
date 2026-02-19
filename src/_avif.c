@@ -350,30 +350,6 @@ AvifEncoderNew(PyObject *self_, PyObject *args) {
         goto end;
     }
     self->first_frame = 1;
-    printf("torchmid2\n");
-
-    avifResult result;
-    if (icc_buffer.len) {
-    printf("torchmid2a\n");
-        result = avifImageSetProfileICC(image, icc_buffer.buf, icc_buffer.len);
-        if (result != AVIF_RESULT_OK) {
-            PyErr_Format(
-                exc_type_for_avif_result(result),
-                "Setting ICC profile failed: %s",
-                avifResultToString(result)
-            );
-            error = 1;
-            goto end;
-        }
-        // colorPrimaries and transferCharacteristics are ignored when an ICC
-        // profile is present, so set them to UNSPECIFIED.
-        image->colorPrimaries = AVIF_COLOR_PRIMARIES_UNSPECIFIED;
-        image->transferCharacteristics = AVIF_TRANSFER_CHARACTERISTICS_UNSPECIFIED;
-    } else {
-        image->colorPrimaries = AVIF_COLOR_PRIMARIES_BT709;
-        image->transferCharacteristics = AVIF_TRANSFER_CHARACTERISTICS_SRGB;
-    }
-    printf("torchmid2b\n");
     image->matrixCoefficients = AVIF_MATRIX_COEFFICIENTS_BT601;
 
     self->image = image;
