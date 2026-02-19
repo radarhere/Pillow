@@ -416,10 +416,6 @@ AvifEncoderNew(PyObject *self_, PyObject *args) {
     printf("torchend\n");
 
 end:
-    PyBuffer_Release(&icc_buffer);
-    PyBuffer_Release(&exif_buffer);
-    PyBuffer_Release(&xmp_buffer);
-
     if (error) {
         if (image) {
             avifImageDestroy(image);
