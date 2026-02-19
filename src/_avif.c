@@ -212,6 +212,28 @@ _add_codec_specific_options(avifEncoder *encoder, PyObject *opts) {
 // Encoder functions
 PyObject *
 AvifEncoderNew(PyObject *self_, PyObject *args) {
+    // Start test code
+    avifImage *frame = avifImageCreateEmpty();
+    frame->width = 974;
+    frame->height = 623;
+    frame->depth = 8;
+    frame->matrixCoefficients = AVIF_MATRIX_COEFFICIENTS_BT601;
+    frame->yuvFormat = AVIF_PIXEL_FORMAT_YUV420;
+
+    avifRGBImage rgb;
+    avifRGBImageSetDefaults(&rgb, frame);
+    rgb.format = AVIF_RGB_FORMAT_RGBA;
+    avifRGBImageAllocatePixels(&rgb);
+    memset(rgb.pixels, 255, rgb.rowBytes * frame->height);
+
+    avifImageRGBToYUV(frame, &rgb);
+    avifImageDestroy(frame);
+
+    PyErr_SetString(PyExc_RuntimeError, "end with error");
+    return NULL;
+    // End test code
+
+
     unsigned int width, height;
     AvifEncoderObject *self = NULL;
     avifEncoder *encoder = NULL;
