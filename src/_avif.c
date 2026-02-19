@@ -551,16 +551,6 @@ _encoder_add(AvifEncoderObject *self, PyObject *args) {
     result = avifEncoderAddImage(encoder, frame, duration, addImageFlags);
     Py_END_ALLOW_THREADS;
 
-    if (result != AVIF_RESULT_OK) {
-        PyErr_Format(
-            exc_type_for_avif_result(result),
-            "Failed to encode image: %s",
-            avifResultToString(result)
-        );
-        error = 1;
-        goto end;
-    }
-
 end:
     avifRGBImageFreePixels(&rgb);
     if (!self->first_frame) {
