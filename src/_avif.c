@@ -373,6 +373,8 @@ AvifEncoderNew(PyObject *self_, PyObject *args) {
         image->colorPrimaries = AVIF_COLOR_PRIMARIES_BT709;
         image->transferCharacteristics = AVIF_TRANSFER_CHARACTERISTICS_SRGB;
     }
+    printf("torchmid2b\n");
+    image->matrixCoefficients = AVIF_MATRIX_COEFFICIENTS_BT601;
 
     self->image = image;
     self->encoder = encoder;
