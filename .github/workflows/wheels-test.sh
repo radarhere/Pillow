@@ -37,5 +37,11 @@ python3 selftest.py
 ulimit -c
 ulimit -c unlimited
 ulimit -c
+
+mkdir /cores
+touch /cores/test
+ls /cores
+rm /cores/test
+
 python3 avif_debug.py
 chmod -R +rwx /cores/*
