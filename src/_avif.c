@@ -417,9 +417,6 @@ AvifEncoderNew(PyObject *self_, PyObject *args) {
 
 end:
     if (error) {
-        if (self) {
-            PyObject_Del(self);
-        }
         return NULL;
     }
 
