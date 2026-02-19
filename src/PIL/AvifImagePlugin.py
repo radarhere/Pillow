@@ -270,8 +270,7 @@ def _save(
                 # Update frame index
                 frame_idx += 1
 
-                if not save_all:
-                    break
+                break
 
     finally:
         pass
