@@ -291,43 +291,13 @@ _encoder_dealloc(AvifEncoderObject *self) {
 
 PyObject *
 _encoder_add(AvifEncoderObject *self, PyObject *args) {
-    uint8_t *rgb_bytes;
-    Py_ssize_t size;
-    unsigned int duration;
-    unsigned int width;
-    unsigned int height;
-    char *mode;
-    unsigned int is_single_frame;
-    int error = 0;
-
-    avifResult result;
-
-    avifEncoder *encoder = self->encoder;
-    avifImage *frame = NULL;
-
-    if (!PyArg_ParseTuple(
-            args,
-            "y#I(II)sp",
-            (char **)&rgb_bytes,
-            &size,
-            &duration,
-            &width,
-            &height,
-            &mode,
-            &is_single_frame
-        )) {
-        return NULL;
-    }
-
-    frame = self->image;
-
     avifRGBImage rgb;
-    avifRGBImageSetDefaults(&rgb, frame);
+    avifRGBImageSetDefaults(&rgb, self->image);
     rgb.format = AVIF_RGB_FORMAT_RGBA;
     avifRGBImageAllocatePixels(&rgb);
-    memset(rgb.pixels, 255, rgb.rowBytes * frame->height);
+    memset(rgb.pixels, 255, rgb.rowBytes * self->image->height);
 
-    avifImageRGBToYUV(frame, &rgb);
+    avifImageRGBToYUV(self->image, &rgb);
 
     PyErr_SetString(PyExc_RuntimeError, "end with error");
     return NULL;
