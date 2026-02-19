@@ -292,17 +292,10 @@ AvifEncoderNew(PyObject *self_, PyObject *args) {
         goto end;
     }
 
-    // Validate canvas dimensions
-    if (width == 0 || height == 0) {
-        PyErr_SetString(PyExc_ValueError, "invalid canvas dimensions");
-        error = 1;
-        goto end;
-    }
     image->width = width;
     image->height = height;
 
     image->depth = 8;
-    image->alphaPremultiplied = alpha_premultiplied ? AVIF_TRUE : AVIF_FALSE;
     printf("torchmid1\n");
 
     encoder = avifEncoderCreate();
