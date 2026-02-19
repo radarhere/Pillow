@@ -416,9 +416,6 @@ AvifEncoderNew(PyObject *self_, PyObject *args) {
     printf("torchend\n");
 
 end:
-    if (error) {
-        return NULL;
-    }
 
     return (PyObject *)self;
 }
