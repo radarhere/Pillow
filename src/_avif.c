@@ -312,37 +312,6 @@ AvifEncoderNew(PyObject *self_, PyObject *args) {
         goto end;
     }
 
-    int is_aom_encode = strcmp(codec, "aom") == 0 ||
-                        (strcmp(codec, "auto") == 0 &&
-                         _codec_available("aom", AVIF_CODEC_FLAG_CAN_ENCODE));
-    encoder->maxThreads = is_aom_encode && max_threads > 64 ? 64 : max_threads;
-
-    encoder->quality = quality;
-
-    if (strcmp(codec, "auto") == 0) {
-        encoder->codecChoice = AVIF_CODEC_CHOICE_AUTO;
-    } else {
-        encoder->codecChoice = avifCodecChoiceFromName(codec);
-    }
-    if (speed < AVIF_SPEED_SLOWEST) {
-        speed = AVIF_SPEED_SLOWEST;
-    } else if (speed > AVIF_SPEED_FASTEST) {
-        speed = AVIF_SPEED_FASTEST;
-    }
-    encoder->speed = speed;
-    encoder->timescale = (uint64_t)1000;
-
-    encoder->autoTiling = autotiling ? AVIF_TRUE : AVIF_FALSE;
-    if (!autotiling) {
-        encoder->tileRowsLog2 = normalize_tiles_log2(tile_rows_log2);
-        encoder->tileColsLog2 = normalize_tiles_log2(tile_cols_log2);
-    }
-
-    if (advanced != Py_None && _add_codec_specific_options(encoder, advanced)) {
-        error = 1;
-        goto end;
-    }
-
     self = PyObject_New(AvifEncoderObject, &AvifEncoder_Type);
     if (!self) {
         PyErr_SetString(PyExc_RuntimeError, "could not create encoder object");
