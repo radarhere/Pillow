@@ -530,10 +530,6 @@ _encoder_add(AvifEncoderObject *self, PyObject *args) {
     // rgb.pixels is safe for writes
     memcpy(rgb.pixels, rgb_bytes, size);
 
-    Py_BEGIN_ALLOW_THREADS;
-    result = avifImageRGBToYUV(frame, &rgb);
-    Py_END_ALLOW_THREADS;
-
     if (result != AVIF_RESULT_OK) {
         PyErr_Format(
             exc_type_for_avif_result(result),
