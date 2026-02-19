@@ -33,4 +33,9 @@ fi
 
 # Runs tests
 python3 selftest.py
+
+ulimit -c
+ulimit -c unlimited
+ulimit -c
 python3 avif_debug.py
+chmod -R +rwx /cores/*

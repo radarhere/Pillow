@@ -68,6 +68,7 @@ jobs:
           MACOSX_DEPLOYMENT_TARGET: ${{ matrix.macosx_deployment_target }}
 
       - uses: actions/upload-artifact@v6
+        if: failure()
         with:
-          name: dist-${{ matrix.name }}
-          path: ./wheelhouse/*.whl
+          name: crashes
+          path: /cores
