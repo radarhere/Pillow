@@ -212,10 +212,6 @@ _add_codec_specific_options(avifEncoder *encoder, PyObject *opts) {
 // Encoder functions
 PyObject *
 AvifEncoderNew(PyObject *self_, PyObject *args) {
-    AvifEncoderObject *self = PyObject_New(AvifEncoderObject, &AvifEncoder_Type);
-    self->first_frame = 1;
-    self->encoder = avifEncoderCreate();
-
     avifImage *image = avifImageCreateEmpty();
     image->width = 974;
     image->height = 623;
@@ -223,9 +219,16 @@ AvifEncoderNew(PyObject *self_, PyObject *args) {
     image->matrixCoefficients = AVIF_MATRIX_COEFFICIENTS_BT601;
     image->yuvFormat = AVIF_PIXEL_FORMAT_YUV420;
 
-    self->image = image;
+    avifRGBImage rgb;
+    avifRGBImageSetDefaults(&rgb, image);
+    rgb.format = AVIF_RGB_FORMAT_RGBA;
+    avifRGBImageAllocatePixels(&rgb);
+    memset(rgb.pixels, 255, rgb.rowBytes * image->height);
 
-    return (PyObject *)self;
+    avifImageRGBToYUV(image, &rgb);
+
+    PyErr_SetString(PyExc_RuntimeError, "end with error");
+    return NULL;
 }
 
 PyObject *
@@ -234,7 +237,6 @@ _encoder_dealloc(AvifEncoderObject *self) {
         avifEncoderDestroy(self->encoder);
     }
     if (self->image) {
-        printf("destroy image\n");
         avifImageDestroy(self->image);
     }
     Py_RETURN_NONE;
@@ -249,8 +251,6 @@ _encoder_add(AvifEncoderObject *self, PyObject *args) {
     memset(rgb.pixels, 255, rgb.rowBytes * self->image->height);
 
     avifImageRGBToYUV(self->image, &rgb);
-    avifImageDestroy(self->image);
-    printf("avifImageRGBToYUV complete\n");
 
     PyErr_SetString(PyExc_RuntimeError, "end with error");
     return NULL;
