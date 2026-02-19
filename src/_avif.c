@@ -544,13 +544,6 @@ _encoder_add(AvifEncoderObject *self, PyObject *args) {
         goto end;
     }
 
-    uint32_t addImageFlags =
-        is_single_frame ? AVIF_ADD_IMAGE_FLAG_SINGLE : AVIF_ADD_IMAGE_FLAG_NONE;
-
-    Py_BEGIN_ALLOW_THREADS;
-    result = avifEncoderAddImage(encoder, frame, duration, addImageFlags);
-    Py_END_ALLOW_THREADS;
-
 end:
     avifRGBImageFreePixels(&rgb);
     if (!self->first_frame) {
