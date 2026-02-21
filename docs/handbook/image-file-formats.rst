@@ -1192,7 +1192,7 @@ TIFF
 ^^^^
 
 Pillow reads and writes TIFF files. It can read both striped and tiled
-images, pixel and plane interleaved multi-band images. If you have
+images, pixel and plane interleaved multiband images. If you have
 libtiff and its headers installed, Pillow can read and write many kinds
 of compressed TIFF files. If not, Pillow will only read and write
 uncompressed files.

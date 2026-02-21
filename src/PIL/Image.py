@@ -1569,7 +1569,7 @@ class Image:
         the image.
 
         :returns: For a single-band image, a 2-tuple containing the
-           minimum and maximum pixel value.  For a multi-band image,
+           minimum and maximum pixel value.  For a multiband image,
            a tuple containing one 2-tuple for each band.
         """
 
@@ -2174,7 +2174,7 @@ class Image:
         """
         Modifies the pixel at the given position. The color is given as
         a single numerical value for single-band images, and a tuple for
-        multi-band images. In addition to this, RGB and RGBA tuples are
+        multiband images. In addition to this, RGB and RGBA tuples are
         accepted for P and PA images. See :ref:`colors` for more information.
 
         Note that this method is relatively slow.  For more extensive changes,
@@ -3193,7 +3193,7 @@ def new(
     :param size: A 2-tuple, containing (width, height) in pixels.
     :param color: What color to use for the image. Default is black. If given,
        this should be a single integer or floating point value for single-band
-       modes, and a tuple for multi-band modes (one value per band). When
+       modes, and a tuple for multiband modes (one value per band). When
        creating RGB or HSV images, you can also use color strings as supported
        by the ImageColor module. See :ref:`colors` for more information. If the
        color is None, the image is not initialised.

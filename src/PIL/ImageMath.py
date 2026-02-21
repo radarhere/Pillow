@@ -240,7 +240,7 @@ def lambda_eval(expression: Callable[[dict[str, Any]], Any], **kw: Any) -> Any:
     """
     Returns the result of an image function.
 
-    :py:mod:`~PIL.ImageMath` only supports single-layer images. To process multi-band
+    :py:mod:`~PIL.ImageMath` only supports single-layer images. To process multiband
     images, use the :py:meth:`~PIL.Image.Image.split` method or
     :py:func:`~PIL.Image.merge` function.
 
@@ -271,7 +271,7 @@ def unsafe_eval(expression: str, **kw: Any) -> Any:
     recommended to process expressions without considering this.
     :py:meth:`~lambda_eval` is a more secure alternative.
 
-    :py:mod:`~PIL.ImageMath` only supports single-layer images. To process multi-band
+    :py:mod:`~PIL.ImageMath` only supports single-layer images. To process multiband
     images, use the :py:meth:`~PIL.Image.Image.split` method or
     :py:func:`~PIL.Image.merge` function.
 

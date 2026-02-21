@@ -7,7 +7,7 @@
 The :py:mod:`~PIL.ImageMath` module can be used to evaluate “image expressions”, that
 can take a number of images and generate a result.
 
-:py:mod:`~PIL.ImageMath` only supports single-layer images. To process multi-band
+:py:mod:`~PIL.ImageMath` only supports single-layer images. To process multiband
 images, use the :py:meth:`~PIL.Image.Image.split` method or :py:func:`~PIL.Image.merge`
 function.
 
@@ -55,7 +55,7 @@ Example: Using the :py:mod:`~PIL.ImageMath` module
         recommended to process expressions without considering this.
         :py:meth:`lambda_eval` is a more secure alternative.
 
-    :py:mod:`~PIL.ImageMath` only supports single-layer images. To process multi-band
+    :py:mod:`~PIL.ImageMath` only supports single-layer images. To process multiband
     images, use the :py:meth:`~PIL.Image.Image.split` method or
     :py:func:`~PIL.Image.merge` function.
 

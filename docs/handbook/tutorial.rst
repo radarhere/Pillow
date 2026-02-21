@@ -233,8 +233,8 @@ RGBA image and also using it as the mask would paste the opaque portion
 of the image but not its transparent background.
 
 The Python Imaging Library also allows you to work with the individual bands of
-a multi-band image, such as an RGB image. The split method creates a set of
-new images, each containing one band from the original multi-band image. The
+a multiband image, such as an RGB image. The split method creates a set of
+new images, each containing one band from the original multiband image. The
 merge function takes a mode and a tuple of images, and combines them into a new
 image. The following sample swaps the three bands of an RGB image:
 

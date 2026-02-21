@@ -81,13 +81,13 @@ Pillow provides the following set of predefined image enhancement filters:
 
 .. class:: MultibandFilter
 
-    An abstract mixin used for filtering multi-band images
+    An abstract mixin used for filtering multiband images
     (for use with :py:meth:`~PIL.Image.Image.filter`).
 
     Implementors must provide the following method:
 
     .. method:: filter(self, image)
 
-        Applies a filter to a multi-band image.
+        Applies a filter to a multiband image.
 
         :returns: A filtered copy of the image.
