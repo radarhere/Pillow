@@ -230,7 +230,7 @@ class ImageCmsProfile:
     def __init__(self, profile: str | SupportsRead[bytes] | core.CmsProfile) -> None:
         """
         :param profile: Either a string representing a filename,
-            a file like object containing a profile or a
+            a file-like object containing a profile or a
             low-level profile object
 
         """
