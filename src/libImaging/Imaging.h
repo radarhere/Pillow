@@ -86,7 +86,7 @@ struct ImagingMemoryInstance {
     int xsize;   /* Image dimension. */
     int ysize;
 
-    /* Colour palette (for "P" images only) */
+    /* Color palette (for "P" images only) */
     ImagingPalette palette;
 
     /* Data pointers */
@@ -250,7 +250,7 @@ ImagingPaletteCacheDelete(ImagingPalette palette);
     p->cache[(r >> 2) + (g >> 2) * 64 + (b >> 2) * 64 * 64]
 
 extern Imaging
-ImagingQuantize(Imaging im, int colours, int mode, int kmeans);
+ImagingQuantize(Imaging im, int colors, int mode, int kmeans);
 
 /* Threading */
 /* --------- */

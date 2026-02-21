@@ -188,7 +188,7 @@ def COM(self: JpegImageFile, marker: int) -> None:
 def SOF(self: JpegImageFile, marker: int) -> None:
     #
     # Start of frame marker.  Defines the size and mode of the
-    # image.  JPEG is colour blind, so we use some simple
+    # image.  JPEG is color blind, so we use some simple
     # heuristics to map the number of layers to an appropriate
     # mode.  Note that this could be made a bit brighter, by
     # looking for JFIF and Adobe APP markers.

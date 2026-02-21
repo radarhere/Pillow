@@ -8,7 +8,7 @@
 # 1995-09-01 fl   Created
 # 1996-12-14 fl   Added interlace support
 # 1996-12-30 fl   Added animation support
-# 1997-01-05 fl   Added write support, fixed local colour map bug
+# 1997-01-05 fl   Added write support, fixed local color map bug
 # 1997-02-23 fl   Make sure to load raster data in getdata()
 # 1997-07-05 fl   Support external decoder (0.4)
 # 1998-07-09 fl   Handle all modes when saving (0.5)
@@ -115,7 +115,7 @@ class GifImageFile(ImageFile.ImageFile):
         if flags & 128:
             # get global palette
             self.info["background"] = s[11]
-            # check if palette contains colour indices
+            # check if palette contains color indices
             p = self.fp.read(3 << bits)
             if self._is_palette_needed(p):
                 palette = ImagePalette.raw("RGB", p)
@@ -366,7 +366,7 @@ class GifImageFile(ImageFile.ImageFile):
         if self.dispose_extent and self.disposal_method >= 2:
             try:
                 if self.disposal_method == 2:
-                    # replace with background colour
+                    # replace with background color
 
                     # only dispose the extent in this frame
                     x0, y0, x1, y1 = self.dispose_extent

@@ -336,7 +336,7 @@ def test_matrix_xyz(mode: str) -> None:
     assert im.mode == "RGB"
 
     # Act
-    # Convert an RGB image to the CIE XYZ colour space
+    # Convert an RGB image to the CIE XYZ color space
     converted_im = im.convert(mode=mode, matrix=matrix)
 
     # Assert

@@ -542,7 +542,7 @@ static void
 rgb2cmyk(UINT8 *out, const UINT8 *in, int xsize) {
     int x;
     for (x = 0; x < xsize; x++) {
-        /* Note: no undercolour removal */
+        /* Note: no undercolor removal */
         *out++ = ~(*in++);
         *out++ = ~(*in++);
         *out++ = ~(*in++);
@@ -1188,7 +1188,7 @@ topalette(
                     palette->palette[i * 4 + 2] = (UINT8)i;
             }
         } else {
-            palette = ImagingPaletteNewBrowser(); /* Standard colour cube */
+            palette = ImagingPaletteNewBrowser(); /* Standard color cube */
         }
     }
 
@@ -1222,7 +1222,7 @@ topalette(
         ImagingSectionLeave(&cookie);
 
     } else {
-        /* colour image */
+        /* color image */
 
         /* Create mapping cache */
         if (ImagingPaletteCachePrepare(palette) < 0) {
@@ -1265,7 +1265,7 @@ topalette(
                     g = CLIP8(in[1] + (g + e[3 + 1]) / 16);
                     b = CLIP8(in[2] + (b + e[3 + 2]) / 16);
 
-                    /* get closest colour */
+                    /* get closest color */
                     cache = &ImagingPaletteCache(palette, r, g, b);
                     if (cache[0] == 0x100) {
                         ImagingPaletteCacheUpdate(palette, r, g, b);
@@ -1318,7 +1318,7 @@ topalette(
             free(errors);
 
         } else {
-            /* closest colour */
+            /* closest color */
             ImagingSectionEnter(&cookie);
             for (y = 0; y < imIn->ysize; y++) {
                 int r, g, b;
@@ -1332,7 +1332,7 @@ topalette(
                     g = in[1];
                     b = in[2];
 
-                    /* get closest colour */
+                    /* get closest color */
                     cache = &ImagingPaletteCache(palette, r, g, b);
                     if (cache[0] == 0x100) {
                         ImagingPaletteCacheUpdate(palette, r, g, b);
@@ -1392,7 +1392,7 @@ tobilevel(Imaging imOut, Imaging imIn) {
             l = l0 = l1 = 0;
 
             for (x = 0; x < imIn->xsize; x++) {
-                /* pick closest colour */
+                /* pick closest color */
                 l = CLIP8(in[x] + (l + errors[x + 1]) / 16);
                 out[x] = (l > 128) ? 255 : 0;
 
@@ -1423,7 +1423,7 @@ tobilevel(Imaging imOut, Imaging imIn) {
             l = l0 = l1 = 0;
 
             for (x = 0; x < imIn->xsize; x++, in += 4) {
-                /* pick closest colour */
+                /* pick closest color */
                 l = CLIP8(L(in) / 1000 + (l + errors[x + 1]) / 16);
                 out[x] = (l > 128) ? 255 : 0;
 

@@ -999,7 +999,7 @@ def test_floodfill(bbox: Coords) -> None:
         with Image.open(expected) as im_floodfill:
             assert_image_equal(im, im_floodfill)
 
-    # Test that using the same colour does not change the image
+    # Test that using the same color does not change the image
     ImageDraw.floodfill(im, centre_point, red)
     assert_image_equal(im, im_floodfill)
 

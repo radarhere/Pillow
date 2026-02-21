@@ -21,7 +21,7 @@ import olefile
 from . import Image, ImageFile
 from ._binary import i32le as i32
 
-# we map from colour field tuples to (mode, rawmode) descriptors
+# we map from color field tuples to (mode, rawmode) descriptors
 MODES = {
     # opacity
     (0x00007FFE,): ("A", "L"),

@@ -1723,10 +1723,10 @@ _putdata(ImagingObject *self, PyObject *args) {
 
 static PyObject *
 _quantize(ImagingObject *self, PyObject *args) {
-    int colours = 256;
+    int colors = 256;
     int method = 0;
     int kmeans = 0;
-    if (!PyArg_ParseTuple(args, "|iii", &colours, &method, &kmeans)) {
+    if (!PyArg_ParseTuple(args, "|iii", &colors, &method, &kmeans)) {
         return NULL;
     }
 
@@ -1737,7 +1737,7 @@ _quantize(ImagingObject *self, PyObject *args) {
         );
     }
 
-    return PyImagingNew(ImagingQuantize(self->image, colours, method, kmeans));
+    return PyImagingNew(ImagingQuantize(self->image, colors, method, kmeans));
 }
 
 static PyObject *

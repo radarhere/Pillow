@@ -56,7 +56,7 @@ class Dib:
 
     If the display requires a palette, this constructor creates a suitable
     palette and associates it with the image. For an "L" image, 128 graylevels
-    are allocated. For an "RGB" image, a 6x6x6 colour cube is used, together
+    are allocated. For an "RGB" image, a 6x6x6 color cube is used, together
     with 20 graylevels.
 
     To make sure that palettes work properly under Windows, you must call the

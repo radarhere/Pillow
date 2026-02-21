@@ -2,7 +2,7 @@
  * The Python Imaging Library
  * $Id$
  *
- * colour and luminance matrix transforms
+ * color and luminance matrix transforms
  *
  * history:
  * 1996-05-18 fl:   created (brute force implementation)

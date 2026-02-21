@@ -201,7 +201,7 @@ class BitmapImage:
     transparent.  Options, if any, are passed on to Tkinter.  The most commonly
     used option is ``foreground``, which is used to specify the color for the
     non-transparent parts.  See the Tkinter documentation for information on
-    how to specify colours.
+    how to specify colors.
 
     :param image: A PIL image.
     """

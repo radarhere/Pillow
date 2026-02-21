@@ -6,7 +6,7 @@
  *
  * history:
  * 1995-11-27 fl   Created
- * 1996-03-31 fl   Fixed colour support
+ * 1996-03-31 fl   Fixed color support
  * 1996-08-13 fl   Support 8-bit to "1" thresholding
  * 1997-05-31 fl   Added floating point transform
  * 1998-07-02 fl   Added integer point transform

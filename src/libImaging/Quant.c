@@ -351,7 +351,7 @@ splitlists(
 #ifdef DEBUG
     int nLeft;
 #endif
-    int splitColourVal;
+    int splitColorVal;
 
 #ifdef DEBUG
     {
@@ -419,9 +419,9 @@ splitlists(
         }
     }
     if (c) {
-        splitColourVal = c->prev[axis]->p.a.v[axis];
+        splitColorVal = c->prev[axis]->p.a.v[axis];
         for (; c; c = c->next[axis]) {
-            if (splitColourVal != c->p.a.v[axis]) {
+            if (splitColorVal != c->p.a.v[axis]) {
                 break;
             }
             c->flag = 0;
@@ -437,8 +437,8 @@ splitlists(
         nCount[1] += c->count;
     }
     if (!nRight) {
-        for (c = t[axis], splitColourVal = t[axis]->p.a.v[axis]; c; c = c->prev[axis]) {
-            if (splitColourVal != c->p.a.v[axis]) {
+        for (c = t[axis], splitColorVal = t[axis]->p.a.v[axis]; c; c = c->prev[axis]) {
+            if (splitColorVal != c->p.a.v[axis]) {
                 break;
             }
             c->flag = 1;
@@ -1737,7 +1737,7 @@ ImagingQuantize(Imaging im, int colors, int mode, int kmeans) {
         }
 
     } else if (im->mode == IMAGING_MODE_RGB || im->mode == IMAGING_MODE_RGBA) {
-        /* true colour */
+        /* true color */
 
         withAlpha = im->mode == IMAGING_MODE_RGBA;
         int transparency = 0;
@@ -1754,7 +1754,7 @@ ImagingQuantize(Imaging im, int colors, int mode, int kmeans) {
                             b = p[i].c.b;
                         } else {
                             /* Set all subsequent transparent pixels
-                            to the same colour as the first */
+                            to the same color as the first */
                             p[i].c.r = r;
                             p[i].c.g = g;
                             p[i].c.b = b;

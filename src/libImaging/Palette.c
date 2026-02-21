@@ -6,7 +6,7 @@
  *
  * history:
  * 1996-05-05 fl   Added to library
- * 1996-05-27 fl   Added colour mapping stuff
+ * 1996-05-27 fl   Added color mapping stuff
  * 1997-05-12 fl   Support RGBA palettes
  * 2005-02-09 fl   Removed grayscale entries from web palette
  *
@@ -60,7 +60,7 @@ ImagingPaletteNewBrowser(void) {
 
     /* FIXME: Add 10-level windows palette here? */
 
-    /* Simple 6x6x6 colour cube */
+    /* Simple 6x6x6 color cube */
     i = 10;
     for (b = 0; b < 256; b += 51) {
         for (g = 0; g < 256; g += 51) {
@@ -115,7 +115,7 @@ ImagingPaletteDelete(ImagingPalette palette) {
 }
 
 /* -------------------------------------------------------------------- */
-/* Colour mapping                                                       */
+/* Color mapping                                                        */
 /* -------------------------------------------------------------------- */
 
 /* This code is used to map RGB triplets to palette indices, using
@@ -130,7 +130,7 @@ ImagingPaletteDelete(ImagingPalette palette) {
 
 #define DIST(a, b, s) (a - b) * (a - b) * s
 
-/* Colour weights (no scaling, for now) */
+/* Color weights (no scaling, for now) */
 #define RSCALE 1
 #define GSCALE 1
 #define BSCALE 1
@@ -160,7 +160,7 @@ ImagingPaletteCacheUpdate(ImagingPalette palette, int r, int g, int b) {
     UINT8 c[BOXVOLUME];
 
     /* Get box boundaries for the given (r,g,b)-triplet.  Each box
-       covers eight cache slots (32 colour values, that is). */
+       covers eight cache slots (32 color values, that is). */
 
     r0 = r & 0xe0;
     r1 = r0 + 0x1f;
@@ -175,7 +175,7 @@ ImagingPaletteCacheUpdate(ImagingPalette palette, int r, int g, int b) {
     /* Step 1 -- Select relevant palette entries (after Heckbert) */
 
     /* For each palette entry, calculate the min and max distances to
-     * any position in the box given by the colour we're looking for. */
+     * any position in the box given by the color we're looking for. */
 
     dmax = (unsigned int)~0;
 
@@ -270,7 +270,7 @@ ImagingPaletteCacheUpdate(ImagingPalette palette, int r, int g, int b) {
 
 int
 ImagingPaletteCachePrepare(ImagingPalette palette) {
-    /* Add a colour cache to a palette */
+    /* Add a color cache to a palette */
 
     int i;
     int entries = 64 * 64 * 64;
@@ -297,7 +297,7 @@ ImagingPaletteCachePrepare(ImagingPalette palette) {
 
 void
 ImagingPaletteCacheDelete(ImagingPalette palette) {
-    /* Release the colour cache, if any */
+    /* Release the color cache, if any */
 
     if (palette && palette->cache) {
         free(palette->cache);

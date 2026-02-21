@@ -20,7 +20,7 @@
 #include "math.h"
 
 Imaging
-ImagingFill(Imaging im, const void *colour) {
+ImagingFill(Imaging im, const void *color) {
     int x, y;
     ImagingSectionCookie cookie;
 
@@ -35,7 +35,7 @@ ImagingFill(Imaging im, const void *colour) {
         if (access) {
             for (y = 0; y < im->ysize; y++) {
                 for (x = 0; x < im->xsize; x++) {
-                    access->put_pixel(im, x, y, colour);
+                    access->put_pixel(im, x, y, color);
                 }
             }
             ImagingAccessDelete(im, access);
@@ -48,7 +48,7 @@ ImagingFill(Imaging im, const void *colour) {
     } else {
         INT32 c = 0L;
         ImagingSectionEnter(&cookie);
-        memcpy(&c, colour, im->pixelsize);
+        memcpy(&c, color, im->pixelsize);
         if (im->image32 && c != 0L) {
             for (y = 0; y < im->ysize; y++) {
                 for (x = 0; x < im->xsize; x++) {
@@ -56,7 +56,7 @@ ImagingFill(Imaging im, const void *colour) {
                 }
             }
         } else {
-            unsigned char cc = (unsigned char)*(UINT8 *)colour;
+            unsigned char cc = (unsigned char)*(UINT8 *)color;
             for (y = 0; y < im->ysize; y++) {
                 memset(im->image[y], cc, im->linesize);
             }

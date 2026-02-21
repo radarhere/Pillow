@@ -716,17 +716,17 @@ def test_dispose2_diff(tmp_path: Path) -> None:
     )
 
     with Image.open(out) as img:
-        for i, colours in enumerate(circles):
+        for i, colors in enumerate(circles):
             img.seek(i)
             rgb_img = img.convert("RGBA")
 
-            # Check left circle is correct colour
-            assert rgb_img.getpixel((20, 50)) == colours[0]
+            # Check left circle is correct color
+            assert rgb_img.getpixel((20, 50)) == colors[0]
 
-            # Check right circle is correct colour
-            assert rgb_img.getpixel((80, 50)) == colours[1]
+            # Check right circle is correct color
+            assert rgb_img.getpixel((80, 50)) == colors[1]
 
-            # Check BG is correct colour
+            # Check BG is correct color
             assert rgb_img.getpixel((1, 1)) == (255, 255, 255, 0)
 
 

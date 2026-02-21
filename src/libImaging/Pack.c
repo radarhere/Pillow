@@ -554,7 +554,7 @@ static struct {
     {IMAGING_MODE_PA, IMAGING_RAWMODE_PA, 16, packLA},
     {IMAGING_MODE_PA, IMAGING_RAWMODE_PA_L, 16, packLAL},
 
-    /* true colour */
+    /* true color */
     {IMAGING_MODE_RGB, IMAGING_RAWMODE_RGB, 24, ImagingPackRGB},
     {IMAGING_MODE_RGB, IMAGING_RAWMODE_RGBX, 32, copy4},
     {IMAGING_MODE_RGB, IMAGING_RAWMODE_RGBA, 32, copy4},
@@ -567,7 +567,7 @@ static struct {
     {IMAGING_MODE_RGB, IMAGING_RAWMODE_G, 8, band1},
     {IMAGING_MODE_RGB, IMAGING_RAWMODE_B, 8, band2},
 
-    /* true colour w. alpha */
+    /* true color w. alpha */
     {IMAGING_MODE_RGBA, IMAGING_RAWMODE_RGBA, 32, copy4},
     {IMAGING_MODE_RGBA, IMAGING_RAWMODE_RGBA_L, 32, packRGBXL},
     {IMAGING_MODE_RGBA, IMAGING_RAWMODE_RGB, 24, ImagingPackRGB},
@@ -580,12 +580,12 @@ static struct {
     {IMAGING_MODE_RGBA, IMAGING_RAWMODE_B, 8, band2},
     {IMAGING_MODE_RGBA, IMAGING_RAWMODE_A, 8, band3},
 
-    /* true colour w. alpha premultiplied */
+    /* true color w. alpha premultiplied */
     {IMAGING_MODE_RGBa, IMAGING_RAWMODE_RGBa, 32, copy4},
     {IMAGING_MODE_RGBa, IMAGING_RAWMODE_BGRa, 32, ImagingPackBGRA},
     {IMAGING_MODE_RGBa, IMAGING_RAWMODE_aBGR, 32, ImagingPackABGR},
 
-    /* true colour w. padding */
+    /* true color w. padding */
     {IMAGING_MODE_RGBX, IMAGING_RAWMODE_RGBX, 32, copy4},
     {IMAGING_MODE_RGBX, IMAGING_RAWMODE_RGBX_L, 32, packRGBXL},
     {IMAGING_MODE_RGBX, IMAGING_RAWMODE_RGB, 24, ImagingPackRGB},
@@ -597,7 +597,7 @@ static struct {
     {IMAGING_MODE_RGBX, IMAGING_RAWMODE_B, 8, band2},
     {IMAGING_MODE_RGBX, IMAGING_RAWMODE_X, 8, band3},
 
-    /* colour separation */
+    /* color separation */
     {IMAGING_MODE_CMYK, IMAGING_RAWMODE_CMYK, 32, copy4},
     {IMAGING_MODE_CMYK, IMAGING_RAWMODE_CMYK_I, 32, copy4I},
     {IMAGING_MODE_CMYK, IMAGING_RAWMODE_CMYK_L, 32, packRGBXL},

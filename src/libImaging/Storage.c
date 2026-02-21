@@ -141,7 +141,7 @@ ImagingNewPrologueSubtype(const ModeID mode, int xsize, int ysize, int size) {
         strcpy(im->band_names[0], "I");
 
     } else if (mode == IMAGING_MODE_RGB) {
-        /* 24-bit true colour images */
+        /* 24-bit true color images */
         im->bands = 3;
         im->pixelsize = 4;
         im->linesize = xsize * 4;
@@ -151,7 +151,7 @@ ImagingNewPrologueSubtype(const ModeID mode, int xsize, int ysize, int size) {
         strcpy(im->band_names[3], "X");
 
     } else if (mode == IMAGING_MODE_RGBX) {
-        /* 32-bit true colour images with padding */
+        /* 32-bit true color images with padding */
         im->bands = im->pixelsize = 4;
         im->linesize = xsize * 4;
         strcpy(im->band_names[0], "R");
@@ -160,7 +160,7 @@ ImagingNewPrologueSubtype(const ModeID mode, int xsize, int ysize, int size) {
         strcpy(im->band_names[3], "X");
 
     } else if (mode == IMAGING_MODE_RGBA) {
-        /* 32-bit true colour images with alpha */
+        /* 32-bit true color images with alpha */
         im->bands = im->pixelsize = 4;
         im->linesize = xsize * 4;
         strcpy(im->band_names[0], "R");
@@ -169,7 +169,7 @@ ImagingNewPrologueSubtype(const ModeID mode, int xsize, int ysize, int size) {
         strcpy(im->band_names[3], "A");
 
     } else if (mode == IMAGING_MODE_RGBa) {
-        /* 32-bit true colour images with premultiplied alpha */
+        /* 32-bit true color images with premultiplied alpha */
         im->bands = im->pixelsize = 4;
         im->linesize = xsize * 4;
         strcpy(im->band_names[0], "R");
@@ -178,7 +178,7 @@ ImagingNewPrologueSubtype(const ModeID mode, int xsize, int ysize, int size) {
         strcpy(im->band_names[3], "a");
 
     } else if (mode == IMAGING_MODE_CMYK) {
-        /* 32-bit colour separation */
+        /* 32-bit color separation */
         im->bands = im->pixelsize = 4;
         im->linesize = xsize * 4;
         strcpy(im->band_names[0], "C");

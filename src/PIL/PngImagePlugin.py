@@ -74,10 +74,10 @@ _MODES = {
     (4, 0): ("L", "L;4"),
     (8, 0): ("L", "L"),
     (16, 0): ("I;16", "I;16B"),
-    # Truecolour
+    # Truecolor
     (8, 2): ("RGB", "RGB"),
     (16, 2): ("RGB", "RGB;16B"),
-    # Indexed-colour
+    # Indexed-color
     (1, 3): ("P", "P;1"),
     (2, 3): ("P", "P;2"),
     (4, 3): ("P", "P;4"),
@@ -85,7 +85,7 @@ _MODES = {
     # Grayscale with alpha
     (8, 4): ("LA", "LA"),
     (16, 4): ("RGBA", "LA;16B"),  # LA;16B->LA not yet available
-    # Truecolour with alpha
+    # Truecolor with alpha
     (8, 6): ("RGBA", "RGBA"),
     (16, 6): ("RGBA", "RGBA;16B"),
 }

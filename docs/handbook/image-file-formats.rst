@@ -122,7 +122,7 @@ BMP
 ^^^
 
 Pillow reads and writes Windows and OS/2 BMP files containing ``1``, ``L``, ``P``,
-or ``RGB`` data. 16-colour images are read as ``P`` images.
+or ``RGB`` data. 16-color images are read as ``P`` images.
 Support for reading 8-bit run-length encoding was added in Pillow 9.1.0.
 Support for reading 4-bit run-length encoding was added in Pillow 9.3.0.
 

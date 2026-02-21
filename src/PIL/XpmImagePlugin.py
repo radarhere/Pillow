@@ -70,7 +70,7 @@ class XpmImageFile(ImageFile.ImageFile):
 
             for i in range(0, len(s), 2):
                 if s[i] == b"c":
-                    # process colour key
+                    # process color key
                     rgb = s[i + 1]
                     if rgb == b"None":
                         self.info["transparency"] = c
@@ -82,13 +82,13 @@ class XpmImageFile(ImageFile.ImageFile):
                             + o8(rgb_int & 255)
                         )
                     else:
-                        # unknown colour
+                        # unknown color
                         msg = "cannot read this XPM file"
                         raise ValueError(msg)
                     break
 
             else:
-                # missing colour key
+                # missing color key
                 msg = "cannot read this XPM file"
                 raise ValueError(msg)
 

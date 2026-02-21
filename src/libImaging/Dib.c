@@ -158,7 +158,7 @@ ImagingNewDIB(const ModeID mode, int xsize, int ysize) {
         } else if (mode == IMAGING_MODE_RGB) {
 #ifdef CUBE216
 
-            /* Colour DIB.  Create a 6x6x6 colour cube (216 entries) and
+            /* Color DIB.  Create a 6x6x6 color cube (216 entries) and
              * add 20 extra graylevels for best result with grayscale
              * images. */
 
@@ -182,7 +182,7 @@ ImagingNewDIB(const ModeID mode, int xsize, int ysize) {
 
 #else
 
-            /* Colour DIB.  Alternate palette. */
+            /* Color DIB.  Alternate palette. */
 
             i = 10;
             for (r = 0; r < 256; r += 37) {
@@ -292,7 +292,7 @@ ImagingQueryPaletteDIB(ImagingDIB dib, void *dc) {
         n = 0;
     }
 
-    return n; /* number of colours that was changed */
+    return n; /* number of colors that was changed */
 }
 
 void

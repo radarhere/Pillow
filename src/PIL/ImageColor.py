@@ -2,7 +2,7 @@
 # The Python Imaging Library
 # $Id$
 #
-# map CSS3-style colour description strings to RGB
+# map CSS3-style color description strings to RGB
 #
 # History:
 # 2002-10-24 fl   Added support for CSS-style color strings
@@ -166,9 +166,9 @@ def getcolor(color: str, mode: str) -> int | tuple[int, ...]:
 
 
 colormap: dict[str, str | tuple[int, int, int]] = {
-    # X11 colour table from https://drafts.csswg.org/css-color-4/, with
+    # X11 color table from https://drafts.csswg.org/css-color-4/, with
     # gray/grey spelling issues fixed.  This is a superset of HTML 4.0
-    # colour names used in CSS 1.
+    # color names used in CSS 1.
     "aliceblue": "#f0f8ff",
     "antiquewhite": "#faebd7",
     "aqua": "#00ffff",
