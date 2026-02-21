@@ -181,7 +181,7 @@ GifImagePlugin loading strategy
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Pillow 9.0.0 introduced the conversion of subsequent GIF frames to ``RGB`` or ``RGBA``. This
-behaviour can now be changed so that the first ``P`` frame is converted to ``RGB`` as
+behavior can now be changed so that the first ``P`` frame is converted to ``RGB`` as
 well. ::
 
     from PIL import GifImagePlugin

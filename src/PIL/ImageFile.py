@@ -48,7 +48,7 @@ logger = logging.getLogger(__name__)
 MAXBLOCK = 65536
 """
 By default, Pillow processes image data in blocks. This helps to prevent excessive use
-of resources. Codecs may disable this behaviour with ``_pulls_fd`` or ``_pushes_fd``.
+of resources. Codecs may disable this behavior with ``_pulls_fd`` or ``_pushes_fd``.
 
 When reading an image, this is the number of bytes to read at once.
 

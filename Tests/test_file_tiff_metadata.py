@@ -26,7 +26,7 @@ def test_rt_metadata(tmp_path: Path) -> None:
 
     img = hopper()
 
-    # Behaviour change: re #1416
+    # Behavior change: re #1416
     # Pre ifd rewrite, ImageJMetaData was being written as a string(2),
     # Post ifd rewrite, it's defined as arbitrary bytes(7). It should
     # roundtrip with the actual bytes, rather than stripped text

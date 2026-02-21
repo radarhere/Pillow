@@ -2745,7 +2745,7 @@ class Image:
         Displays this image. This method is mainly intended for debugging purposes.
 
         This method calls :py:func:`PIL.ImageShow.show` internally. You can use
-        :py:func:`PIL.ImageShow.register` to override its default behaviour.
+        :py:func:`PIL.ImageShow.register` to override its default behavior.
 
         The image is first saved to a temporary file. By default, it will be in
         PNG format.

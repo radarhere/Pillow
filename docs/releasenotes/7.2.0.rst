@@ -47,7 +47,7 @@ Image._showxv
 ~~~~~~~~~~~~~
 
 ``Image._showxv`` has been deprecated. Use :py:meth:`~PIL.Image.Image.show`
-instead. If custom behaviour is required, use :py:meth:`~PIL.ImageShow.register` to add
+instead. If custom behavior is required, use :py:meth:`~PIL.ImageShow.register` to add
 a custom :py:class:`~PIL.ImageShow.Viewer` class.
 
 ImageFile.raise_ioerror

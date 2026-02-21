@@ -167,7 +167,7 @@ class TestImagingCoreResize:
             self.resize(hopper(), (10, 10), 9)  # type: ignore[arg-type]
 
     def test_cross_platform(self, tmp_path: Path) -> None:
-        # This test is intended for only check for consistent behaviour across
+        # This test is intended for only check for consistent behavior across
         # platforms. So if a future Pillow change requires that the test file
         # be updated, that is okay.
         im = hopper().resize((64, 64))

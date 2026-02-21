@@ -8,7 +8,7 @@ Initialize libtiff buffer when saving
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 When saving a TIFF image to a file object using libtiff, the buffer was not
-initialized. This behaviour introduced in Pillow 2.0.0, and has now been fixed.
+initialized. This behavior introduced in Pillow 2.0.0, and has now been fixed.
 
 Decode JPEG compressed BLP1 data in original mode
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^

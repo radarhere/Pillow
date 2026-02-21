@@ -49,5 +49,5 @@ LibJpeg and Zlib are required by default
 
 The external dependencies on libjpeg and zlib are now required by default.
 If the headers or libraries are not found, then installation will abort
-with an error. This behaviour can be disabled with the ``--disable-libjpeg``
+with an error. This behavior can be disabled with the ``--disable-libjpeg``
 and ``--disable-zlib`` flags.

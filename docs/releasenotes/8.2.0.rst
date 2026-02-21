@@ -140,7 +140,7 @@ create a circle, but not any other ellipse. ::
 ImageOps.autocontrast: preserve_tone
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-The default behaviour of :py:meth:`~PIL.ImageOps.autocontrast` is to normalize
+The default behavior of :py:meth:`~PIL.ImageOps.autocontrast` is to normalize
 separate histograms for each color channel, changing the tone of the image. The new
 ``preserve_tone`` argument keeps the tone unchanged by using one luminance histogram
 for all channels.
@@ -154,7 +154,7 @@ be registered. It uses GraphicsMagick_, an ImageMagick_ fork, to display images.
 The GraphicsMagick based viewer has a lower priority than its ImageMagick
 counterpart.  Thus, if both ImageMagick and GraphicsMagick are installed,
 ``im.show()`` and :py:func:`.ImageShow.show()` prefer the viewer based on
-ImageMagick, i.e the behaviour stays the same for Pillow users having
+ImageMagick, i.e the behavior stays the same for Pillow users having
 ImageMagick installed.
 
 ImageShow.IPythonViewer
@@ -166,7 +166,7 @@ to users of Google Colab, allowing ``im.show()`` to display images.
 
 It is lower in priority than the other default :py:class:`PIL.ImageShow.Viewer`
 instances, so it will only be used by ``im.show()`` or :py:func:`.ImageShow.show()`
-if none of the other viewers are available. This means that the behaviour of
+if none of the other viewers are available. This means that the behavior of
 :py:class:`PIL.ImageShow` will stay the same for most Pillow users.
 
 Saving TIFF with ICC profile
