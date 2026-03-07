@@ -602,6 +602,7 @@ static const struct j2k_decode_unpacker j2k_unpackers[] = {
     {IMAGING_MODE_L, OPJ_CLRSPC_GRAY, 1, 0, j2ku_gray_l},
     {IMAGING_MODE_P, OPJ_CLRSPC_GRAY, 1, 0, j2ku_gray_l},
     {IMAGING_MODE_P, OPJ_CLRSPC_SRGB, 1, 0, j2ku_gray_l},
+    {IMAGING_MODE_P, OPJ_CLRSPC_CMYK, 1, 0, j2ku_gray_l},
     {IMAGING_MODE_PA, OPJ_CLRSPC_SRGB, 2, 0, j2ku_graya_la},
     {IMAGING_MODE_I_16, OPJ_CLRSPC_GRAY, 1, 0, j2ku_gray_i},
     {IMAGING_MODE_I_16B, OPJ_CLRSPC_GRAY, 1, 0, j2ku_gray_i},
@@ -768,6 +769,7 @@ j2k_decode_entry(Imaging im, ImagingCodecState state) {
         }
     }
 
+    printf("packer %d %d %d\n", color_space, image->numcomps, im->mode);
     for (n = 0; n < sizeof(j2k_unpackers) / sizeof(j2k_unpackers[0]); ++n) {
         if (color_space == j2k_unpackers[n].color_space &&
             image->numcomps == j2k_unpackers[n].components &&
@@ -779,6 +781,7 @@ j2k_decode_entry(Imaging im, ImagingCodecState state) {
     }
 
     if (!unpack) {
+        printf("unknown unpacker\n");
         state->errcode = IMAGING_CODEC_BROKEN;
         state->state = J2K_STATE_FAILED;
         goto quick_exit;
