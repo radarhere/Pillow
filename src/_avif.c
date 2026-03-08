@@ -226,7 +226,14 @@ AvifEncoderNew(PyObject *self_, PyObject *args) {
     avifRGBImageAllocatePixels(&rgb);
     memset(rgb.pixels, 255, rgb.rowBytes * frame->height);
 
-    avifImageDestroy(frame);
+    avifResult result;
+    result = avifImageRGBToYUV(frame, &rgb);
+    if (result != AVIF_RESULT_OK) {
+        PyErr_SetString(PyExc_RuntimeError, "not ok");
+        return NULL;
+    } else {
+        printf("ok\n");
+    }
 
     PyErr_SetString(PyExc_RuntimeError, "end with error");
     return NULL;
@@ -370,7 +377,6 @@ AvifEncoderNew(PyObject *self_, PyObject *args) {
     }
     self->first_frame = 1;
 
-    avifResult result;
     if (icc_buffer.len) {
         result = avifImageSetProfileICC(image, icc_buffer.buf, icc_buffer.len);
         if (result != AVIF_RESULT_OK) {
