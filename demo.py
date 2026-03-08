@@ -5,7 +5,7 @@ import numpy as np
 print(f'Pillow version: {Image.__version__}')
 
 # Load image
-img_path = 'Tests/images/hopper.jpg'
+img_path = 'test_image.jpg'
 img = Image.open(img_path).convert('RGB')
 arr = np.array(img)
 
