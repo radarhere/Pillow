@@ -67,18 +67,18 @@ jobs:
 
         python3 -m pip install numpy
 
-        python3 -m pip install Pillow==10.4.0
+        python3 -m pip install --no-binary :all: Pillow==10.4.0
         python3 -m PIL.report
         python3 demo.py
 
-        python3 -m pip install Pillow==9.5.0
+        python3 -m pip install --no-binary :all: Pillow==9.5.0
         python3 -m PIL
         python3 demo.py
 
-        python3 -m pip install Pillow==8.4.0
+        python3 -m pip install --no-binary :all: Pillow==8.4.0
         python3 -m PIL
         python3 demo.py
 
-        python3 -m pip install Pillow==7.2.0
+        python3 -m pip install --no-binary :all: Pillow==7.2.0
         python3 -m PIL
         python3 demo.py
