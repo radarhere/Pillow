@@ -226,10 +226,7 @@ AvifEncoderNew(PyObject *self_, PyObject *args) {
     avifRGBImageAllocatePixels(&rgb);
     memset(rgb.pixels, 255, rgb.rowBytes * frame->height);
 
-    avifImageRGBToYUV(frame, &rgb);
-    if (frame != NULL) {
-      avifImageDestroy(frame);
-    }
+    avifImageDestroy(frame);
 
     PyErr_SetString(PyExc_RuntimeError, "end with error");
     return NULL;
