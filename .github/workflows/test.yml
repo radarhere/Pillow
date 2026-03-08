@@ -63,6 +63,8 @@ jobs:
 
     - name: Build
       run: |
+        sudo apt-get -qq install libjpeg-turbo8-dev
+
         python3 -m pip install numpy
 
         python3 -m pip install Pillow==10.4.0
