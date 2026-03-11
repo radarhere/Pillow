@@ -17,6 +17,9 @@ else
 
     pushd libavif-$version
 
+    # Apply patch for CMake < 3.24 compatibility
+    patch -p1 < ../libavif-cmake.patch
+
     if [ $(uname) == "Darwin" ] && [ -x "$(command -v brew)" ]; then
         PREFIX=$(brew --prefix)
     else
