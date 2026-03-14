@@ -1438,9 +1438,8 @@ def _save(
         palette_byte_number = colors * 3
         print("png2", tuple(x for x in im.im.getpalette("RGBA", "RGBA")[:10]))
         print("a")
-        y = im.im.getpalette("RGB", "CMYK")
-        print("b")
-        print(len(y))
+        y = im.im.getpalette("RGBA", "CMYK")
+        print("y", len(y))
         print("png3", tuple(x for x in y[:10]))
         #a = im.im.getpalette("RGB", "CMYK")
         #print(len(a), palette_byte_number)
@@ -1449,7 +1448,7 @@ def _save(
         for i in range(0, 256):
             f += y[i*4:i*4+3]
         palette_bytes = f[:palette_byte_number]
-        print("png4", len(palette_bytes), tuple(x for x in f[:10]))
+        print("png4", len(y), len(palette_bytes), tuple(x for x in f[:10]))
         while len(palette_bytes) < palette_byte_number:
             palette_bytes += b"\0"
         chunk(fp, b"PLTE", palette_bytes)

@@ -568,6 +568,7 @@ static struct {
     {IMAGING_MODE_RGB, IMAGING_RAWMODE_G, 8, band1},
     {IMAGING_MODE_RGB, IMAGING_RAWMODE_B, 8, band2},
     {IMAGING_MODE_RGB, IMAGING_RAWMODE_CMYK, 24, cmyk2rgb},
+    {IMAGING_MODE_RGBA, IMAGING_RAWMODE_CMYK, 32, cmyk2rgb},
 
     /* true colour w. alpha */
     {IMAGING_MODE_RGBA, IMAGING_RAWMODE_RGBA, 32, copy4},
