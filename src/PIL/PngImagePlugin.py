@@ -1362,9 +1362,10 @@ def _save(
         else:
             # check palette contents
             if im.palette:
-                colors = max(min(len(im.palette.getdata()[1]) // 3, 256), 1)
+                colors = max(min(len(im.palette.getdata()[1]) // 3, 256), 1) # maybe 4 not 3
             else:
                 colors = 256
+            print("palette length png", colors)
 
         if colors <= 16:
             if colors <= 2:
@@ -1435,7 +1436,20 @@ def _save(
 
     if im.mode == "P":
         palette_byte_number = colors * 3
-        palette_bytes = im.im.getpalette("RGB", "CMYK")[:palette_byte_number]
+        print("png2", tuple(x for x in im.im.getpalette("RGBA", "RGBA")[:10]))
+        print("a")
+        y = im.im.getpalette("RGB", "CMYK")
+        print("b")
+        print(len(y))
+        print("png3", tuple(x for x in y[:10]))
+        #a = im.im.getpalette("RGB", "CMYK")
+        #print(len(a), palette_byte_number)
+        #print(ImagePalette.ImagePalette("RGB", a).colors)
+        f = b""
+        for i in range(0, 256):
+            f += y[i*4:i*4+3]
+        palette_bytes = f[:palette_byte_number]
+        print("png4", len(palette_bytes), tuple(x for x in f[:10]))
         while len(palette_bytes) < palette_byte_number:
             palette_bytes += b"\0"
         chunk(fp, b"PLTE", palette_bytes)

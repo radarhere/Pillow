@@ -217,12 +217,17 @@ def _parse_jp2_header(
                 else:
                     palette_mode = "RGB"
                 palette = ImagePalette.ImagePalette(palette_mode)
+                print(npc)
                 for i in range(ne):
                     color: list[int] = []
                     for value in header.read_fields(">" + ("B" * npc)):
                         assert isinstance(value, int)
                         color.append(value)
+                    print(color)
                     palette.getcolor(tuple(color))
+                    if i < 3:
+                        print(palette.colors)
+                print("palette length", ne)
                 mode = "P" if mode == "L" else "PA"
         elif tbox == b"res ":
             res = header.read_boxes()

@@ -176,6 +176,7 @@ class ImagePalette:
                         + self._palette[index * mode_len + mode_len :]
                     )
                 else:
+                    print("add", color)
                     self._palette += bytes(color)
                 self.dirty = 1
                 return index

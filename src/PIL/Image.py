@@ -984,7 +984,12 @@ class Image:
         if self._im is not None and self.palette and self.palette.dirty:
             # realize palette
             mode, arr = self.palette.getdata()
+            print("inside load", mode, tuple(x for x in arr)[:10])
+            print("inside load", self.palette.mode, mode)
             self.im.putpalette(self.palette.mode, mode, arr)
+            print("inside load", tuple(x for x in self.im.getpalette())[:10])
+            print("inside load", tuple(x for x in self.im.getpalette("RGBA", "RGBA"))[:10])
+            print("inside load", tuple(x for x in self.im.getpalette("CMYK", "CMYK"))[:10])
             self.palette.dirty = 0
             self.palette.rawmode = None
             if "transparency" in self.info and mode in ("LA", "PA"):
@@ -996,6 +1001,7 @@ class Image:
             elif self.palette.mode != mode:
                 # If the palette rawmode is different to the mode,
                 # then update the Python palette data
+                print("different", self.palette.mode, mode)
                 self.palette.palette = self.im.getpalette(
                     self.palette.mode, self.palette.mode
                 )
