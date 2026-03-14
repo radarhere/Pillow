@@ -26,6 +26,7 @@
  */
 
 #include "Imaging.h"
+#include "Convert.h"
 
 #define R 0
 #define G 1
@@ -566,6 +567,7 @@ static struct {
     {IMAGING_MODE_RGB, IMAGING_RAWMODE_R, 8, band0},
     {IMAGING_MODE_RGB, IMAGING_RAWMODE_G, 8, band1},
     {IMAGING_MODE_RGB, IMAGING_RAWMODE_B, 8, band2},
+    {IMAGING_MODE_RGB, IMAGING_RAWMODE_CMYK, 24, cmyk2rgb},
 
     /* true colour w. alpha */
     {IMAGING_MODE_RGBA, IMAGING_RAWMODE_RGBA, 32, copy4},

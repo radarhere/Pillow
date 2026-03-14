@@ -1435,7 +1435,7 @@ def _save(
 
     if im.mode == "P":
         palette_byte_number = colors * 3
-        palette_bytes = im.im.getpalette("RGB")[:palette_byte_number]
+        palette_bytes = im.im.getpalette("RGB", "CMYK")[:palette_byte_number]
         while len(palette_bytes) < palette_byte_number:
             palette_bytes += b"\0"
         chunk(fp, b"PLTE", palette_bytes)
