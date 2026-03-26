@@ -709,6 +709,10 @@ _decoder_get_info(AvifDecoderObject *self) {
     char *mode;
     if (decoder->alphaPresent) {
         mode = "RGBA";
+#if AVIF_VERSION >= 1030000  // 1.3.0
+    } else if (image->yuvFormat == AVIF_PIXEL_FORMAT_YUV400) {
+        mode = "L";
+#endif
     } else {
         mode = "RGB";
     }
@@ -780,6 +784,10 @@ _decoder_get_frame(AvifDecoderObject *self, PyObject *args) {
     rgb.depth = 8;
     if (decoder->alphaPresent) {
         rgb.format = AVIF_RGB_FORMAT_RGBA;
+#if AVIF_VERSION >= 1030000  // 1.3.0
+    } else if (image->yuvFormat == AVIF_PIXEL_FORMAT_YUV400) {
+        rgb.format = AVIF_RGB_FORMAT_GRAY;
+#endif
     } else {
         rgb.format = AVIF_RGB_FORMAT_RGB;
     }
