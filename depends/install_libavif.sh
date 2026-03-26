@@ -7,7 +7,7 @@ if [[ "$GHA_LIBAVIF_CACHE_HIT" == "true" ]]; then
 
     LIBDIR=/usr/lib/x86_64-linux-gnu
 
-    # Copy cached files into place
+    # Copy cached files into places
     sudo cp ~/cache-libavif/lib/* $LIBDIR/
     sudo cp -r ~/cache-libavif/include/avif /usr/include/
 
@@ -16,6 +16,8 @@ else
     ./download-and-extract.sh libavif-$version https://github.com/AOMediaCodec/libavif/archive/refs/tags/v$version.tar.gz
 
     pushd libavif-$version
+
+    patch -p1 < ../libavif-gray.patch
 
     if [ $(uname) == "Darwin" ] && [ -x "$(command -v brew)" ]; then
         PREFIX=$(brew --prefix)
