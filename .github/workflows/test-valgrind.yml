@@ -4,17 +4,7 @@ name: Test Valgrind
 
 on:
   push:
-    branches:
-      - "**"
-    paths:
-      - ".github/workflows/test-valgrind.yml"
-      - "**.c"
-      - "**.h"
   pull_request:
-    paths:
-      - ".github/workflows/test-valgrind.yml"
-      - "**.c"
-      - "**.h"
   workflow_dispatch:
 
 permissions:
