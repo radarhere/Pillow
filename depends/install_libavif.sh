@@ -17,6 +17,8 @@ else
 
     pushd libavif-$version
 
+    patch -p1 < ../libavif-next.patch
+
     if [ $(uname) == "Darwin" ] && [ -x "$(command -v brew)" ]; then
         PREFIX=$(brew --prefix)
     else

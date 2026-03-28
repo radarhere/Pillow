@@ -1,0 +1,22 @@
+--- a/src/reformat.c
++++ b/src/reformat.c
+@@ -468,7 +468,6 @@ avifResult avifImageRGBToYUV(avifImage * image, const avifRGBImage * rgb)
+     } else if (!converted && isGray) {
+         const uint32_t grayPixelBytes = state.rgb.pixelBytes;
+         const uint32_t offsetBytesGray = state.rgb.offsetBytesGray;
+-        const uint32_t offsetBytesA = state.rgb.offsetBytesA;
+         const size_t grayRowBytes = rgb->rowBytes;
+         const float grayMaxChannelF = state.rgb.maxChannelF;
+         uint8_t * yPlane = image->yuvPlanes[AVIF_CHAN_Y];
+@@ -484,9 +483,9 @@ avifResult avifImageRGBToYUV(avifImage * image, const avifRGBImage * rgb)
+                 if (alphaMode != AVIF_ALPHA_MULTIPLY_MODE_NO_OP) {
+                     float a;
+                     if (state.rgb.channelBytes > 1) {
+-                        a = *((uint16_t *)(&rgb->pixels[offsetBytesA + (i * grayPixelBytes) + (j * grayRowBytes)])) / grayMaxChannelF;
++                        a = *((uint16_t *)(&rgb->pixels[state.rgb.offsetBytesA + (i * grayPixelBytes) + (j * grayRowBytes)])) / grayMaxChannelF;
+                     } else {
+-                        a = rgb->pixels[offsetBytesA + (i * grayPixelBytes) + (j * grayRowBytes)] / grayMaxChannelF;
++                        a = rgb->pixels[state.rgb.offsetBytesA + (i * grayPixelBytes) + (j * grayRowBytes)] / grayMaxChannelF;
+                     }
+
+                     if (alphaMode == AVIF_ALPHA_MULTIPLY_MODE_MULTIPLY) {
