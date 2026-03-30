@@ -18,12 +18,18 @@ def disable_decompressionbomb_error() -> None:
 
 
 def fuzz_image(data: bytes) -> None:
-    # This will fail on some images in the corpus, as we have many
-    # invalid images in the test suite.
-    with Image.open(io.BytesIO(data)) as im:
-        im.rotate(45)
-        im.filter(ImageFilter.DETAIL)
-        im.save(io.BytesIO(), "BMP")
+    # P;4L (4-bit)
+    data = b'\xAB\xCD\xEF\x12\x34'
+    img = Image.frombuffer("P", (9,1), data, "raw", "P;4L", 0, 1)
+    img.load()
+    list(img.getdata())
+    # Output includes values not from input (heap leakage)
+
+    # P;2L (2-bit)
+    data2 = b'\xAB\xCD\x00'
+    img2 = Image.frombuffer("P", (9,1), data2, "raw", "P;2L", 0, 1)
+    img2.load()
+    list(img2.getdata())
 
 
 def fuzz_font(data: bytes) -> None:

@@ -4,19 +4,8 @@ name: Test Valgrind Memory Leaks
 
 # this is very expensive. Only run on the pull request.
 on:
-  # push:
-  #   branches:
-  #     - "**"
-  #   paths:
-  #     - ".github/workflows/test-valgrind.yml"
-  #     - "**.c"
-  #     - "**.h"
+  push:
   pull_request:
-    paths:
-      - ".github/workflows/test-valgrind.yml"
-      - "**.c"
-      - "**.h"
-      - "depends/docker-test-valgrind-memory.sh"
   workflow_dispatch:
 
 permissions:
