@@ -107,17 +107,23 @@ class FitsImageFile(ImageFile.ImageFile):
 
         number_of_bits = int(headers[prefix + b"BITPIX"])
         if number_of_bits == 8:
-            self._mode = "L"
+            self._mode = rawmode = "L"
         elif number_of_bits == 16:
             self._mode = "I;16"
+            rawmode = "I;16BS"
         elif number_of_bits == 32:
             self._mode = "I"
-        elif number_of_bits in (-32, -64):
+            rawmode = "I;32BS"
+        elif number_of_bits == -32:
             self._mode = "F"
+            rawmode = "F;32BS"
+        else:
+            msg = "Unsupported number of bits"
+            raise OSError(msg)
 
         args: tuple[str | int, ...]
         if decoder_name == "raw":
-            args = (self.mode, 0, -1)
+            args = (rawmode, 0, -1)
         else:
             args = (number_of_bits,)
         return decoder_name, offset, args
@@ -137,7 +143,9 @@ class FitsGzipDecoder(ImageFile.PyDecoder):
             for y in range(self.state.ysize):
                 row = bytearray()
                 for x in range(self.state.xsize):
-                    row += value[offset + (4 - number_of_bits) : offset + 4]
+                    row += value[
+                        offset + 4 - 1 : offset + (4 - number_of_bits) - 1 : -1
+                    ]
                     offset += 4
                 rows.append(row)
         self.set_as_raw(bytes([pixel for row in rows[::-1] for pixel in row]))

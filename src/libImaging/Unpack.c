@@ -1205,6 +1205,16 @@ unpackI16B_I16(UINT8 *out, const UINT8 *in, int pixels) {
     }
 }
 static void
+unpackI16BS_I16(UINT8 *out, const UINT8 *in, int pixels) {
+    int i;
+    for (i = 0; i < pixels; i++) {
+        out[0] = (INT8)in[1];
+        out[1] = (INT8)in[0];
+        in += 2;
+        out += 2;
+    }
+}
+static void
 unpackI16R_I16(UINT8 *out, const UINT8 *in, int pixels) {
     int i;
     for (i = 0; i < pixels; i++) {
@@ -1833,6 +1843,7 @@ static struct {
     {IMAGING_MODE_I_16N, IMAGING_RAWMODE_I_16N, 16, copy2},
 
     {IMAGING_MODE_I_16, IMAGING_RAWMODE_I_16B, 16, unpackI16B_I16},
+    {IMAGING_MODE_I_16, IMAGING_RAWMODE_I_16BS, 16, unpackI16BS_I16},
     {IMAGING_MODE_I_16B, IMAGING_RAWMODE_I_16N, 16, unpackI16N_I16B},
     {IMAGING_MODE_I_16, IMAGING_RAWMODE_I_16R, 16, unpackI16R_I16},
 
@@ -1854,6 +1865,7 @@ ImagingFindUnpacker(const ModeID mode, const RawModeID rawmode, int *bits_out) {
             return unpackers[i].unpack;
         }
     }
+    // printf("unpack %s %s\n", getRawModeData(rawmode)->name, getModeData(mode)->name);
 
     /* FIXME: configure a general unpacker based on the type codes... */
 
