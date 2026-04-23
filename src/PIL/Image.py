@@ -2174,7 +2174,7 @@ class Image:
         self.load()  # install new palette
 
     def putpixel(
-        self, xy: tuple[int, int] | list[int], value: float | tuple[int, ...] | list[int]
+        self, xy: tuple[int, int] | list[int], value: float | tuple[int, ...]
     ) -> None:
         """
         Modifies the pixel at the given position. The color is given as
@@ -2201,7 +2201,7 @@ class Image:
 
         if (
             self.mode in ("P", "PA")
-            and isinstance(value, (list, tuple))
+            and isinstance(value, tuple)
             and len(value) in [3, 4]
         ):
             # RGB or RGBA value for a P or PA image
@@ -2209,7 +2209,7 @@ class Image:
                 alpha = value[3] if len(value) == 4 else 255
                 value = value[:3]
             assert self.palette is not None
-            palette_index = self.palette.getcolor(tuple(value), self)
+            palette_index = self.palette.getcolor(value, self)
             value = (palette_index, alpha) if self.mode == "PA" else palette_index
         return self.im.putpixel(xy, value)
 
