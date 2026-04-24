@@ -2,9 +2,9 @@
 
 version=0.11.2
 
-./download-and-extract.sh highway-1.3.0 https://github.com/google/highway/archive/1.3.0.tar.gz
+./download-and-extract.sh highway-1.4.0 https://github.com/google/highway/archive/1.4.0.tar.gz
 
-pushd highway-1.3.0
+pushd highway-1.4.0
 cmake .
 make -j4 install
 popd
