@@ -51,13 +51,13 @@ jobs:
 
     - name: Docker pull
       run: |
-        docker pull ${{ matrix.qemu-arch && format('--platform=linux/{0}', matrix.qemu-arch)}} pythonpillow/${{ matrix.docker }}:${{ matrix.dockerTag }}
+        docker pull ${{ matrix.qemu-arch && format('--platform=linux/{0}', matrix.qemu-arch)}} radarhere/${{ matrix.docker }}:${{ matrix.dockerTag }}
 
     - name: Docker build
       run: |
         # The Pillow user in the docker container is UID 1001
         sudo chown -R 1001 $GITHUB_WORKSPACE
-        docker run --name pillow_container  -v $GITHUB_WORKSPACE:/Pillow pythonpillow/${{ matrix.docker }}:${{ matrix.dockerTag }}
+        docker run --name pillow_container  -v $GITHUB_WORKSPACE:/Pillow radarhere/${{ matrix.docker }}:${{ matrix.dockerTag }}
         sudo chown -R runner $GITHUB_WORKSPACE
 
     - name: After success
