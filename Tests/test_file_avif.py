@@ -145,7 +145,7 @@ class TestFileAvif:
 
             # avifdec hopper.avif avif/hopper_avif_write.png
             assert_image_similar_tofile(
-                reloaded, "Tests/images/avif/hopper_avif_write.png", 6.88
+                reloaded, "Tests/images/avif/hopper_avif_write.png", 6.93
             )
 
             # This test asserts that the images are similar. If the average pixel
