@@ -145,7 +145,7 @@ _LIB_IMAGING = (
     "codec_fd",
 )
 
-DEBUG = False
+DEBUG = True
 
 
 class DependencyException(Exception):
