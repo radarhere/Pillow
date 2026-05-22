@@ -81,7 +81,7 @@ jobs:
           CIBW_BEFORE_ALL: "{package}\\winbuild\\build\\build_dep_all.cmd"
           CIBW_CACHE_PATH: "C:\\cibw"
           CIBW_ENABLE: cpython-prerelease pypy
-          CIBW_BUILD: "pp311-*"
+          CIBW_BUILD: "cp314-*"
           CIBW_TEST_SKIP: "*-win_arm64"
           CIBW_TEST_COMMAND: 'docker run --rm
             -v {project}:C:\pillow
