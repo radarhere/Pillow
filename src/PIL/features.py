@@ -35,14 +35,18 @@ def check_module(feature: str) -> bool:
 
     module, ver = modules[feature]
 
-    try:
+    if feature == "jpegxl":
         __import__(module)
         return True
-    except ModuleNotFoundError:
-        return False
-    except ImportError as ex:
-        warnings.warn(str(ex))
-        return False
+    else:
+        try:
+            __import__(module)
+            return True
+        except ModuleNotFoundError:
+            return False
+        except ImportError as ex:
+            warnings.warn(str(ex))
+            return False
 
 
 def version_module(feature: str) -> str | None:
