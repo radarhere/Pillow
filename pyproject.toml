@@ -96,7 +96,7 @@ package-dir = { "" = "src" }
 dynamic.version = { attr = "PIL.__version__" }
 
 [tool.cibuildwheel]
-before-all = ".github/workflows/wheels-dependencies.sh"
+before-build = "pip install delvewheel"
 build-verbosity = 1
 config-settings = "raqm=enable raqm=vendor fribidi=vendor imagequant=disable"
 test-command = "cd {project} && .github/workflows/wheels-test.sh"
@@ -131,6 +131,7 @@ overrides = [
   { select = "*_iphonesimulator", environment.PATH = "$(pwd)/build/deps/iphonesimulator/bin:$PATH" },
   { select = "*-win32", test-requires = [] },
 ]
+repair-wheel-command = "delvewheel repair -w {dest_dir} {wheel} && python3 -m pip install {wheel} && python3 demo.py"
 
 [tool.black]
 exclude = "wheels/multibuild"
