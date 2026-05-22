@@ -286,44 +286,6 @@ DEPS: dict[str, dict[str, Any]] = {
         ],
         "libs": [r"objs\{msbuild_arch}\Release Static\freetype.lib"],
     },
-    "lcms2": {
-        "url": f"{SF_PROJECTS}/lcms/files/lcms/{V['lcms2']}/FILENAME/download",
-        "filename": f"lcms2-{V['lcms2']}.tar.gz",
-        "license": "LICENSE",
-        "patch": {
-            r"Projects\VC2022\lcms2_static\lcms2_static.vcxproj": {
-                # default is /MD for x86 and /MT for x64, we need /MD always
-                "<RuntimeLibrary>MultiThreaded</RuntimeLibrary>": "<RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>",  # noqa: E501
-                # retarget to default toolset (selected by vcvarsall.bat)
-                "<PlatformToolset>v143</PlatformToolset>": "<PlatformToolset>$(DefaultPlatformToolset)</PlatformToolset>",  # noqa: E501
-                # retarget to latest (selected by vcvarsall.bat)
-                "<WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>": "<WindowsTargetPlatformVersion>$(WindowsSDKVersion)</WindowsTargetPlatformVersion>",  # noqa: E501
-            }
-        },
-        "build": [
-            cmd_rmdir("Lib"),
-            cmd_rmdir(r"Projects\VC2022\Release"),
-            cmd_msbuild(r"Projects\VC2022\lcms2.sln", "Release", "Clean"),
-            cmd_msbuild(
-                r"Projects\VC2022\lcms2.sln", "Release", "lcms2_static:Rebuild"
-            ),
-            cmd_xcopy("include", "{inc_dir}"),
-        ],
-        "libs": [r"Lib\MS\*.lib"],
-    },
-    "openjpeg": {
-        "url": f"https://github.com/uclouvain/openjpeg/archive/v{V['openjpeg']}.tar.gz",
-        "filename": f"openjpeg-{V['openjpeg']}.tar.gz",
-        "license": "LICENSE",
-        "build": [
-            *cmds_cmake(
-                "openjp2", "-DBUILD_CODEC:BOOL=OFF", "-DBUILD_SHARED_LIBS:BOOL=OFF"
-            ),
-            cmd_mkdir(rf"{{inc_dir}}\openjpeg-{V['openjpeg']}"),
-            cmd_copy(r"src\lib\openjp2\*.h", rf"{{inc_dir}}\openjpeg-{V['openjpeg']}"),
-        ],
-        "libs": [r"bin\*.lib"],
-    },
     "highway": {
         "url": f"https://github.com/google/highway/archive/{V['highway']}.tar.gz",
         "filename": f"highway-{V['highway']}.tar.gz",
@@ -364,17 +326,6 @@ DEPS: dict[str, dict[str, Any]] = {
             cmd_copy(r"lib\include\jxl\*.h", r"{inc_dir}\jxl"),
         ],
     },
-    "libimagequant": {
-        "url": "https://github.com/ImageOptim/libimagequant/archive/{V['libimagequant']}.tar.gz",
-        "filename": f"libimagequant-{V['libimagequant']}.tar.gz",
-        "license": "COPYRIGHT",
-        "build": [
-            cmd_cd("imagequant-sys"),
-            "cargo build --release",
-        ],
-        "headers": ["libimagequant.h"],
-        "libs": [r"..\target\release\imagequant_sys.lib"],
-    },
     "harfbuzz": {
         "url": f"https://github.com/harfbuzz/harfbuzz/releases/download/{V['harfbuzz']}/FILENAME",
         "filename": f"harfbuzz-{V['harfbuzz']}.tar.xz",
@@ -388,47 +339,6 @@ DEPS: dict[str, dict[str, Any]] = {
         ],
         "headers": [r"src\*.h"],
         "libs": [r"*.lib"],
-    },
-    "fribidi": {
-        "url": f"https://github.com/fribidi/fribidi/archive/v{V['fribidi']}.zip",
-        "filename": f"fribidi-{V['fribidi']}.zip",
-        "license": "COPYING",
-        "build": [
-            cmd_copy(r"COPYING", rf"{{bin_dir}}\fribidi-{V['fribidi']}-COPYING"),
-            cmd_copy(r"{winbuild_dir}\fribidi.cmake", r"CMakeLists.txt"),
-            # generated tab.i files cannot be cross-compiled
-            " ^&^& ".join(
-                [
-                    "if {architecture}==ARM64 cmd /c call {vcvarsall} x86",
-                    *cmds_cmake("fribidi-gen", "-DARCH=x86", build_dir="build_x86"),
-                ]
-            ),
-            *cmds_cmake("fribidi", "-DARCH={architecture}"),
-        ],
-        "bins": [r"*.dll"],
-    },
-    "libavif": {
-        "url": f"https://github.com/AOMediaCodec/libavif/archive/v{V['libavif']}.tar.gz",
-        "filename": f"libavif-{V['libavif']}.tar.gz",
-        "license": "LICENSE",
-        "build": [
-            "rustup update",
-            f"{sys.executable} -m pip install meson",
-            *cmds_cmake(
-                "avif_static",
-                "-DBUILD_SHARED_LIBS=OFF",
-                "-DAVIF_LIBSHARPYUV=LOCAL",
-                "-DAVIF_LIBYUV=LOCAL",
-                "-DAVIF_CODEC_AOM=LOCAL",
-                "-DCONFIG_AV1_HIGHBITDEPTH=0",
-                "-DAVIF_CODEC_AOM_DECODE=OFF",
-                "-DAVIF_CODEC_DAV1D=LOCAL",
-                "-DCMAKE_INTERPROCEDURAL_OPTIMIZATION=ON",
-                build_type="MinSizeRel",
-            ),
-            cmd_xcopy("include", "{inc_dir}"),
-        ],
-        "libs": ["avif.lib"],
     },
 }
 
