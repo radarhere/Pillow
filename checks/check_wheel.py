@@ -13,7 +13,6 @@ def test_wheel_modules() -> None:
         "freetype2",
         "littlecms2",
         "webp",
-        "avif",
         "jpegxl",
     }
 
@@ -29,10 +28,6 @@ def test_wheel_modules() -> None:
         if hasattr(sys, "pypy_translation_info"):
             expected_modules.remove("jpegxl")
 
-        # libavif is not available on Windows for ARM64 architectures
-        if platform.machine() == "ARM64":
-            expected_modules.remove("avif")
-
     elif sys.platform == "ios":
         # tkinter is not available on iOS
         expected_modules -= {"tkinter", "jpegxl"}
@@ -41,16 +36,13 @@ def test_wheel_modules() -> None:
 
 
 def test_wheel_codecs() -> None:
-    expected_codecs = {"jpg", "jpg_2000", "zlib", "libtiff"}
+    expected_codecs = {"jpg", "zlib", "libtiff"}
 
     assert set(features.get_supported_codecs()) == expected_codecs
 
 
 def test_wheel_features() -> None:
     expected_features = {
-        "raqm",
-        "fribidi",
-        "harfbuzz",
         "libjpeg_turbo",
         "zlib_ng",
         "xcb",

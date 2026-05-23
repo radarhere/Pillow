@@ -167,18 +167,6 @@ DEPS: dict[str, dict[str, Any]] = {
         "headers": [r"z*.h"],
         "libs": [r"zlib.lib"],
     },
-    "xz": {
-        "url": f"https://github.com/tukaani-project/xz/releases/download/v{V['xz']}/FILENAME",
-        "filename": f"xz-{V['xz']}.tar.gz",
-        "license": "COPYING",
-        "build": [
-            *cmds_cmake("liblzma", "-DBUILD_SHARED_LIBS:BOOL=OFF"),
-            cmd_mkdir(r"{inc_dir}\lzma"),
-            cmd_copy(r"src\liblzma\api\lzma\*.h", r"{inc_dir}\lzma"),
-        ],
-        "headers": [r"src\liblzma\api\lzma.h"],
-        "libs": [r"lzma.lib"],
-    },
     "libwebp": {
         "url": "http://downloads.webmproject.org/releases/webp/FILENAME",
         "filename": f"libwebp-{V['libwebp']}.tar.gz",
@@ -285,6 +273,31 @@ DEPS: dict[str, dict[str, Any]] = {
             cmd_xcopy("include", "{inc_dir}"),
         ],
         "libs": [r"objs\{msbuild_arch}\Release Static\freetype.lib"],
+    },
+    "lcms2": {
+        "url": f"{SF_PROJECTS}/lcms/files/lcms/{V['lcms2']}/FILENAME/download",
+        "filename": f"lcms2-{V['lcms2']}.tar.gz",
+        "license": "LICENSE",
+        "patch": {
+            r"Projects\VC2022\lcms2_static\lcms2_static.vcxproj": {
+                # default is /MD for x86 and /MT for x64, we need /MD always
+                "<RuntimeLibrary>MultiThreaded</RuntimeLibrary>": "<RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>",  # noqa: E501
+                # retarget to default toolset (selected by vcvarsall.bat)
+                "<PlatformToolset>v143</PlatformToolset>": "<PlatformToolset>$(DefaultPlatformToolset)</PlatformToolset>",  # noqa: E501
+                # retarget to latest (selected by vcvarsall.bat)
+                "<WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>": "<WindowsTargetPlatformVersion>$(WindowsSDKVersion)</WindowsTargetPlatformVersion>",  # noqa: E501
+            }
+        },
+        "build": [
+            cmd_rmdir("Lib"),
+            cmd_rmdir(r"Projects\VC2022\Release"),
+            cmd_msbuild(r"Projects\VC2022\lcms2.sln", "Release", "Clean"),
+            cmd_msbuild(
+                r"Projects\VC2022\lcms2.sln", "Release", "lcms2_static:Rebuild"
+            ),
+            cmd_xcopy("include", "{inc_dir}"),
+        ],
+        "libs": [r"Lib\MS\*.lib"],
     },
     "highway": {
         "url": f"https://github.com/google/highway/archive/{V['highway']}.tar.gz",
