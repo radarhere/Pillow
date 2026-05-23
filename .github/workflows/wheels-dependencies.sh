@@ -316,9 +316,8 @@ function build {
         # On iOS, there's no vendor-provided raqm, and we can't ship it due to
         # licensing, so there's no point building harfbuzz.
         build_harfbuzz
-
-        build_jpegxl
     fi
+    build_jpegxl
 
     webp_cflags="-O3 -DNDEBUG"
     if [[ -n "$IS_MACOS" ]]; then
