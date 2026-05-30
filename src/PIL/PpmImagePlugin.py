@@ -246,7 +246,7 @@ class PpmPlainDecoder(ImageFile.PyDecoder):
             block = self._read_block()  # read next block
             if not block:
                 if half_token:
-                    block = bytearray(b" ")  # flush half_token
+                    block = b" "  # flush half_token
                 else:
                     # eof
                     break
