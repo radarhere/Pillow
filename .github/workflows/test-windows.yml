@@ -72,6 +72,7 @@ jobs:
       run: python3 .github/workflows/system-info.py
 
     - name: Upgrade pip
+      if: "!contains(matrix.python-version, 'pypy')"
       run: |
         python3 -m pip install --upgrade pip
 
