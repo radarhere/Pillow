@@ -39,7 +39,7 @@ concurrency:
   cancel-in-progress: true
 
 env:
-  EXPECTED_DISTS: 91
+  EXPECTED_DISTS: 105
   FORCE_COLOR: 1
 
 jobs:
@@ -67,7 +67,7 @@ jobs:
             platform: macos
             os: macos-26-intel
             cibw_arch: x86_64
-            build: "{cp314,pp3}*"
+            build: "{cp314,cp315,pp3}*"
             macosx_deployment_target: "10.15"
           - name: "macOS arm64"
             platform: macos
