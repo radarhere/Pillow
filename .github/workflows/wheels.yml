@@ -39,7 +39,7 @@ concurrency:
   cancel-in-progress: true
 
 env:
-  EXPECTED_DISTS: 105
+  EXPECTED_DISTS: 98
   FORCE_COLOR: 1
 
 jobs:
@@ -67,7 +67,7 @@ jobs:
             platform: macos
             os: macos-26-intel
             cibw_arch: x86_64
-            build: "{cp314,cp315,pp3}*"
+            build: "{cp314,cp315}*"
             macosx_deployment_target: "10.15"
           - name: "macOS arm64"
             platform: macos
@@ -127,7 +127,7 @@ jobs:
           CIBW_PLATFORM: ${{ matrix.platform }}
           CIBW_ARCHS: ${{ matrix.cibw_arch }}
           CIBW_BUILD: ${{ matrix.build }}
-          CIBW_ENABLE: cpython-prerelease pypy
+          CIBW_ENABLE: cpython-prerelease
           CIBW_MANYLINUX_AARCH64_IMAGE: ${{ matrix.manylinux }}
           CIBW_MANYLINUX_PYPY_AARCH64_IMAGE: ${{ matrix.manylinux }}
           CIBW_MANYLINUX_PYPY_X86_64_IMAGE: ${{ matrix.manylinux }}
@@ -202,7 +202,7 @@ jobs:
           CIBW_ARCHS: ${{ matrix.cibw_arch }}
           CIBW_BEFORE_ALL: "{package}\\winbuild\\build\\build_dep_all.cmd"
           CIBW_CACHE_PATH: "C:\\cibw"
-          CIBW_ENABLE: cpython-prerelease pypy
+          CIBW_ENABLE: cpython-prerelease
           CIBW_TEST_SKIP: "*-win_arm64"
           CIBW_TEST_COMMAND: 'docker run --rm
             -v {project}:C:\pillow
