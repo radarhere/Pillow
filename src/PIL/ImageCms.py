@@ -317,10 +317,13 @@ class ImageCmsTransform(Image.ImagePointHandler):
         return self.apply(im)
 
     def apply(self, im: Image.Image, imOut: Image.Image | None = None) -> Image.Image:
+        if im.mode != self.input_mode:
+            msg = "mode mismatch"
+            raise ValueError(msg)
         if imOut is not None:
             if imOut.mode != self.output_mode:
                 msg = "mode mismatch"
-                raise ValueError(msg)  # wrong output mode
+                raise ValueError(msg)
         else:
             imOut = Image.new(self.output_mode, im.size, None)
         self.transform.apply(im.getim(), imOut.getim())
@@ -690,10 +693,10 @@ def applyTransform(
     """
     (pyCMS) Applies a transform to a given image.
 
-    If ``im.mode != transform.input_mode``, a :exc:`PyCMSError` is raised.
+    If ``im.mode != transform.input_mode``, a :exc:`ValueError` is raised.
 
     If ``inPlace`` is ``True`` and ``transform.input_mode != transform.output_mode``, a
-    :exc:`PyCMSError` is raised.
+    :exc:`ValueError` is raised.
 
     If ``im.mode``, ``transform.input_mode`` or ``transform.output_mode`` is not
     supported by pyCMSdll or the profiles you used for the transform, a
