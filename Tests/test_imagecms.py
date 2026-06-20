@@ -718,7 +718,8 @@ def test_run1() -> None:
     out = Image.new("L", (8, 1), 0)
 
     print("before", flush=True)
-    transform.apply(im, out)
+    with pytest.raises(ValueError, match="mode mismatch"):
+        transform.apply(im, out)
     print("after")
 
 
@@ -729,4 +730,5 @@ def test_run2() -> None:
     im = Image.new("RGBA", (4096, 1), (0x41, 0x42, 0x43, 0x44))
     out = Image.new("L", (4096, 1), 0)
 
-    transform.apply(im, out)
+    with pytest.raises(ValueError, match="mode mismatch"):
+        transform.apply(im, out)
