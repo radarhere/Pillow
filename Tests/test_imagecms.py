@@ -710,18 +710,6 @@ def test_deprecation() -> None:
         profile.this_attribute_does_not_exist
 
 
-def test_run1() -> None:
-    srgb = ImageCms.createProfile("sRGB")
-    transform = ImageCms.buildTransform(srgb, srgb, "RGBA", "RGBA")
-
-    im = Image.new("RGBA", (8, 1), (0x41, 0x42, 0x43, 0x44))
-    out = Image.new("L", (8, 1), 0)
-
-    print("before", flush=True)
-    transform.apply(im, out)
-    print("after")
-
-
 def test_run2() -> None:
     srgb = ImageCms.createProfile("sRGB")
     transform = ImageCms.buildTransform(srgb, srgb, "RGBA", "RGBA")
