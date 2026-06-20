@@ -321,9 +321,7 @@ class ImageCmsTransform(Image.ImagePointHandler):
             msg = "mode mismatch"
             raise ValueError(msg)
         if imOut is not None:
-            if imOut.mode != self.output_mode:
-                msg = "mode mismatch"
-                raise ValueError(msg)
+            pass
         else:
             imOut = Image.new(self.output_mode, im.size, None)
         self.transform.apply(im.getim(), imOut.getim())
