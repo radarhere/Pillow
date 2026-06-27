@@ -57,6 +57,7 @@ ImagingZipEncode(Imaging im, ImagingCodecState state, UINT8 *buf, int bytes) {
             free(context->up);
             free(context->prior);
             free(context->previous);
+            context->paeth = NULL;
             state->errcode = IMAGING_CODEC_MEMORY;
             return -1;
         }
@@ -106,6 +107,7 @@ ImagingZipEncode(Imaging im, ImagingCodecState state, UINT8 *buf, int bytes) {
             free(context->up);
             free(context->prior);
             free(context->previous);
+            context->paeth = NULL;
             state->errcode = IMAGING_CODEC_CONFIG;
             return -1;
         }
@@ -122,6 +124,7 @@ ImagingZipEncode(Imaging im, ImagingCodecState state, UINT8 *buf, int bytes) {
                 free(context->up);
                 free(context->prior);
                 free(context->previous);
+                context->paeth = NULL;
                 state->errcode = IMAGING_CODEC_CONFIG;
                 return -1;
             }
@@ -152,6 +155,7 @@ ImagingZipEncode(Imaging im, ImagingCodecState state, UINT8 *buf, int bytes) {
             free(context->up);
             free(context->prior);
             free(context->previous);
+            context->paeth = NULL;
             deflateEnd(&context->z_stream);
             return -1;
         }
@@ -305,6 +309,7 @@ ImagingZipEncode(Imaging im, ImagingCodecState state, UINT8 *buf, int bytes) {
                         free(context->up);
                         free(context->prior);
                         free(context->previous);
+                        context->paeth = NULL;
                         deflateEnd(&context->z_stream);
                         ImagingSectionLeave(&cookie);
                         return -1;
@@ -333,6 +338,7 @@ ImagingZipEncode(Imaging im, ImagingCodecState state, UINT8 *buf, int bytes) {
                         free(context->up);
                         free(context->prior);
                         free(context->previous);
+                        context->paeth = NULL;
 
                         deflateEnd(&context->z_stream);
 
@@ -369,6 +375,7 @@ ImagingZipEncodeCleanup(ImagingCodecState state) {
         context->dictionary = NULL;
     }
     if (context->paeth) {
+        free(context->paeth);
         context->paeth = NULL;
     }
 
