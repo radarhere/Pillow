@@ -368,6 +368,10 @@ ImagingZipEncodeCleanup(ImagingCodecState state) {
         free(context->dictionary);
         context->dictionary = NULL;
     }
+    if (context->paeth) {
+        free(context->paeth);
+        context->paeth = NULL;
+    }
 
     return -1;
 }
