@@ -384,10 +384,6 @@ ImagingZipEncodeCleanup(ImagingCodecState state) {
         free(context->prior);
         context->prior = NULL;
     }
-    if (context->previous) {
-        free(context->previous);
-        context->previous = NULL;
-    }
 
     return -1;
 }
