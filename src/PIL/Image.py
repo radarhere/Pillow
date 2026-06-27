@@ -1079,7 +1079,7 @@ class Image:
             if mode not in ("L", "RGB"):
                 msg = "illegal conversion"
                 raise ValueError(msg)
-            im = self.im.convert_matrix(mode, matrix)
+            im = self.im.convert_matrix(mode, matrix + (0,) * (12 - len(matrix))
             new_im = self._new(im)
             if has_transparency and self.im.bands == 3:
                 transparency = new_im.info["transparency"]
