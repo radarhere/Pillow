@@ -101,6 +101,11 @@ ImagingZipEncode(Imaging im, ImagingCodecState state, UINT8 *buf, int bytes) {
             compress_type
         );
         if (err < 0) {
+            free(context->paeth);
+            free(context->average);
+            free(context->up);
+            free(context->prior);
+            free(context->previous);
             state->errcode = IMAGING_CODEC_CONFIG;
             return -1;
         }
@@ -112,6 +117,11 @@ ImagingZipEncode(Imaging im, ImagingCodecState state, UINT8 *buf, int bytes) {
                 context->dictionary_size
             );
             if (err < 0) {
+                free(context->paeth);
+                free(context->average);
+                free(context->up);
+                free(context->prior);
+                free(context->previous);
                 state->errcode = IMAGING_CODEC_CONFIG;
                 return -1;
             }
@@ -357,6 +367,26 @@ ImagingZipEncodeCleanup(ImagingCodecState state) {
     if (context->dictionary) {
         free(context->dictionary);
         context->dictionary = NULL;
+    }
+    if (context->paeth) {
+        free(context->paeth);
+        context->paeth = NULL;
+    }
+    if (context->average) {
+        free(context->average);
+        context->average = NULL;
+    }
+    if (context->up) {
+        free(context->up);
+        context->up = NULL;
+    }
+    if (context->prior) {
+        free(context->prior);
+        context->prior = NULL;
+    }
+    if (context->previous) {
+        free(context->previous);
+        context->previous = NULL;
     }
 
     return -1;
