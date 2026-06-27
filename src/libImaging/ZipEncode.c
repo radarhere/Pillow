@@ -368,26 +368,6 @@ ImagingZipEncodeCleanup(ImagingCodecState state) {
         free(context->dictionary);
         context->dictionary = NULL;
     }
-    if (context->paeth) {
-        free(context->paeth);
-        context->paeth = NULL;
-    }
-    if (context->average) {
-        free(context->average);
-        context->average = NULL;
-    }
-    if (context->up) {
-        free(context->up);
-        context->up = NULL;
-    }
-    if (context->prior) {
-        free(context->prior);
-        context->prior = NULL;
-    }
-    if (context->previous) {
-        free(context->previous);
-        context->previous = NULL;
-    }
 
     return -1;
 }
