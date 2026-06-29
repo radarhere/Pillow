@@ -284,6 +284,7 @@ PyPath_Create(PyObject *self, PyObject *args) {
 
     if (PyArg_ParseTuple(args, "n:Path", &count)) {
         /* number of vertices */
+        printf("this is an n\n");
         xy = alloc_array(count);
         if (!xy) {
             return NULL;
@@ -291,6 +292,7 @@ PyPath_Create(PyObject *self, PyObject *args) {
 
     } else {
         /* sequence or other path */
+        printf("this is a sequence\n");
         PyErr_Clear();
         if (!PyArg_ParseTuple(args, "O", &data)) {
             return NULL;
