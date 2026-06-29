@@ -3676,7 +3676,7 @@ def open(
         fp: IO[bytes],
         filename: str | bytes,
         prefix: bytes,
-        check_formats: Sequence[str],
+        check_formats: list[str],
     ) -> ImageFile.ImageFile | None:
         if formats is not None:
             if allowed:
