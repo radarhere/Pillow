@@ -36,3 +36,4 @@ def fuzz_font(data: bytes) -> None:
         return
 
     font.getbbox("ABC")
+    font.getmask("test text")
