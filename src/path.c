@@ -277,8 +277,17 @@ PyPath_Create(PyObject *self, PyObject *args) {
     Py_ssize_t count;
     double *xy;
 
-    if (PyArg_ParseTuple(args, "n:Path", &count)) {
+    if (!PyArg_ParseTuple(args, "O", &data)) {
+        return NULL;
+    }
+    if (PyLong_Check(data)) {
         /* number of vertices */
+        count = PyLong_AsSsize_t(data);
+        printf("c %ld\n", count);
+        if (PyErr_Occurred()) {
+            return NULL;
+        }
+
         xy = alloc_array(count);
         if (!xy) {
             return NULL;
@@ -286,11 +295,6 @@ PyPath_Create(PyObject *self, PyObject *args) {
 
     } else {
         /* sequence or other path */
-        PyErr_Clear();
-        if (!PyArg_ParseTuple(args, "O", &data)) {
-            return NULL;
-        }
-
         count = PyPath_Flatten(data, &xy);
         if (count < 0) {
             return NULL;
