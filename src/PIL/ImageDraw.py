@@ -633,6 +633,8 @@ class ImageDraw:
                             color, (x, y, x + mask.size[0], y + mask.size[1]), mask
                         )
                 else:
+                    print("torch", (x, y))
+                    print(mask)
                     self.draw.draw_bitmap((x, y), mask, ink)
 
             if stroke_ink is not None:

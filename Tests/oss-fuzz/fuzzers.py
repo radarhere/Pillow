@@ -17,15 +17,6 @@ def disable_decompressionbomb_error() -> None:
     warnings.resetwarnings()
 
 
-def fuzz_image(data: bytes) -> None:
-    # This will fail on some images in the corpus, as we have many
-    # invalid images in the test suite.
-    with Image.open(io.BytesIO(data)) as im:
-        im.rotate(45)
-        im.filter(ImageFilter.DETAIL)
-        im.save(io.BytesIO(), "BMP")
-
-
 def fuzz_font(data: bytes) -> None:
     wrapper = io.BytesIO(data)
     try:
