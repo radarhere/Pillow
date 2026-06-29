@@ -3680,7 +3680,7 @@ def open(
     ) -> ImageFile.ImageFile | None:
         if formats is not None:
             if allowed:
-                check_formats = allowed
+                check_formats = list(allowed)
             elif excluded:
                 init()
                 check_formats = [f for f in ID if f not in excluded]
