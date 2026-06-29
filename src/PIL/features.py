@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+__lazy_modules__ = {"collections", "os", "warnings"}
+
 import collections
 import os
 import sys

@@ -26,6 +26,8 @@
 #
 from __future__ import annotations
 
+__lazy_modules__ = {"PIL._util", "os"}
+
 import os
 import re
 

@@ -34,6 +34,8 @@
 #
 from __future__ import annotations
 
+__lazy_modules__ = {"PIL._util", "os", "struct"}
+
 import os
 import struct
 import sys
