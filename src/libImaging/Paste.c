@@ -620,7 +620,11 @@ ImagingFill2(
     /* Determine which region to fill */
     sx0 = sy0 = 0;
     if (dx0 < 0) {
-        xsize += dx0, sx0 = -dx0, dx0 = 0;
+        xsize += dx0;
+        if (xsize <= 0) {
+            return 0;
+        }
+        sx0 = -dx0, dx0 = 0;
     }
     if (dx0 + xsize > imOut->xsize) {
         xsize = imOut->xsize - dx0;
