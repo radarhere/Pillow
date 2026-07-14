@@ -9,10 +9,6 @@ env:
   PREK_COLOR: always
   RUFF_OUTPUT_FORMAT: github
 
-concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
-
 jobs:
   lint:
     runs-on: ubuntu-latest
