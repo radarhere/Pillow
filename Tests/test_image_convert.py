@@ -290,6 +290,20 @@ def test_p2pa_palette() -> None:
     assert im_pa.getpalette() == im.getpalette()
 
 
+def test_pa2p_palette() -> None:
+    im_pa = Image.frombytes("PA", (2, 1), bytes([0, 255, 1, 255]))
+    im_pa.putpalette(bytes([255, 0, 0, 7, 0, 255, 0, 9]), "RGBA")
+
+    im_pa.putalpha(Image.frombytes("L", (2, 1), bytes([240, 220])))
+    assert im_pa.get_flattened_data() == ((0, 240), (1, 220))  # Matches the alpha band
+
+    im_p = im_pa.convert("P")
+    assert im_p.palette is not None
+    assert im_p.palette.mode == im_p.im.getpalettemode() == "RGB"
+    im_rgba = im_p.convert("RGBA")
+    assert im_rgba.get_flattened_data() == ((255, 0, 0, 255), (0, 255, 0, 255))
+
+
 rgb2xyz_matrix = (
     0.412453, 0.357580, 0.180423, 0,
     0.212671, 0.715160, 0.072169, 0,
@@ -357,15 +371,3 @@ def test_matrix_identity() -> None:
     # Assert
     # No change
     assert_image_equal(converted_im, im)
-
-
-def test_pa2p_truly_drops_alpha() -> None:
-    im = Image.frombytes("P", (2, 1), bytes([0, 1])).convert("PA")
-    im.putpalette(bytes([255, 0, 0, 7, 0, 255, 0, 9]), "RGBA")
-    im.putalpha(Image.frombytes("L", (2, 1), bytes([240, 220])))
-    assert im.get_flattened_data() == ((0, 240), (1, 220))  # Matches the alpha band
-    im_p = im.convert("P")
-    assert im_p.palette is not None
-    assert im_p.im.getpalettemode() == im_p.palette.mode == "RGB"
-    rgba_data = im_p.convert("RGBA").get_flattened_data()
-    assert rgba_data == ((255, 0, 0, 255), (0, 255, 0, 255))
