@@ -298,10 +298,8 @@ def test_pa2p_palette() -> None:
     assert im_pa.get_flattened_data() == ((0, 240), (1, 220))  # Matches the alpha band
 
     im_p = im_pa.convert("P")
-    assert im_p.palette is not None
-    assert im_p.palette.mode == im_p.im.getpalettemode() == "RGB"
-    im_rgba = im_p.convert("RGBA")
-    assert im_rgba.get_flattened_data() == ((255, 0, 0, 255), (0, 255, 0, 255))
+    assert im_p.im.getpalettemode() == "RGB"
+    assert im_p.im.getpalette("RGB") == bytes([255, 0, 0, 0, 255, 0])
 
 
 rgb2xyz_matrix = (
