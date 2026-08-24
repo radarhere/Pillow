@@ -15,7 +15,7 @@
 #
 from __future__ import annotations
 
-__lazy_modules__ = {"PIL._binary"}
+__lazy_modules__ = {"PIL._binary", "PIL.ImagePalette"}
 
 import re
 
