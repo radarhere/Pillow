@@ -16,6 +16,7 @@ from PIL import (
     Image,
     ImageDraw,
     ImageFile,
+    ImageFilter,
     ImagePalette,
     UnidentifiedImageError,
     features,
@@ -1043,6 +1044,7 @@ class TestImage:
         im.frombytes(b"")
 
     def test_has_transparency_data(self) -> None:
+        Image.new("RGB", (1, 1)).filter(ImageFilter.BoxBlur(float("nan")))
         for mode in ("1", "L", "P", "RGB"):
             im = Image.new(mode, (1, 1))
             assert not im.has_transparency_data
