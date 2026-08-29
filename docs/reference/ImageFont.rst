@@ -103,13 +103,14 @@ Constants
     .. warning:: Do not pre-shape text for the Raqm engine.
 
         A widespread pattern for Arabic, Persian and Urdu is to run the string
-        through ``arabic_reshaper`` and ``python-bidi`` before drawing it. That
-        is correct **only** for :py:attr:`PIL.ImageFont.Layout.BASIC`, which does no
-        shaping of its own.
+        through :pypi:`arabic-reshaper` and :pypi:`python-bidi` before drawing
+        it. That is correct **only** for :py:attr:`PIL.ImageFont.Layout.BASIC`,
+        which does no shaping of its own.
 
-        Under :py:attr:`PIL.ImageFont.Layout.RAQM`, Pillow shapes and reorders the text itself, so a
-        pre-shaped string is shaped a second time. The result still renders — it
-        is simply wrong, which is what makes the failure easy to miss.
+        Under :py:attr:`PIL.ImageFont.Layout.RAQM`, Pillow shapes and reorders
+        the text itself, so a pre-shaped string is shaped a second time. The
+        result still renders — it is simply wrong, which is what makes the
+        failure easy to miss.
 
         Which engine is used depends on how Pillow was built, so the same code
         can be correct on one machine and wrong on another. Check at run time
