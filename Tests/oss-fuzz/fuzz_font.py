@@ -25,12 +25,10 @@ with instrument_imports():
 
 
 def TestOneInput(data: bytes) -> None:
-    try:
-        fuzzers.fuzz_font(data)
-    except Exception:
-        # We're catching all exceptions because Pillow's exceptions are
-        # directly inheriting from Exception.
-        pass
+    import math
+    from PIL import Image, ImageFilter
+
+    Image.new("RGB", (1, 1)).filter(ImageFilter.BoxBlur(math.nan))
 
 
 def main() -> None:
