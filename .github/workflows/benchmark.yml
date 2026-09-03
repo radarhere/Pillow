@@ -17,10 +17,6 @@ on:
 permissions:
   contents: read
 
-concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
-
 env:
   FORCE_COLOR: 1
   PIP_DISABLE_PIP_VERSION_CHECK: 1
@@ -88,16 +84,16 @@ jobs:
         GHA_LIBWEBP_CACHE_HIT: ${{ steps.cache-libwebp.outputs.cache-hit }}
 
     - name: Run CodSpeed benchmarks
-      if: github.event_name != 'pull_request' || github.event.repository.fork == false
+      uses: CodSpeedHQ/action@373d6868929f444bc08d901fd0eb0ad52a8875ea # v5.2.1
+      run: |
+        python3 -m pip install -e . pytest-codspeed
+        python3 -m pytest -vv --codspeed Tests/benchmarks.py
+
+    - name: Run CodSpeed benchmarks on pull requests to a fork
+      if: github.event_name == 'pull_request' && github.event.repository.fork == true
       uses: CodSpeedHQ/action@373d6868929f444bc08d901fd0eb0ad52a8875ea # v5.2.1
       with:
         mode: simulation
         run: |
           python3 -m pip install -e . pytest-codspeed
           python3 -m pytest -vv --codspeed Tests/benchmarks.py
-
-    - name: Run CodSpeed benchmarks on pull requests to a fork
-      if: github.event_name == 'pull_request' && github.event.repository.fork == true
-      run: |
-        python3 -m pip install -e . pytest-codspeed
-        python3 -m pytest -vv --codspeed Tests/benchmarks.py
