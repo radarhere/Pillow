@@ -28,7 +28,30 @@ def TestOneInput(data: bytes) -> None:
     import math
     from PIL import Image, ImageFilter
 
-    Image.new("RGB", (1, 1)).filter(ImageFilter.BoxBlur((math.inf, 1)))
+    try:
+        Image.new("RGB", (1, 1)).filter(ImageFilter.BoxBlur(math.nan))
+    except ValueError:
+        pass
+    try:
+        Image.new("RGB", (1, 1)).filter(ImageFilter.BoxBlur((1, math.nan)))
+    except ValueError:
+        pass
+    try:
+        Image.new("RGB", (1, 1)).filter(ImageFilter.BoxBlur((math.nan, 1)))
+    except ValueError:
+        pass
+    try:
+        Image.new("RGB", (1, 1)).filter(ImageFilter.BoxBlur(math.inf))
+    except ValueError:
+        pass
+    try:
+        Image.new("RGB", (1, 1)).filter(ImageFilter.BoxBlur((math.inf, 1)))
+    except ValueError:
+        pass
+    try:
+        Image.new("RGB", (1, 1)).filter(ImageFilter.BoxBlur((1, math.inf)))
+    except ValueError:
+        pass
 
 
 def main() -> None:
