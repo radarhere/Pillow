@@ -83,7 +83,7 @@ class WebPImageFile(ImageFile.ImageFile):
 
         # Use the newer AnimDecoder API to parse the (possibly) animated file,
         # and access muxed chunks like ICC/EXIF/XMP.
-        self.is_lossless = _is_lossless(s)
+        self.info["lossless"] = _is_lossless(s)
         self._decoder = _webp.WebPAnimDecoder(s)
 
         # Get info from decoder
