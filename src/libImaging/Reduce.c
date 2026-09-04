@@ -1457,9 +1457,7 @@ ImagingReduce(Imaging imIn, int xscale, int yscale, int box[4]) {
         return (Imaging)ImagingError_ModeError();
     }
 
-    imOut = ImagingNewDirty(
-        imIn->mode, (box[2] - 1) / xscale + 1, (box[3] - 1) / yscale + 1
-    );
+    imOut = ImagingNewDirty(imIn->mode, ceil(box[2] / xscale), ceil(box[3] / yscale));
     if (!imOut) {
         return NULL;
     }
