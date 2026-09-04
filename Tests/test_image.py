@@ -53,5 +53,17 @@ except ImportError:
 
 
 class TestImage:
-    def test_get_flattened_data_putdata(self) -> None:
-        Image.new("L", (4, 4)).reduce(2**31 - 1)
+    @pytest.mark.parametrize("mode", ("L", "I", "F"))
+    @pytest.mark.parametrize(
+        "size, expected",
+        (
+            (2**31 - 1, (1, 1)),
+            ((2**31 - 1, 1), (1, 10)),
+            ((1, 2**31 - 1), (10, 1)),
+        ),
+    )
+    def test_args_factor_large(
+        self, size: int | tuple[int, int], expected: tuple[int, int], mode: str
+    ) -> None:
+        im = Image.new(mode, (10, 10))
+        assert im.reduce(size).size == expected
