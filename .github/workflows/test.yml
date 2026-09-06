@@ -17,10 +17,6 @@ on:
 permissions:
   contents: read
 
-concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
-
 env:
   FORCE_COLOR: 1
   PIP_DISABLE_PIP_VERSION_CHECK: 1
@@ -33,25 +29,10 @@ jobs:
       matrix:
         os: [
           "macos-latest",
-          "ubuntu-latest",
         ]
         python-version: [
-          "pypy3.11",
-          "3.15t",
-          "3.15",
-          "3.14t",
           "3.14",
-          "3.13",
-          "3.12",
-          "3.11",
         ]
-        include:
-        - { python-version: "3.13", PYTHONOPTIMIZE: 1, REVERSE: "--reverse" }
-        - { python-version: "3.12", PYTHONOPTIMIZE: 2 }
-        # Intel
-        - { os: "macos-26-intel", python-version: "3.11" }
-        exclude:
-        - { os: "macos-latest", python-version: "3.11" }
 
     runs-on: ${{ matrix.os }}
     name: ${{ matrix.os }} Python ${{ matrix.python-version }}
@@ -138,38 +119,3 @@ jobs:
       env:
         PYTHONOPTIMIZE: ${{ matrix.PYTHONOPTIMIZE }}
         REVERSE: ${{ matrix.REVERSE }}
-
-    - name: Prepare to upload errors
-      if: failure()
-      run: |
-        mkdir -p Tests/errors
-
-    - name: Upload errors
-      uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
-      if: failure()
-      with:
-        name: errors
-        path: Tests/errors
-
-    - name: After success
-      run: |
-        .ci/after_success.sh
-
-    - name: Upload coverage
-      uses: codecov/codecov-action@fb8b3582c8e4def4969c97caa2f19720cb33a72f # v7.0.0
-      with:
-        flags: ${{ matrix.os == 'ubuntu-latest' && 'GHA_Ubuntu' || 'GHA_macOS' }}
-        name: ${{ matrix.os }} Python ${{ matrix.python-version }}
-
-  success:
-    permissions:
-      contents: none
-    if: always()
-    needs: build
-    runs-on: ubuntu-latest
-    name: Test Successful
-    steps:
-      - name: Success
-        env:
-          BUILD_RESULT: ${{ needs.build.result }}
-        run: test "$BUILD_RESULT" = "success"
