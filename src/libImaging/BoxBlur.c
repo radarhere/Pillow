@@ -247,8 +247,10 @@ ImagingBoxBlur(Imaging imOut, Imaging imIn, float xradius, float yradius, int n)
     }
     /* 2**31 and above cannot be converted to an int. */
     if (xradius >= 2147483648.0f || yradius >= 2147483648.0f) {
+        printf("c too large %f %f 2147483648\n", xradius, yradius);
         return ImagingError_ValueError("radius too large");
     }
+    printf("c pass\n");
 
     if (imIn->mode != imOut->mode || imIn->type != imOut->type ||
         imIn->bands != imOut->bands || imIn->xsize != imOut->xsize ||

@@ -2237,6 +2237,7 @@ _box_blur(ImagingObject *self, PyObject *args) {
     if (!PyArg_ParseTuple(args, "(ff)|i", &xradius, &yradius, &n)) {
         return NULL;
     }
+    printf("float xradius %f\n", xradius);
 
     imIn = self->image;
     imOut = ImagingNewDirty(imIn->mode, imIn->xsize, imIn->ysize);

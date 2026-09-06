@@ -225,9 +225,11 @@ class BoxBlur(MultibandFilter):
         if not all(value >= 0 for value in xy):
             msg = "radius must be >= 0"
             raise ValueError(msg)
+        print("python", xy, 2**31)
         if any(value >= 2**31 for value in xy):
             msg = "radius too large"
             raise ValueError(msg)
+        print("python pass")
         self.radius = radius
 
     def filter(self, image: _imaging.ImagingCore) -> _imaging.ImagingCore:
@@ -236,6 +238,7 @@ class BoxBlur(MultibandFilter):
             return image.copy()
         if isinstance(xy, (int, float)):
             xy = (xy, xy)
+        print("python leave", xy)
         return image.box_blur(xy)
 
 
