@@ -8,6 +8,8 @@ from PIL import Image, ImageFilter
 
 from .helper import assert_image_equal, hopper
 
+MODES = ("L", "I", "I;16", "I;16L", "I;16B", "I;16N", "RGB", "CMYK")
+
 
 @pytest.mark.parametrize(
     "filter_to_apply",
@@ -37,9 +39,7 @@ from .helper import assert_image_equal, hopper
         ImageFilter.UnsharpMask(10),
     ),
 )
-@pytest.mark.parametrize(
-    "mode", ("L", "I", "I;16", "I;16L", "I;16B", "I;16N", "RGB", "CMYK")
-)
+@pytest.mark.parametrize("mode", MODES)
 def test_sanity(
     filter_to_apply: ImageFilter.Filter | type[ImageFilter.Filter], mode: str
 ) -> None:
@@ -53,9 +53,7 @@ def test_sanity(
         assert out.size == im.size
 
 
-@pytest.mark.parametrize(
-    "mode", ("L", "I", "I;16", "I;16L", "I;16B", "I;16N", "RGB", "CMYK")
-)
+@pytest.mark.parametrize("mode", MODES)
 def test_sanity_error(mode: str) -> None:
     im = hopper(mode)
     with pytest.raises(TypeError):
