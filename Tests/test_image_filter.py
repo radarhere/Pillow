@@ -217,6 +217,16 @@ def test_consistency_i16_high_byte(mode: str) -> None:
         assert im.getpixel((4, 4)) == 1000
 
 
+@pytest.mark.parametrize("radius", (2**24, 2**30))
+def test_large_blur_filter_radius(radius: int) -> None:
+    # A radius this large overflows the accumulators unless they stay unsigned
+    im = Image.new("L", (3, 3), 128)
+    assert im.filter(ImageFilter.BoxBlur(radius)).getpixel((1, 1)) == 128
+
+    im = Image.new("RGB", (3, 3), (128, 128, 128))
+    assert im.filter(ImageFilter.BoxBlur(radius)).getpixel((1, 1)) == (128, 128, 128)
+
+
 @pytest.mark.parametrize(
     "radius",
     (
