@@ -63,7 +63,7 @@ def test_sanity_error(mode: str) -> None:
 @pytest.mark.parametrize("size", ((1, 1), (2, 2), (3, 3)))
 def test_noop_on_small_images(size: tuple[int, int]) -> None:
     # If image is not larger than the kernel size, return it as-is
-    im = Image.new("RGB", size)
+    im = hopper().resize(size)
     assert_image_equal(im.filter(ImageFilter.SMOOTH), im)
 
 
