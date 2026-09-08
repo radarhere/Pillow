@@ -2442,6 +2442,8 @@ class Image:
                     (box[3] - reduce_box[1]) / factor_y,
                 )
 
+        #if self.size[1] > self.size[0] * 100 and size[1] < self.size[1]:
+        print("python", self.size, size)
         return self._new(self.im.resize(size, resample, box))
 
     def reduce(
