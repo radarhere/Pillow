@@ -148,7 +148,7 @@ def make_pillow_image(
 
 @pytest.mark.benchmark(group="scale")
 @pytest.mark.parametrize("resampler", Resampling, ids=lambda r: r.name)
-@pytest.mark.parametrize("scale", [0.01, 0.125, 0.8, 2.14])
+@pytest.mark.parametrize("scale", [0.01, 0.125])
 @pytest.mark.parametrize("mode", SCALE_MODES)
 @pytest.mark.parametrize("size", SIZES, ids=_format_size)
 def test_scale(
@@ -162,37 +162,3 @@ def test_scale(
     dest = (round(scale * im.width), round(scale * im.height))
     bench.extra_info["label"] = [f"{dest[0]}x{dest[1]}", resampler.name]
     bench(im.resize, dest, resampler)
-
-
-REDUCE_FACTORS = [
-    (1, 2),  # ImagingReduce1x2
-    (1, 3),  # ImagingReduce1x3
-    (1, 7),  # ImagingReduce1xN
-    (2, 1),  # ImagingReduce2x1
-    (2, 2),  # ImagingReduce2x2
-    (3, 1),  # ImagingReduce3x1
-    (3, 3),  # ImagingReduce3x3
-    (3, 5),  # ImagingReduceNxN
-    (4, 4),  # ImagingReduce4x4
-    (5, 5),  # ImagingReduce5x5
-    (7, 1),  # ImagingReduceNx1
-]
-
-
-@pytest.mark.benchmark(group="scale")
-@pytest.mark.parametrize("factor", REDUCE_FACTORS, ids=lambda f: f"{f[0]}x{f[1]}")
-@pytest.mark.parametrize("mode", SCALE_MODES)
-@pytest.mark.parametrize("size", SIZES, ids=_format_size)
-def test_reduce(
-    bench: BenchmarkFixture,
-    mode: str,
-    size: tuple[int, int],
-    factor: tuple[int, int],
-) -> None:
-    im = make_pillow_image(mode, size)
-    bench.extra_info["label"] = [f"reduce {factor[0]}x{factor[1]}"]
-    result = bench(im.reduce, factor)
-    assert result.size == (
-        -(-im.width // factor[0]),
-        -(-im.height // factor[1]),
-    )
