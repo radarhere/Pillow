@@ -839,9 +839,10 @@ ImagingResampleInner(
 
     // If width is being scaled down more than twice the amount the height is,
     // run the horizontal pass first, to make the vertical pass faster
-    int horizontal_first = imIn->xsize >= xsize && imIn->ysize >= ysize && (imIn->xsize - xsize) > (imIn->ysize - ysize) * 2;
-    printf("(%d - %d) > (%d - %d) * 2\n", imIn->xsize, xsize, imIn->ysize, ysize);
-    printf(horizontal_first ? "horizontal\n" : "vertical\n");
+    int horizontal_first = imIn->xsize >= xsize && imIn->ysize >= ysize &&
+                           (imIn->xsize - xsize) > (imIn->ysize - ysize) * 2;
+    // printf("(%d - %d) > (%d - %d) * 2\n", imIn->xsize, xsize, imIn->ysize, ysize);
+    // printf(horizontal_first ? "horizontal\n" : "vertical\n");
 
     if ((need_horizontal && horizontal_first) || need_vertical) {
         ksize_vert = precompute_coeffs(
