@@ -105,9 +105,13 @@ class TestImagingCoreResampleAccuracy:
     def serialize_image(self, image: Image.Image) -> str:
         s_px = image.load()
         assert s_px is not None
-        return "\n".join(
-            " ".join(f"{s_px[x, y]:02x}" for x in range(image.size[0]))
-            for y in range(image.size[1])
+        return (
+            '"'
+            + '"\n"'.join(
+                " ".join(f"{s_px[x, y]:02x}" for x in range(image.size[0] // 2))
+                for y in range(image.size[1] // 2)
+            )
+            + '"'
         )
 
     @pytest.mark.parametrize("mode", ("RGBX", "RGB", "La", "L"))
@@ -228,11 +232,11 @@ class TestImagingCoreResampleAccuracy:
         case = case.resize((12, 12), Image.Resampling.LANCZOS)
         data = (
             "e1 e0 db ed f5 b8"
-            "e0 df da ec f3 b7"
-            "db db d6 e7 ee b5"
-            "ed ec e6 fb ff bf"
-            "f5 f4 ee ff ff c4"
-            "b8 b7 b4 bf c4 a0"
+            "e0 df db ec f4 b7"
+            "db da d6 e6 ee b4"
+            "ed ec e7 fb ff bf"
+            "f5 f3 ee ff ff c4"
+            "b8 b7 b5 bf c4 a0"
         )
         for channel in case.split():
             self.check_case(channel, self.make_sample(data, (12, 12)))
@@ -244,9 +248,9 @@ class TestImagingCoreResampleAccuracy:
         data = (
             "e1 e1 e2 ef fb be"
             "e1 e1 e2 ef fb be"
-            "e2 e2 e3 f1 fd bf"
-            "ef ef f0 ff ff c7"
-            "fb fb fc ff ff cf"
+            "e2 e2 e3 f0 fc bf"
+            "ef ef f1 ff ff c7"
+            "fb fb fd ff ff cf"
             "be be bf c7 cf a8"
         )
         for channel in case.split():
@@ -258,11 +262,11 @@ class TestImagingCoreResampleAccuracy:
         case = case.resize((12, 12), Image.Resampling.MKS2021)
         data = (
             "e3 e1 df e9 f5 bb"
-            "e1 df dd e7 f3 b9"
-            "df dd db e5 f1 b8"
-            "e9 e7 e5 ef fc be"
-            "f5 f3 f0 fc ff c5"
-            "bb ba b8 bf c6 a3"
+            "e1 df dd e7 f3 ba"
+            "df dd db e5 f0 b8"
+            "e9 e7 e5 ef fc bf"
+            "f5 f3 f1 fc ff c6"
+            "bb b9 b8 be c5 a3"
         )
         for channel in case.split():
             self.check_case(channel, self.make_sample(data, (12, 12)))

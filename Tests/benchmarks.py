@@ -10,12 +10,11 @@ import pathlib
 import re
 import warnings
 from importlib.util import find_spec
-from io import BytesIO
 
 import pytest
 
-from PIL import Image, ImageChops, ImageDraw, ImageFilter, ImageFont
-from PIL.Image import Resampling, Transform, Transpose
+from PIL import Image, ImageChops
+from PIL.Image import Resampling, Transpose
 
 TYPE_CHECKING = False
 if TYPE_CHECKING:
@@ -148,7 +147,7 @@ def make_pillow_image(
 
 @pytest.mark.benchmark(group="scale")
 @pytest.mark.parametrize("resampler", Resampling, ids=lambda r: r.name)
-@pytest.mark.parametrize("scale", [0.01, 0.125])
+@pytest.mark.parametrize("scale", [0.01, 0.125, 0.8, 2.14])
 @pytest.mark.parametrize("mode", SCALE_MODES)
 @pytest.mark.parametrize("size", SIZES, ids=_format_size)
 def test_scale(
