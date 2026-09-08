@@ -186,6 +186,7 @@ class TestImagingCoreResize:
         im.save(temp_file)
 
         with Image.open(temp_file) as reloaded:
+            im.save("Tests/images/hopper_resized.gif")
             assert_image_equal_tofile(reloaded, "Tests/images/hopper_resized.gif")
 
 
