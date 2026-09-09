@@ -943,8 +943,7 @@ class pil_build_ext(build_ext):
             defs.append(("HAVE_LIBTIFF", None))
             if tiff_library and tiff_library.endswith(".a"):
                 if pkg_config_module := pkg_config_modules.get("TIFF_ROOT"):
-                    pkg_config_static = _pkg_config_static(pkg_config_module)
-                    if pkg_config_static:
+                    if pkg_config_static := _pkg_config_static(pkg_config_module):
                         tiff_libs, tiff_library_dirs, tiff_extra_link_args = (
                             pkg_config_static
                         )
