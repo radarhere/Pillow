@@ -308,9 +308,7 @@ def _pkg_config(name: str) -> tuple[list[str], list[str]] | None:
     return None
 
 
-def _pkg_config_static(
-    name: str, exclude_library: str | None
-) -> tuple[list[str], list[str], list[str]] | None:
+def _pkg_config_static(name: str) -> tuple[list[str], list[str], list[str]] | None:
     command = os.environ.get("PKG_CONFIG", "pkg-config")
     for keep_system in (True, False):
         try:
@@ -332,9 +330,7 @@ def _pkg_config_static(
                 if arg.startswith("-L"):
                     library_dirs.append(arg[2:])
                 elif arg.startswith("-l"):
-                    library = arg[2:]
-                    if library != exclude_library:
-                        libs.append(library)
+                    libs.append(arg[2:])
                 else:
                     extra_link_args.append(arg)
             return libs, library_dirs, extra_link_args
@@ -947,16 +943,12 @@ class pil_build_ext(build_ext):
             defs.append(("HAVE_LIBTIFF", None))
             if tiff_library and tiff_library.endswith(".a"):
                 if pkg_config_module := pkg_config_modules.get("TIFF_ROOT"):
-                    exclude_library = feature.get("tiff")
-                    pkg_config_static = _pkg_config_static(
-                        pkg_config_module,
-                        exclude_library if isinstance(exclude_library, str) else None,
-                    )
+                    pkg_config_static = _pkg_config_static(pkg_config_module)
                     if pkg_config_static:
                         tiff_libs, tiff_library_dirs, tiff_extra_link_args = (
                             pkg_config_static
                         )
-                        libs.extend(tiff_libs)
+                        libs.extend([lib for lib in tiff_libs if lib != libs[-1]])
                         for library_dir in tiff_library_dirs:
                             _add_directory(self.compiler.library_dirs, library_dir)
                         extra_link_args.extend(tiff_extra_link_args)
