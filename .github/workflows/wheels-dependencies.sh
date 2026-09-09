@@ -290,6 +290,7 @@ function build {
             --with-jpeg-include-dir=$BUILD_PREFIX/include
             --with-jpeg-lib-dir=$BUILD_PREFIX/lib
         )
+        tiff_configure_args+=(--disable-static)
         build_simple tiff $TIFF_VERSION https://download.osgeo.org/libtiff tar.gz \
             "${tiff_configure_args[@]}"
     else
