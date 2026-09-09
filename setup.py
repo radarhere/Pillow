@@ -534,7 +534,6 @@ class pil_build_ext(build_ext):
         library_dirs: list[str] = []
         include_dirs: list[str] = []
         pkg_config_modules: dict[str, str] = {}
-        tiff_library: str | None = None
 
         pkg_config = None
         if _cmd_exists(os.environ.get("PKG_CONFIG", "pkg-config")):
