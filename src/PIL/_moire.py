@@ -16,20 +16,12 @@ def _lcd_resampling(img: Image.Image) -> Image.Image:
     :param img:
     :return: An image.
     """
-    w, h = img.size
-    resampled_img = Image.new("RGB", (w, h))
+    resampled_img = Image.new("RGB", img.size)
 
-    for y in range(h):
-        num = 1
-        for x in range(w):
+    for y in range(img.height):
+        for x in range(img.width):
             r, g, b = cast("tuple[int, int, int]", img.getpixel((x, y)))
-            if num % 3 == 0:
-                resampled_img.putpixel((x, y), (0, 0, b))
-            elif num % 3 == 1:
-                resampled_img.putpixel((x, y), (r, 0, 0))
-            else:
-                resampled_img.putpixel((x, y), (0, g, 0))
-            num += 1
+            resampled_img.putpixel((x, y), ((r, 0, 0), (0, g, 0), (0, 0, b))[x % 3])
 
     return resampled_img
 
@@ -62,7 +54,7 @@ def _projective_transformation(img: Image.Image) -> Image.Image:
     coeffs = (a, b, c, d, e, f, g, h_p)
 
     return img.transform(
-        img.size, Image.Transform.PERSPECTIVE, coeffs, resample=Image.Resampling.BICUBIC
+        img.size, Image.Transform.PERSPECTIVE, coeffs, Image.Resampling.BICUBIC
     )
 
 
@@ -74,8 +66,8 @@ def _radial_distortion(img: Image.Image, k: float = -1e-7) -> Image.Image:
     :param k:
     :return: An image
     """
+    radial_distort = Image.new("RGB", img.size)
     w, h = img.size
-    radial_distort = Image.new("RGB", (w, h))
 
     cx = w / 2
     cy = h / 2
@@ -107,7 +99,7 @@ def _flat_top_kernel(
     :param size: the size of the kernel to be produced
     :param sigma: controls the broadness of the Gaussian kernel
     :param n: controls the flatness of the kernel peak
-    :return: An Array
+    :return: An array
     """
     kernel = []
     center = size // 2
@@ -144,56 +136,43 @@ def _flat_top_filtering(
     :return: An image
     """
     kernel = _flat_top_kernel(size, sigma, n)
-    flat_kernel = []
-    for row in kernel:
-        flat_kernel.extend(row)
+    flat_kernel = [value for row in kernel for value in row]
 
     return img.filter(ImageFilter.Kernel((5, 5), flat_kernel, scale=1))
 
 
-def _bayer_resampling(img: Image.Image) -> Image.Image:
+def _bayer_resampling(img: Image.Image) -> None:
     """
     Simulate a Bayer CFA (GRBG) where each pixel only captures one color channel
 
     :param img:
-    :return: An image
     """
-    resample = Image.new("RGB", img.size)
-
     for y in range(img.height):
         for x in range(img.width):
             r, g, b = cast("tuple[int, int, int]", img.getpixel((x, y)))
             if y % 2 == 0:
                 if x % 2 == 0:
-                    resample.putpixel((x, y), (0, g, 0))
+                    value = (0, g, 0)
                 else:
-                    resample.putpixel((x, y), (r, 0, 0))
+                    value = (r, 0, 0)
             else:
                 if x % 2 == 0:
-                    resample.putpixel((x, y), (0, 0, b))
+                    value = (0, 0, b)
                 else:
-                    resample.putpixel((x, y), (0, g, 0))
+                    value = (0, g, 0)
+            img.putpixel((x, y), value)
 
-    return resample
 
-
-def _add_noise(img: Image.Image) -> Image.Image:
+def _add_noise(img: Image.Image) -> None:
     """
     Add standard normal noise to the image to simulate sensor noise
 
     :param img:
-    :return: An image
     """
-    noisy = Image.new("RGB", img.size)
     for y in range(img.height):
         for x in range(img.width):
-            r, g, b = cast("tuple[int, int, int]", img.getpixel((x, y)))
-            nr = int(r + random.gauss(0, 1))
-            ng = int(g + random.gauss(0, 1))
-            nb = int(b + random.gauss(0, 1))
-            noisy.putpixel((x, y), (nr, ng, nb))
-
-    return noisy
+            value = cast("tuple[int, int, int]", img.getpixel((x, y)))
+            img.putpixel((x, y), tuple(int(v + random.gauss(0, 1)) for v in value))
 
 
 def _clamp(v: int, lo: int, hi: int) -> int:
@@ -206,17 +185,14 @@ def _get_channel(img: Image.Image, x: int, y: int, ch: int, w: int, h: int) -> i
     return cast("tuple[int, int, int]", img.getpixel((x, y)))[ch]
 
 
-def _demosaic_bilinear(img: Image.Image) -> Image.Image:
+def _demosaic_bilinear(img: Image.Image) -> None:
     """
     Reconstruct the full RGB image from the Bayer CFA image using bilinear interpolation
     of the other 2 remaining channels from nearby pixels at each pixel
 
     :param img:
-    :return: An image
     """
     w, h = img.size
-    out = Image.new("RGB", (w, h))
-
     for y in range(h):
         for x in range(w):
             pixel = cast("tuple[int, int, int]", img.getpixel((x, y)))
@@ -273,12 +249,10 @@ def _demosaic_bilinear(img: Image.Image) -> Image.Image:
                     + _get_channel(img, x + 1, y, 2, w, h)
                 ) >> 1
 
-            out.putpixel(
+            img.putpixel(
                 (x, y),
-                (_clamp(new_r, 0, 255), _clamp(new_g, 0, 255), _clamp(new_b, 0, 255)),
+                tuple(_clamp(value, 0, 255) for value in (new_r, new_g, new_b)),
             )
-
-    return out
 
 
 def _denoise(img: Image.Image) -> Image.Image:
