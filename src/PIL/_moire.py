@@ -143,7 +143,7 @@ def _flat_top_filtering(
     :param n:
     :return: An image
     """
-    kernel = _flat_top_kernel(size=size, sigma=sigma, n=n)
+    kernel = _flat_top_kernel(size, sigma, n)
     flat_kernel = []
     for row in kernel:
         flat_kernel.extend(row)
@@ -287,7 +287,6 @@ def _denoise(img: Image.Image) -> Image.Image:
 
 def _jpeg_compression(img: Image.Image) -> Image.Image:
     buffer = io.BytesIO()
-    img.save(buffer, format="JPEG")
-    buffer.seek(0)
+    img.save(buffer, "JPEG")
 
-    return Image.open(buffer).convert("RGB")
+    return Image.open(buffer)

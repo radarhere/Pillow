@@ -591,6 +591,13 @@ def test_autocontrast_preserve_one_color(color: tuple[int, int, int]) -> None:
     assert_image_equal(img, out)
 
 
+def test_moire() -> None:
+    img = Image.new("RGB", (10, 10))
+    out = ImageOps.moire(img)
+    assert out.size == img.size
+    assert out.mode == "RGB"
+
+
 def test_moire_unsupported_mode() -> None:
     im = Image.new("L", (1, 1))
     with pytest.raises(ValueError, match="mode must be RGB, not L"):
