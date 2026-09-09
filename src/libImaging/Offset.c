@@ -24,14 +24,13 @@
  */
 Imaging
 ImagingOffset(Imaging im, int xoffset, int yoffset) {
-    int x, y;
-    Imaging imOut;
-
     if (!im) {
         return (Imaging)ImagingError_ModeError();
     }
 
-    imOut = ImagingNewDirty(im->mode, im->xsize, im->ysize);
+    int xsize = im->xsize, ysize = im->ysize;
+
+    Imaging imOut = ImagingNewDirty(im->mode, xsize, ysize);
     if (!imOut) {
         return NULL;
     }
@@ -39,30 +38,30 @@ ImagingOffset(Imaging im, int xoffset, int yoffset) {
     ImagingCopyPalette(imOut, im);
 
     /* make offsets positive to avoid negative coordinates */
-    if (im->xsize == 0 || im->ysize == 0) {
+    if (xsize == 0 || ysize == 0) {
         return imOut;
     }
-    xoffset %= im->xsize;
-    xoffset = im->xsize - xoffset;
+    xoffset %= xsize;
+    xoffset = xsize - xoffset;
     if (xoffset < 0) {
-        xoffset += im->xsize;
+        xoffset += xsize;
     }
 
-    yoffset %= im->ysize;
-    yoffset = im->ysize - yoffset;
+    yoffset %= ysize;
+    yoffset = ysize - yoffset;
     if (yoffset < 0) {
-        yoffset += im->ysize;
+        yoffset += ysize;
     }
 
     // yi depends only on y, so compute it (and both row pointers) once per
     // row instead of redoing the modulo and pointer chase for every x.
 #define OFFSET(type, image)                           \
-    for (y = 0; y < im->ysize; y++) {                 \
-        int yi = (y + yoffset) % im->ysize;           \
+    for (int y = 0; y < ysize; y++) {                 \
+        int yi = (y + yoffset) % ysize;               \
         type *restrict in = (type *)im->image[yi];    \
         type *restrict out = (type *)imOut->image[y]; \
-        for (x = 0; x < im->xsize; x++) {             \
-            int xi = (x + xoffset) % im->xsize;       \
+        for (int x = 0; x < xsize; x++) {             \
+            int xi = (x + xoffset) % xsize;           \
             out[x] = in[xi];                          \
         }                                             \
     }
