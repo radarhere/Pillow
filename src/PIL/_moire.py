@@ -175,16 +175,6 @@ def _add_noise(img: Image.Image) -> None:
             img.putpixel((x, y), tuple(int(v + random.gauss(0, 1)) for v in value))
 
 
-def _clamp(v: int, lo: int, hi: int) -> int:
-    return lo if v < lo else (hi if v > hi else v)
-
-
-def _get_channel(img: Image.Image, x: int, y: int, ch: int, w: int, h: int) -> int:
-    x = _clamp(x, 0, w - 1)
-    y = _clamp(y, 0, h - 1)
-    return cast("tuple[int, int, int]", img.getpixel((x, y)))[ch]
-
-
 def _demosaic_bilinear(img: Image.Image) -> None:
     """
     Reconstruct the full RGB image from the Bayer CFA image using bilinear interpolation
@@ -193,66 +183,46 @@ def _demosaic_bilinear(img: Image.Image) -> None:
     :param img:
     """
     w, h = img.size
+
+    def _clamp(v: int, hi: int) -> int:
+        return hi if v > hi else v
+
     for y in range(h):
         for x in range(w):
+
+            def _get_channel(xy: tuple[tuple[int, int], ...], ch: int) -> int:
+                total = 0
+                for x_offset, y_offset in xy:
+                    value = img.getpixel(
+                        (_clamp(x + x_offset, w - 1), _clamp(y + y_offset, h - 1))
+                    )
+                    assert isinstance(value, tuple)
+                    total += value[ch]
+                return _clamp(total >> (len(xy) // 2), 255)
+
             pixel = cast("tuple[int, int, int]", img.getpixel((x, y)))
 
             if y % 2 == 0 and x % 2 == 0:
-                new_r = (
-                    _get_channel(img, x - 1, y, 0, w, h)
-                    + _get_channel(img, x + 1, y, 0, w, h)
-                ) >> 1
+                new_r = _get_channel(((-1, 0), (1, 0)), 0)
                 new_g = pixel[1]
-                new_b = (
-                    _get_channel(img, x, y - 1, 2, w, h)
-                    + _get_channel(img, x, y + 1, 2, w, h)
-                ) >> 1
+                new_b = _get_channel(((0, -1), (0, 1)), 2)
 
             elif y % 2 == 0 and x % 2 == 1:
                 new_r = pixel[0]
-                new_g = (
-                    _get_channel(img, x - 1, y, 1, w, h)
-                    + _get_channel(img, x + 1, y, 1, w, h)
-                    + _get_channel(img, x, y - 1, 1, w, h)
-                    + _get_channel(img, x, y + 1, 1, w, h)
-                ) >> 2
-                new_b = (
-                    _get_channel(img, x - 1, y - 1, 2, w, h)
-                    + _get_channel(img, x + 1, y - 1, 2, w, h)
-                    + _get_channel(img, x - 1, y + 1, 2, w, h)
-                    + _get_channel(img, x + 1, y + 1, 2, w, h)
-                ) >> 2
+                new_g = _get_channel(((-1, 0), (1, 0), (0, -1), (0, 1)), 1)
+                new_b = _get_channel(((-1, -1), (1, -1), (-1, 1), (1, 1)), 2)
 
             elif y % 2 == 1 and x % 2 == 0:
-                new_r = (
-                    _get_channel(img, x - 1, y - 1, 0, w, h)
-                    + _get_channel(img, x + 1, y - 1, 0, w, h)
-                    + _get_channel(img, x - 1, y + 1, 0, w, h)
-                    + _get_channel(img, x + 1, y + 1, 0, w, h)
-                ) >> 2
-                new_g = (
-                    _get_channel(img, x - 1, y, 1, w, h)
-                    + _get_channel(img, x + 1, y, 1, w, h)
-                    + _get_channel(img, x, y - 1, 1, w, h)
-                    + _get_channel(img, x, y + 1, 1, w, h)
-                ) >> 2
+                new_r = _get_channel(((-1, -1), (1, -1), (-1, 1), (1, 1)), 0)
+                new_g = _get_channel(((-1, 0), (1, 0), (0, -1), (0, 1)), 1)
                 new_b = pixel[2]
 
             else:
-                new_r = (
-                    _get_channel(img, x, y - 1, 0, w, h)
-                    + _get_channel(img, x, y + 1, 0, w, h)
-                ) >> 1
+                new_r = _get_channel(((0, -1), (0, 1)), 0)
                 new_g = pixel[1]
-                new_b = (
-                    _get_channel(img, x - 1, y, 2, w, h)
-                    + _get_channel(img, x + 1, y, 2, w, h)
-                ) >> 1
+                new_b = _get_channel(((-1, 0), (1, 0)), 2)
 
-            img.putpixel(
-                (x, y),
-                tuple(_clamp(value, 0, 255) for value in (new_r, new_g, new_b)),
-            )
+            img.putpixel((x, y), (new_r, new_g, new_b))
 
 
 def _denoise(img: Image.Image) -> Image.Image:
