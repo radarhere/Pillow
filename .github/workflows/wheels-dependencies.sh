@@ -290,10 +290,6 @@ function build {
             --with-jpeg-include-dir=$BUILD_PREFIX/include
             --with-jpeg-lib-dir=$BUILD_PREFIX/lib
         )
-        if [[ -z "$IOS_SDK" ]]; then
-            # iOS links libtiff statically, but otherwise we need the dylib.
-            tiff_configure_args+=(--disable-static)
-        fi
         build_simple tiff $TIFF_VERSION https://download.osgeo.org/libtiff tar.gz \
             "${tiff_configure_args[@]}"
     else
