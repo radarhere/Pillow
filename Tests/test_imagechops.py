@@ -284,6 +284,26 @@ def test_offset() -> None:
         assert ImageChops.offset(im, xoffset) == ImageChops.offset(im, xoffset, xoffset)
 
 
+@pytest.mark.parametrize(
+    "mode", ("1", "L", "P", "I", "I;16", "I;16L", "I;16B", "I;16N", "F", "RGB", "RGBA")
+)
+def test_offset_modes(mode: str) -> None:
+    # Arrange
+    im = hopper(mode)
+    w, h = im.size
+    x_off, y_off = 42, 67
+    assert_image_equal(ImageChops.offset(im, 0, 0), im)  # check no-op
+
+    # Act
+    new = ImageChops.offset(im, x_off, y_off)
+
+    # Assert
+    for x in range(w):
+        for y in range(h):
+            wrapped_coord = ((x + x_off) % w, (y + y_off) % h)
+            assert new.getpixel(wrapped_coord) == im.getpixel((x, y))
+
+
 @pytest.mark.parametrize("size", ((1, 0), (0, 1), (0, 0)))
 def test_offset_zero_size(size: tuple[int, int]) -> None:
     im = Image.new("RGB", size)

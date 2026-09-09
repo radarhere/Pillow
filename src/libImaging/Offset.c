@@ -56,19 +56,23 @@ ImagingOffset(Imaging im, int xoffset, int yoffset) {
 
     // yi depends only on y, so compute it (and both row pointers) once per
     // row instead of redoing the modulo and pointer chase for every x.
-#define OFFSET(type, image)                     \
-    for (y = 0; y < im->ysize; y++) {           \
-        int yi = (y + yoffset) % im->ysize;     \
-        type *restrict in = im->image[yi];      \
-        type *restrict out = imOut->image[y];   \
-        for (x = 0; x < im->xsize; x++) {       \
-            int xi = (x + xoffset) % im->xsize; \
-            out[x] = in[xi];                    \
-        }                                       \
+#define OFFSET(type, image)                           \
+    for (y = 0; y < im->ysize; y++) {                 \
+        int yi = (y + yoffset) % im->ysize;           \
+        type *restrict in = (type *)im->image[yi];    \
+        type *restrict out = (type *)imOut->image[y]; \
+        for (x = 0; x < im->xsize; x++) {             \
+            int xi = (x + xoffset) % im->xsize;       \
+            out[x] = in[xi];                          \
+        }                                             \
     }
 
     if (im->image8) {
-        OFFSET(UINT8, image8)
+        if (im->pixelsize == 2) {
+            OFFSET(UINT16, image8)
+        } else {
+            OFFSET(UINT8, image8)
+        }
     } else {
         OFFSET(INT32, image32)
     }
