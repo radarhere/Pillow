@@ -323,9 +323,7 @@ def _pkg_config_static(name: str) -> tuple[list[str], list[str], list[str]] | No
             library_dirs = []
             extra_link_args = []
             for arg in shlex.split(
-                subprocess.check_output(command_libs, stderr=stderr)
-                .decode("utf8")
-                .strip()
+                subprocess.check_output(command_libs, stderr=stderr).decode("utf8")
             ):
                 if arg.startswith("-L"):
                     library_dirs.append(arg[2:])
