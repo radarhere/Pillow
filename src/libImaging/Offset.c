@@ -66,12 +66,10 @@ ImagingOffset(Imaging im, int xoffset, int yoffset) {
         }                                             \
     }
 
-    if (im->image8) {
-        if (im->pixelsize == 2) {
-            OFFSET(UINT16, image8)
-        } else {
-            OFFSET(UINT8, image8)
-        }
+    if (im->pixelsize == 1) {
+        OFFSET(UINT8, image8)
+    } else if (im->pixelsize == 2) {
+        OFFSET(UINT16, image8)
     } else {
         OFFSET(INT32, image32)
     }
