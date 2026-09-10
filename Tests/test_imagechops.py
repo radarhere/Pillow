@@ -290,17 +290,19 @@ def test_offset() -> None:
 def test_offset_modes(mode: str) -> None:
     # Arrange
     im = hopper(mode)
-    w, h = im.size
-    x_off, y_off = 42, 67
     assert_image_equal(ImageChops.offset(im, 0, 0), im)  # check no-op
 
+    xoffset = 45
+    yoffset = 20
+
     # Act
-    new = ImageChops.offset(im, x_off, y_off)
+    new = ImageChops.offset(im, xoffset, yoffset)
 
     # Assert
+    w, h = im.size
     for x in range(w):
         for y in range(h):
-            wrapped_coord = ((x + x_off) % w, (y + y_off) % h)
+            wrapped_coord = ((x + xoffset) % w, (y + yoffset) % h)
             assert new.getpixel(wrapped_coord) == im.getpixel((x, y))
 
 
