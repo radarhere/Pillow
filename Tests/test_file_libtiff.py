@@ -1268,11 +1268,14 @@ class TestFileLibTiff(LibTiffTestCase):
         with pytest.raises(ValueError, match="cannot write empty image"):
             im.save(out, compression=compression)
 
-    def test_save_many_compressed(self, tmp_path: Path) -> None:
-        im = hopper()
+    @pytest.mark.skipif(not os.path.isdir("/dev/fd"), reason="Requires /dev/fd")
+    def test_save_compressed_no_fd_leak(self, tmp_path: Path) -> None:
+        im = Image.new("L", (1, 1))
         out = tmp_path / "temp.tif"
-        for _ in range(10000):
-            im.save(out, compression="jpeg")
+        im.save(out, compression="jpeg")  # warmup
+        fds = len(os.listdir("/dev/fd"))
+        im.save(out, compression="jpeg")
+        assert len(os.listdir("/dev/fd")) == fds
 
     @pytest.mark.parametrize(
         "path, sizes",
