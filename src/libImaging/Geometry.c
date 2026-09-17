@@ -488,8 +488,8 @@ nearest_filter32(void *out, Imaging im, double xin, double yin) {
     return 1;
 }
 
-#define XCLIP(im, x) (((x) < 0) ? 0 : ((x) < im->xsize) ? (x) : im->xsize - 1)
-#define YCLIP(im, y) (((y) < 0) ? 0 : ((y) < ysize) ? (y) : ysize - 1)
+#define XCLIP(x) (((x) < 0) ? 0 : ((x) < im->xsize) ? (x) : im->xsize - 1)
+#define YCLIP(y) (((y) < 0) ? 0 : ((y) < ysize) ? (y) : ysize - 1)
 
 #define BILINEAR(v, a, b, d) (v = (a) + ((b) - (a)) * (d))
 
@@ -510,19 +510,19 @@ nearest_filter32(void *out, Imaging im, double xin, double yin) {
     dx = xin - x;                                                     \
     dy = yin - y;
 
-#define BILINEAR_BODY(type, image, step, offset)       \
-    {                                                  \
-        in = (type *)((image)[YCLIP(im, y)] + offset); \
-        x0 = XCLIP(im, x + 0) * step;                  \
-        x1 = XCLIP(im, x + 1) * step;                  \
-        BILINEAR(v1, in[x0], in[x1], dx);              \
-        if (y + 1 >= 0 && y + 1 < ysize) {             \
-            in = (type *)((image)[y + 1] + offset);    \
-            BILINEAR(v2, in[x0], in[x1], dx);          \
-        } else {                                       \
-            v2 = v1;                                   \
-        }                                              \
-        BILINEAR(v1, v1, v2, dy);                      \
+#define BILINEAR_BODY(type, image, step, offset)    \
+    {                                               \
+        in = (type *)((image)[YCLIP(y)] + offset);  \
+        x0 = XCLIP(x + 0) * step;                   \
+        x1 = XCLIP(x + 1) * step;                   \
+        BILINEAR(v1, in[x0], in[x1], dx);           \
+        if (y + 1 >= 0 && y + 1 < ysize) {          \
+            in = (type *)((image)[y + 1] + offset); \
+            BILINEAR(v2, in[x0], in[x1], dx);       \
+        } else {                                    \
+            v2 = v1;                                \
+        }                                           \
+        BILINEAR(v1, v1, v2, dy);                   \
     }
 
 static int
@@ -611,11 +611,11 @@ bilinear_filter32RGB(void *out, Imaging im, double xin, double yin) {
 
 #define BICUBIC_BODY(type, image, step, offset)              \
     {                                                        \
-        in = (type *)((image)[YCLIP(im, y)] + offset);       \
-        x0 = XCLIP(im, x + 0) * step;                        \
-        x1 = XCLIP(im, x + 1) * step;                        \
-        x2 = XCLIP(im, x + 2) * step;                        \
-        x3 = XCLIP(im, x + 3) * step;                        \
+        in = (type *)((image)[YCLIP(y)] + offset);           \
+        x0 = XCLIP(x + 0) * step;                            \
+        x1 = XCLIP(x + 1) * step;                            \
+        x2 = XCLIP(x + 2) * step;                            \
+        x3 = XCLIP(x + 3) * step;                            \
         BICUBIC(v1, in[x0], in[x1], in[x2], in[x3], dx);     \
         if (y + 1 >= 0 && y + 1 < ysize) {                   \
             in = (type *)((image)[y + 1] + offset);          \
