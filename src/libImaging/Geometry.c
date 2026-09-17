@@ -488,26 +488,26 @@ nearest_filter32(void *out, Imaging im, double xin, double yin) {
     return 1;
 }
 
-#define XCLIP(x) (((x) < 0) ? 0 : ((x) < im->xsize) ? (x) : im->xsize - 1)
+#define XCLIP(x) (((x) < 0) ? 0 : ((x) < xsize) ? (x) : xsize - 1)
 #define YCLIP(y) (((y) < 0) ? 0 : ((y) < ysize) ? (y) : ysize - 1)
 
 #define BILINEAR(v, a, b, d) (v = (a) + ((b) - (a)) * (d))
 
-#define BILINEAR_HEAD(type)                                           \
-    int x, y;                                                         \
-    int x0, x1;                                                       \
-    double v1, v2;                                                    \
-    double dx, dy;                                                    \
-    type *in;                                                         \
-    int ysize = im->ysize;                                            \
-    if (xin < 0.0 || xin >= im->xsize || yin < 0.0 || yin >= ysize) { \
-        return 0;                                                     \
-    }                                                                 \
-    xin -= 0.5;                                                       \
-    yin -= 0.5;                                                       \
-    x = FLOOR(xin);                                                   \
-    y = FLOOR(yin);                                                   \
-    dx = xin - x;                                                     \
+#define BILINEAR_HEAD(type)                                       \
+    int x, y;                                                     \
+    int x0, x1;                                                   \
+    double v1, v2;                                                \
+    double dx, dy;                                                \
+    type *in;                                                     \
+    int xsize = im->xsize, ysize = im->ysize;                     \
+    if (xin < 0.0 || xin >= xsize || yin < 0.0 || yin >= ysize) { \
+        return 0;                                                 \
+    }                                                             \
+    xin -= 0.5;                                                   \
+    yin -= 0.5;                                                   \
+    x = FLOOR(xin);                                               \
+    y = FLOOR(yin);                                               \
+    dx = xin - x;                                                 \
     dy = yin - y;
 
 #define BILINEAR_BODY(type, image, step, offset)    \
@@ -589,24 +589,24 @@ bilinear_filter32RGB(void *out, Imaging im, double xin, double yin) {
         v = p1 + (d) * (p2 + (d) * (p3 + (d) * p4)); \
     }
 
-#define BICUBIC_HEAD(type)                                            \
-    int x = FLOOR(xin);                                               \
-    int y = FLOOR(yin);                                               \
-    int x0, x1, x2, x3;                                               \
-    double v1, v2, v3, v4;                                            \
-    double dx, dy;                                                    \
-    type *in;                                                         \
-    int ysize = im->ysize;                                            \
-    if (xin < 0.0 || xin >= im->xsize || yin < 0.0 || yin >= ysize) { \
-        return 0;                                                     \
-    }                                                                 \
-    xin -= 0.5;                                                       \
-    yin -= 0.5;                                                       \
-    x = FLOOR(xin);                                                   \
-    y = FLOOR(yin);                                                   \
-    dx = xin - x;                                                     \
-    dy = yin - y;                                                     \
-    x--;                                                              \
+#define BICUBIC_HEAD(type)                                        \
+    int x = FLOOR(xin);                                           \
+    int y = FLOOR(yin);                                           \
+    int x0, x1, x2, x3;                                           \
+    double v1, v2, v3, v4;                                        \
+    double dx, dy;                                                \
+    type *in;                                                     \
+    int xsize = im->xsize, ysize = im->ysize;                     \
+    if (xin < 0.0 || xin >= xsize || yin < 0.0 || yin >= ysize) { \
+        return 0;                                                 \
+    }                                                             \
+    xin -= 0.5;                                                   \
+    yin -= 0.5;                                                   \
+    x = FLOOR(xin);                                               \
+    y = FLOOR(yin);                                               \
+    dx = xin - x;                                                 \
+    dy = yin - y;                                                 \
+    x--;                                                          \
     y--;
 
 #define BICUBIC_BODY(type, image, step, offset)              \
@@ -870,16 +870,17 @@ ImagingScaleAffine(
         y0 = 0;
     }
 
-    int xsize = imOut->xsize, ysize = imOut->ysize;
-    if (x1 > xsize) {
-        x1 = xsize;
+    int in_xsize = imIn->xsize, in_ysize = imIn->ysize;
+    int out_xsize = imOut->xsize, out_ysize = imOut->ysize;
+    if (x1 > out_xsize) {
+        x1 = out_xsize;
     }
-    if (y1 > ysize) {
-        y1 = ysize;
+    if (y1 > out_ysize) {
+        y1 = out_ysize;
     }
 
     /* malloc check ok, uses calloc for overflow */
-    xintab = (int *)calloc(xsize, sizeof(int));
+    xintab = (int *)calloc(out_xsize, sizeof(int));
     if (!xintab) {
         ImagingDelete(imOut);
         return (Imaging)ImagingError_MemoryError();
@@ -894,7 +895,7 @@ ImagingScaleAffine(
     /* Pretabulate horizontal pixel positions */
     for (x = x0; x < x1; x++) {
         xin = COORD(xo);
-        if (xin >= 0 && xin < (int)imIn->xsize) {
+        if (xin >= 0 && xin < (int)in_xsize) {
             xmax = x + 1;
             if (x < xmin) {
                 xmin = x;
@@ -912,7 +913,7 @@ ImagingScaleAffine(
         if (fill && x1 > x0) {                              \
             memset(out + x0, 0, (x1 - x0) * sizeof(pixel)); \
         }                                                   \
-        if (yi >= 0 && yi < imIn->ysize) {                  \
+        if (yi >= 0 && yi < in_ysize) {                     \
             in = imIn->image[yi];                           \
             for (x = xmin; x < xmax; x++) {                 \
                 out[x] = in[xintab[x]];                     \
