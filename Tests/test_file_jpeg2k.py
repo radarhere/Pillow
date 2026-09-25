@@ -431,9 +431,6 @@ def test_channel_definitions(
         assert_image_equal(reloaded, expected)
 
 
-@skip_unless_feature_version(
-    "jpg_2000", "2.5.1", "sYCC is only identified from the header since OpenJPEG 2.5.1"
-)
 def test_channel_definitions_sycc() -> None:
     # The components are reordered before the conversion from YCbCr to RGB
     im = hopper("YCbCr")
@@ -477,11 +474,6 @@ def test_channel_definitions_ignored(
 
     with Image.open(BytesIO(data)) as reloaded:
         assert_image_equal(reloaded, im)
-
-
-def test_channel_order_decoder_args() -> None:
-    with pytest.raises(ValueError, match="too many channels"):
-        Image.core.jpeg2k_decoder("RGB", "jp2", 0, 0, -1, -1, bytes(5))
 
 
 @pytest.mark.skipif(

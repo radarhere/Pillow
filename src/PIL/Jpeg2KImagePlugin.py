@@ -189,6 +189,7 @@ def _parse_jp2_header(
     tuple[float, float] | None,
     ImagePalette.ImagePalette | None,
     tuple[int, ...] | None,
+    str | None,
 ]:
     """Parse the JP2 header box to extract size, component count,
     color space information, and optionally DPI information and channel order,
@@ -225,7 +226,6 @@ def _parse_jp2_header(
             height, width, nc, bpc = header.read_fields(">IIHB")
             assert isinstance(height, int)
             assert isinstance(width, int)
-            assert isinstance(nc, int)
             assert isinstance(bpc, int)
             size = (width, height)
             if nc == 1 and (bpc & 0x7F) > 8:
@@ -249,6 +249,8 @@ def _parse_jp2_header(
                         mode = "CMYK"
                 elif enumcs == 17:
                     colr = "L"
+                elif enumcs == 18:
+                    colr = "SYCC"
         elif tbox == b"pclr" and mode in ("L", "LA") and colr not in ("1", "L"):
             ne, npc = header.read_fields(">HB")
             assert isinstance(ne, int)
@@ -308,7 +310,7 @@ def _parse_jp2_header(
         # With a palette, the channel definitions describe the palette entries
         channel_order = _channel_order(channels, nc)
 
-    return size, mode, mimetype, dpi, palette, channel_order
+    return size, mode, mimetype, dpi, palette, channel_order, colr
 
 
 ##
@@ -322,6 +324,7 @@ class Jpeg2KImageFile(ImageFile.ImageFile):
     def _open(self) -> None:
         assert self.fp is not None
         self._channel_order: tuple[int, ...] | None = None
+        self._colr = None
         sig = self.fp.read(4)
         if sig == b"\xff\x4f\xff\x51":
             self.codec = "j2k"
@@ -340,6 +343,7 @@ class Jpeg2KImageFile(ImageFile.ImageFile):
                     dpi,
                     self.palette,
                     self._channel_order,
+                    self._colr,
                 ) = header
                 if dpi is not None:
                     self.info["dpi"] = dpi
@@ -376,14 +380,7 @@ class Jpeg2KImageFile(ImageFile.ImageFile):
                 "jpeg2k",
                 (0, 0, *self.size),
                 0,
-                (
-                    self.codec,
-                    self._reduce,
-                    self.layers,
-                    fd,
-                    length,
-                    bytes(self._channel_order or ()),
-                ),
+                (self.codec, self._reduce, self.layers, fd, length),
             )
         ]
 
@@ -441,6 +438,18 @@ class Jpeg2KImageFile(ImageFile.ImageFile):
             self.tile = [ImageFile._Tile(t[0], (0, 0, *self.size), t[2], t3)]
 
         return ImageFile.ImageFile.load(self)
+
+    def load_end(self) -> None:
+        if self._channel_order is not None:
+            channels = self.im.split()
+            self.im = Image.core.merge(
+                self.mode, *[channels[channel] for channel in self._channel_order]
+            )
+
+        if self._colr == "SYCC":
+            ycbcr_im = Image.core.new("YCbCr", self.size)
+            ycbcr_im.putdata(self.im)
+            self.im = ycbcr_im.convert(self.mode)
 
 
 def _accept(prefix: bytes) -> bool:
