@@ -33,7 +33,7 @@ class TestEmbeddable:
             "INCLUDEPY"
         ).replace("include", "libs")
         print("torch_libdir", libdir)
-        compiler.add_library_dir(libdir)
+        compiler.add_library_dir(os.path.dirname(libdir))
         try:
             compiler.initialize()
         except Exception:
