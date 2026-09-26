@@ -27,11 +27,12 @@ class TestEmbeddable:
 
         compiler = getattr(build_ext, "new_compiler")()
         compiler.add_include_dir(sysconfig.get_config_var("INCLUDEPY"))
-        print("torch", sysconfig.get_config_var("INCLUDEPY"))
+        print("torch_include", sysconfig.get_config_var("INCLUDEPY"))
 
         libdir = sysconfig.get_config_var("LIBDIR") or sysconfig.get_config_var(
             "INCLUDEPY"
         ).replace("include", "libs")
+        print("torch_libdir", libdir)
         compiler.add_library_dir(libdir)
         try:
             compiler.initialize()
