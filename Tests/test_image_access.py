@@ -33,7 +33,7 @@ class TestEmbeddable:
             "INCLUDEPY"
         ).replace("include", "libs")
         print("torch_libdir", libdir)
-        compiler.add_library_dir(os.path.dirname(libdir))
+        compiler.add_library_dir(libdir)
         try:
             compiler.initialize()
         except Exception:
@@ -42,7 +42,7 @@ class TestEmbeddable:
         with open("embed_pil.c", "w", encoding="utf-8") as fh:
             home = sys.prefix.replace("\\", "\\\\")
             fh.write(f"""
-#include <Python.h>
+#include <python.h>
 
 int main(int argc, char* argv[])
 {{
