@@ -289,7 +289,9 @@ int main(int argc, char* argv[])
 {{
     char *home = "{home}";
     wchar_t *whome = Py_DecodeLocale(home, NULL);
-    Py_SetPythonHome(whome);
+    PyConfig config;
+    PyConfig_InitPythonConfig(&config);
+    config.home = whome;
 
     Py_InitializeEx(0);
     Py_DECREF(PyImport_ImportModule("PIL.Image"));
@@ -300,6 +302,7 @@ int main(int argc, char* argv[])
     Py_Finalize();
 
     PyMem_RawFree(whome);
+    PyConfig_Clear(&config);
 
     return 0;
 }}
