@@ -38,7 +38,7 @@ class TestEmbeddable:
         except Exception:
             pytest.skip("Compiler could not be initialized")
 
-        with open("embed_pil.c", "w", encoding="utf-8") as fh:
+        with open(os.path.join(libdir, "embed_pil.c"), "w", encoding="utf-8") as fh:
             home = sys.prefix.replace("\\", "\\\\")
             fh.write(f"""
 #include <Python.h>
@@ -63,8 +63,8 @@ int main(int argc, char* argv[])
 }}
         """)
 
-        objects = compiler.compile(["embed_pil.c"])
-        compiler.link_executable(objects, "embed_pil")
+        objects = compiler.compile([os.path.join(libdir, "embed_pil.c")])
+        compiler.link_executable(objects, os.path.join(libdir, "embed_pil"))
 
         env = os.environ.copy()
         env["PATH"] = sys.prefix + ";" + env["PATH"]
@@ -72,13 +72,13 @@ int main(int argc, char* argv[])
         # Do not display the Windows Error Reporting dialog
         getattr(ctypes, "windll").kernel32.SetErrorMode(0x0002)
 
-        process = subprocess.Popen(["embed_pil.exe"], env=env)
+        process = subprocess.Popen([os.path.join(libdir, "embed_pil.exe")], env=env)
         process.communicate()
         assert process.returncode == 0
 
     def teardown_method(self) -> None:
         try:
-            os.remove("embed_pil.c")
+            os.remove(os.path.join(libdir, "embed_pil.c"))
         except FileNotFoundError:
             # If the test was skipped or failed, the file won't exist
             pass
