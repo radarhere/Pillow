@@ -28,7 +28,7 @@ class TestEmbeddable:
         compiler.add_include_dir(sysconfig.get_config_var("INCLUDEPY"))
 
         if sysconfig.get_platform() == "mingw":
-            compiler.add_library("libpython3")
+            compiler.add_library("libpython314")
         libdir = sysconfig.get_config_var("LIBDIR") or sysconfig.get_config_var(
             "INCLUDEPY"
         ).replace("include", "libs")
