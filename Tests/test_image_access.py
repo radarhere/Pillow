@@ -60,9 +60,6 @@ int main(int argc, char* argv[])
     Py_DECREF(PyImport_ImportModule("PIL.Image"));
     Py_Finalize();
 
-    PyMem_RawFree(whome);
-    PyConfig_Clear(&config);
-
     return 0;
 }}
         """)
