@@ -33,10 +33,11 @@ class TestEmbeddable:
             "INCLUDEPY"
         ).replace("include", "libs")
         print("torch_libdir", libdir)
-        compiler.add_library(os.path.join(libdir, "libpython3.dll"))
+        compiler.add_library(os.path.join(libdir, "libpython3"))
         compiler.add_library_dir(libdir)
         for path in os.listdir(libdir):
-            print("lib", path)
+            if "ython" in path:
+                print("lib", path)
         try:
             compiler.initialize()
         except Exception:
