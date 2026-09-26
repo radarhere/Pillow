@@ -34,6 +34,8 @@ class TestEmbeddable:
         ).replace("include", "libs")
         print("torch_libdir", libdir)
         compiler.add_library_dir(libdir)
+        for path in os.listdir(libdir):
+            print("lib", path)
         try:
             compiler.initialize()
         except Exception:
@@ -42,7 +44,7 @@ class TestEmbeddable:
         with open("embed_pil.c", "w", encoding="utf-8") as fh:
             home = sys.prefix.replace("\\", "\\\\")
             fh.write(f"""
-#include <python.h>
+#include <Python.h>
 
 int main(int argc, char* argv[])
 {{
