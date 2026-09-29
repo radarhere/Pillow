@@ -151,33 +151,6 @@ jobs:
       if: steps.build-cache.outputs.cache-hit != 'true'
       run: "& winbuild\\build\\build_dep_brotli.cmd"
 
-    - name: Build dependencies / FreeType
-      if: steps.build-cache.outputs.cache-hit != 'true'
-      run: "& winbuild\\build\\build_dep_freetype.cmd"
-
-    - name: Build dependencies / LCMS2
-      if: steps.build-cache.outputs.cache-hit != 'true'
-      run: "& winbuild\\build\\build_dep_lcms2.cmd"
-
-    - name: Build dependencies / OpenJPEG
-      if: steps.build-cache.outputs.cache-hit != 'true'
-      run: "& winbuild\\build\\build_dep_openjpeg.cmd"
-
-    # GPL licensed
-    - name: Build dependencies / libimagequant
-      if: steps.build-cache.outputs.cache-hit != 'true'
-      run: "& winbuild\\build\\build_dep_libimagequant.cmd"
-
-    # Raqm dependencies
-    - name: Build dependencies / HarfBuzz
-      if: steps.build-cache.outputs.cache-hit != 'true'
-      run: "& winbuild\\build\\build_dep_harfbuzz.cmd"
-
-    # Raqm dependencies
-    - name: Build dependencies / FriBidi
-      if: steps.build-cache.outputs.cache-hit != 'true'
-      run: "& winbuild\\build\\build_dep_fribidi.cmd"
-
     # trim ~150MB for each job
     - name: Optimize build cache
       if: steps.build-cache.outputs.cache-hit != 'true'
