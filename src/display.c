@@ -137,10 +137,26 @@ _paste(ImagingDisplayObject *display, PyObject *args) {
     } else if (xy[2] - xy[0] != im->xsize) {
         return ImagingError_Mismatch();
     }
+    if (xy[0] < 0) {
+        PyErr_SetString(PyExc_ValueError, "left box co-ordinate cannot be negative");
+        return NULL;
+    }
+    if (xy[2] > display->dib->xsize) {
+        PyErr_SetString(PyExc_ValueError, "right box co-ordinate outside bitmap image");
+        return NULL;
+    }
     if (xy[3] <= xy[1]) {
         xy[3] = xy[1] + im->ysize;
     } else if (xy[3] - xy[1] != im->ysize) {
         return ImagingError_Mismatch();
+    }
+    if (xy[1] < 0) {
+        PyErr_SetString(PyExc_ValueError, "upper box co-ordinate cannot be negative");
+        return NULL;
+    }
+    if (xy[3] > display->dib->ysize) {
+        PyErr_SetString(PyExc_ValueError, "lower box co-ordinate outside bitmap image");
+        return NULL;
     }
 
     ImagingPasteDIB(display->dib, im, xy);
@@ -445,8 +461,10 @@ PyImaging_GrabClipboardWin32(PyObject *self, PyObject *args) {
     void *data;
     PyObject *result;
     UINT format;
+    // Windows clipboard format identifiers
     UINT formats[] = {CF_DIB, CF_DIBV5, CF_HDROP, RegisterClipboardFormatA("PNG"), 0};
-    LPCSTR format_names[] = {"DIB", "DIB", "file", "png", NULL};
+    // For format_name in ImageGrab.py, in the same order as the formats above
+    LPCSTR format_names[] = {"DIB", "DIB", "file", "PNG", NULL};
 
     if (!OpenClipboard(NULL)) {
         // Maybe the clipboard is temporarily in use by another process.
