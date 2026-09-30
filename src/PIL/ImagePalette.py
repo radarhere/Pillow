@@ -190,16 +190,19 @@ class ImagePalette:
                 index = self._new_color_index(image, e)
                 assert isinstance(self._palette, bytearray)
                 mode_len = len(self.mode)
+                assert self._colors is not None
                 if index * mode_len < len(self.palette):
+                    start = index * mode_len
+                    end = start + mode_len
+                    old_color = tuple(self._palette[start:end])
+                    if self._colors[old_color] == index:
+                        del self._colors[old_color]
                     self._palette = (
-                        self._palette[: index * mode_len]
-                        + bytes(color)
-                        + self._palette[index * mode_len + mode_len :]
+                        self._palette[:start] + bytes(color) + self._palette[end:]
                     )
-                    self._colors = None
                 else:
                     self._palette += bytes(color)
-                self.colors[color] = index
+                self._colors[color] = index
                 self.dirty = 1
                 return index
         else:
