@@ -6,7 +6,15 @@ from typing import Any
 
 import pytest
 
-from PIL import GifImagePlugin, Image, ImageDraw, ImagePalette, ImageSequence, features
+from PIL import (
+    GifImagePlugin,
+    Image,
+    ImageDraw,
+    ImagePalette,
+    ImageSequence,
+    _binary,
+    features,
+)
 
 from .helper import (
     assert_image_equal,
@@ -14,6 +22,7 @@ from .helper import (
     assert_image_similar,
     hopper,
     is_pypy,
+    timeout_unless_slower_valgrind,
 )
 
 TYPE_CHECKING = False
@@ -1068,6 +1077,23 @@ def test_read_multiple_comment_blocks() -> None:
     with Image.open("Tests/images/multiple_comments.gif") as im:
         # Multiple comment blocks in a frame are separated not concatenated
         assert im.info["comment"] == b"Test comment 1\nTest comment 2"
+
+
+@timeout_unless_slower_valgrind(4)
+def test_comment_redos() -> None:
+    repetitions = 400000
+
+    header = b"GIF89a" + _binary.o16le(1) * 2 + b"\x00" * 3
+    extension = b"!" + _binary.o8(254) + _binary.o8(1) + b"A" + _binary.o8(0)
+    local_image = b"," + b"\x00" * 10
+    data = header + extension * repetitions + local_image
+
+    with Image.open(BytesIO(data)) as im:
+        assert im.info["comment"].count(b"A") == repetitions
+        assert im.info["comment"].count(b"\n") == repetitions - 1
+
+        im2 = Image.new("L", (1, 1))
+        im2.save(BytesIO(), "GIF", comment=im.info["comment"])
 
 
 def test_empty_string_comment(tmp_path: Path) -> None:
