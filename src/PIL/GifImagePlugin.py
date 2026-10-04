@@ -213,6 +213,7 @@ class GifImageFile(ImageFile.ImageFile):
         palette: ImagePalette.ImagePalette | Literal[False] | None = None
 
         info: dict[str, Any] = {}
+        comment_blocks: list[bytes] = []
         frame_transparency = None
         interlace = None
         frame_dispose_extent = None
@@ -250,18 +251,12 @@ class GifImageFile(ImageFile.ImageFile):
                     #
                     # comment extension
                     #
-                    comment = b""
-
-                    # Read this comment block
-                    while block:
-                        comment += block
-                        block = self.data()
-
-                    if "comment" in info:
+                    if block and comment_blocks:
                         # If multiple comment blocks in frame, separate with \n
-                        info["comment"] += b"\n" + comment
-                    else:
-                        info["comment"] = comment
+                        comment_blocks.append(b"\n")
+                    while block:
+                        comment_blocks.append(block)
+                        block = self.data()
                     s = b""
                     continue
                 elif s[0] == 255 and frame == 0 and block is not None:
@@ -430,8 +425,8 @@ class GifImageFile(ImageFile.ImageFile):
                 )
             ]
 
-        if info.get("comment"):
-            self.info["comment"] = info["comment"]
+        if comment_blocks:
+            self.info["comment"] = b"".join(comment_blocks)
         for k in ["duration", "extension"]:
             if k in info:
                 self.info[k] = info[k]
