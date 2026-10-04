@@ -1032,17 +1032,16 @@ def _get_global_header(im: Image.Image, info: dict[str, Any]) -> list[bytes]:
             + o8(0)
         )
     if info.get("comment"):
-        comment_block = b"!" + o8(254)  # extension intro
+        header.append(b"!" + o8(254))  # extension intro
 
         comment = info["comment"]
         if isinstance(comment, str):
             comment = comment.encode()
         for i in range(0, len(comment), 255):
             subblock = comment[i : i + 255]
-            comment_block += o8(len(subblock)) + subblock
+            header.append(o8(len(subblock)) + subblock)
 
-        comment_block += o8(0)
-        header.append(comment_block)
+        header.append(o8(0))
     return header
 
 
