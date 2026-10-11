@@ -812,10 +812,13 @@ class TestImage:
         # Without an Exif IFD
         assert Image.Exif().get_ifd(tag) == {}
 
-        # With an Exif IFD that does not reference this IFD
         with Image.open("Tests/images/exif_gps.jpg") as im:
             exif = im.getexif()
+
+            # With an Exif IFD that does not reference this IFD
+            assert ExifTags.IFD.Exif in exif
             assert tag not in exif.get_ifd(ExifTags.IFD.Exif)
+
             assert exif.get_ifd(tag) == {}
 
     def test_empty_get_ifd(self) -> None:
