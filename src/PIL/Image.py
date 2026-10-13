@@ -2057,6 +2057,14 @@ class Image:
             # for other modes, convert the function to a table
             flatLut = [lut(i) for i in range(256)] * self.im.bands  # type: ignore[arg-type]
         else:
+            if type(lut) in (list, tuple):
+                for value in lut:
+                    if type(value) not in (int, float):
+                        msg = "sequence must be flattened"
+                        raise TypeError(msg)
+            elif not _is_numpy_array(lut):
+                msg = "argument must be a sequence, callable or ImagePointHandler"
+                raise TypeError(msg)
             flatLut = lut
 
         if self.mode == "F":
@@ -2150,6 +2158,7 @@ class Image:
                         msg = "sequence must be flattened"
                         raise TypeError(msg)
                 elif type(value) in (list, tuple):
+                    assert not isinstance(value, float)
                     if not all(type(value2) is int for value2 in value):
                         msg = (
                             "color must be int, or tuple of one, three or four elements"
