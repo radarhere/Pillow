@@ -74,6 +74,15 @@ class Kernel(BuiltinFilter):
         scale: float | None = None,
         offset: float = 0,
     ) -> None:
+        if type(kernel) in (list, tuple):
+            for value in kernel:
+                if type(value) not in (int, float):
+                    msg = "sequence must be flattened"
+                    raise TypeError(msg)
+        else:
+            msg = "argument must be a sequence"
+            raise TypeError(msg)
+
         if scale is None:
             # default scale is sum of kernel
             scale = sum(kernel)
