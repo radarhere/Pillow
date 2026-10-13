@@ -2142,20 +2142,20 @@ class Image:
         :param scale: An optional scale value.  The default is 1.0.
         :param offset: An optional offset value.  The default is 0.0.
         """
-        if isinstance(data, (list, tuple)):
+        if type(data) in (list, tuple):
             singleChannel = getmodebands(self.mode) == 1
             for value in data:
                 if singleChannel:
-                    if not isinstance(value, (int, float)):
+                    if type(value) not in (int, float):
                         msg = "sequence must be flattened"
                         raise TypeError(msg)
-                elif isinstance(value, (list, tuple)):
-                    if not all(isinstance(value2, int) for value2 in value):
+                elif type(value) in (list, tuple):
+                    if not all(type(value2) is int for value2 in value):
                         msg = (
                             "color must be int, or tuple of one, three or four elements"
                         )
                         raise TypeError(msg)
-                elif not isinstance(value, int):
+                elif type(value) is not int:
                     msg = "color must be int or tuple"
                     raise TypeError(msg)
         else:
