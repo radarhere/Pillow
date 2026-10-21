@@ -178,6 +178,7 @@ class TestFileTiff:
         with Image.open(outfile) as reloaded:
             assert isinstance(reloaded, TiffImagePlugin.TiffImageFile)
             assert reloaded.tag_v2.prefix == b"MM"
+            assert reloaded.tag_v2._bigtiff is True
             assert len(reloaded.tag_v2[TiffImagePlugin.STRIPOFFSETS]) == 1
             assert_image_equal(reloaded, im)
 

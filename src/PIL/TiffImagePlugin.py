@@ -1059,7 +1059,8 @@ class ImageFileDirectory_v2(_IFDv2Base):
                 values = [val + offset for val in handler(self, data, self.legacy_api)]
                 data = self._write_dispatch[typ](self, *values)
             else:
-                # The offsets fit within the entry, e.g. two LONG offsets in BigTIFF
+                # The offsets fit within the entry
+                # May be one offset, or two LONG offsets in BigTIFF
                 values = [
                     val + offset
                     for val in handler(self, value[: size * count], self.legacy_api)
@@ -1070,7 +1071,8 @@ class ImageFileDirectory_v2(_IFDv2Base):
                     and count == 1
                     and values[0] >= 2**32
                 ):
-                    # Offset is too large for a LONG
+                    # If a single offset is too large for a LONG,
+                    # then there is room to change the entry to LONG8
                     typ = TiffTags.LONG8
                 value = self._write_dispatch[typ](self, *values).ljust(fmt_size, b"\0")
             entries[stripoffsets] = tag, typ, count, value, data
