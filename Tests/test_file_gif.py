@@ -1485,6 +1485,9 @@ def test_extents(
 
         im.load()
         assert im.im.size == (150, 150)
+        if im.mode == "P":
+            print(im.getpalette(None))
+            assert im.convert("RGB").getpixel((0, 0)) == (255, 0, 0)
 
 
 def test_missing_background() -> None:
