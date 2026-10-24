@@ -287,8 +287,15 @@ class GifImageFile(ImageFile.ImageFile):
 
                     if self._im is not None and update_image:
                         expanded_im = Image.core.fill(self.im.mode, self.size)
-                        if self._frame_palette:
-                            expanded_im.putpalette("RGB", *self._frame_palette.getdata())
+                        #if palette:
+                        #    print("p")
+                        #elif self.global_palette:
+                        #    print("g")
+                        #    self.global_palette.dirty = 1
+                        #if palette:
+                        #    palette.dirty = 1
+                        #if self._frame_palette:
+                        expanded_im.putpalette("RGB", "RGB", self.im.getpalette())
                         expanded_im.paste(self.im, (0, 0, *self.im.size))
 
                         self.im = expanded_im
