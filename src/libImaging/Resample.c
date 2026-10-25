@@ -251,7 +251,7 @@ precompute_coeffs(
     ksize = (int)ceil(support) * 2 + 1;
 
     // check for overflow
-    if (outSize > INT_MAX / (ksize * sizeof(double))) {
+    if (outSize > INT_MAX / ((size_t)ksize * sizeof(double))) {
         ImagingError_MemoryError();
         return 0;
     }
