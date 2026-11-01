@@ -1427,27 +1427,7 @@ ImagingQuantize(Imaging im, int colors, ImagingQuantizeMethod method, int kmeans
     MUTEX_UNLOCK(&im->mutex);
     ImagingSectionLeave(&cookie);
     printf("freep2\n");
-    free(p);
 
-    if (result > 0) {
-        printf("y\n");
-        imOut = ImagingNewDirty(IMAGING_MODE_P, xsize, ysize);
-        ImagingSectionEnter(&cookie);
-
-        printf("y3\n");
-        ImagingSectionLeave(&cookie);
-
-        return imOut;
-
-    } else {
-        printf("n\n");
-        if (result == -1) {
-            return (Imaging)ImagingError_ValueError(
-                "dependency required by this method was not "
-                "enabled at compile time"
-            );
-        }
-
-        return (Imaging)ImagingError_ValueError("quantization error");
-    }
+    imOut = ImagingNewDirty(IMAGING_MODE_P, xsize, ysize);
+    return imOut;
 }
