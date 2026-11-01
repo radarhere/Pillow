@@ -1389,6 +1389,7 @@ ImagingQuantize(Imaging im, int colors, ImagingQuantizeMethod method, int kmeans
         free(p);
         return (Imaging)ImagingError_ValueError("internal error");
     }
+    printf("start\n");
 
     ImagingSectionEnter(&cookie);
     switch (method) {
@@ -1410,9 +1411,11 @@ ImagingQuantize(Imaging im, int colors, ImagingQuantizeMethod method, int kmeans
         case IMAGING_QUANTIZE_LIBIMAGEQUANT:
 #ifdef HAVE_LIBIMAGEQUANT
         ImagingSectionEnter(&cookie);
+        MUTEX_LOCK(&im->mutex);
             result = quantize_pngquant(
                 p, xsize, ysize, colors, &palette, &paletteLength, &newData, withAlpha
             );
+        MUTEX_UNLOCK(&im->mutex);
         ImagingSectionLeave(&cookie);
 #else
             result = -1;
@@ -1423,10 +1426,13 @@ ImagingQuantize(Imaging im, int colors, ImagingQuantizeMethod method, int kmeans
             break;
     }
 
+    printf("freep\n");
     free(p);
     ImagingSectionLeave(&cookie);
+    printf("freep2\n");
 
     if (result > 0) {
+        printf("y\n");
         imOut = ImagingNewDirty(IMAGING_MODE_P, xsize, ysize);
         if (!imOut) {
             free(newData);
@@ -1446,7 +1452,9 @@ ImagingQuantize(Imaging im, int colors, ImagingQuantizeMethod method, int kmeans
             i += xsize;
         }
 
+        printf("y1\n");
         free(newData);
+        printf("y2\n");
 
         imOut->palette->size = (int)paletteLength;
         pp = imOut->palette->palette;
@@ -1465,12 +1473,15 @@ ImagingQuantize(Imaging im, int colors, ImagingQuantizeMethod method, int kmeans
             imOut->palette->mode = IMAGING_MODE_RGBA;
         }
 
+        printf("y3\n");
         free(palette);
+        printf("y4\n");
         ImagingSectionLeave(&cookie);
 
         return imOut;
 
     } else {
+        printf("n\n");
         if (result == -1) {
             return (Imaging)ImagingError_ValueError(
                 "dependency required by this method was not "
