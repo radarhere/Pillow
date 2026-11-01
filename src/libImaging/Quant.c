@@ -1409,9 +1409,11 @@ ImagingQuantize(Imaging im, int colors, ImagingQuantizeMethod method, int kmeans
             break;
         case IMAGING_QUANTIZE_LIBIMAGEQUANT:
 #ifdef HAVE_LIBIMAGEQUANT
+            Py_BEGIN_CRITICAL_SECTION(p);
             result = quantize_pngquant(
                 p, xsize, ysize, colors, &palette, &paletteLength, &newData, withAlpha
             );
+            Py_END_CRITICAL_SECTION();
 #else
             result = -1;
 #endif
