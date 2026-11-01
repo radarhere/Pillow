@@ -1439,8 +1439,6 @@ ImagingQuantize(Imaging im, int colors, ImagingQuantizeMethod method, int kmeans
         printf("y2\n");
 
         printf("y3\n");
-        free(palette);
-        printf("y4\n");
         ImagingSectionLeave(&cookie);
 
         return imOut;
