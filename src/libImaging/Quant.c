@@ -1410,11 +1410,9 @@ ImagingQuantize(Imaging im, int colors, ImagingQuantizeMethod method, int kmeans
         case IMAGING_QUANTIZE_LIBIMAGEQUANT:
 #ifdef HAVE_LIBIMAGEQUANT
         ImagingSectionEnter(&cookie);
-        MUTEX_LOCK(&im->mutex);
             result = quantize_pngquant(
                 p, xsize, ysize, colors, &palette, &paletteLength, &newData, withAlpha
             );
-        MUTEX_UNLOCK(&im->mutex);
         ImagingSectionLeave(&cookie);
 #else
             result = -1;
