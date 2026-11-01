@@ -1392,6 +1392,7 @@ ImagingQuantize(Imaging im, int colors, ImagingQuantizeMethod method, int kmeans
     printf("start\n");
 
     ImagingSectionEnter(&cookie);
+    MUTEX_LOCK(&im->mutex);
     switch (method) {
         case IMAGING_QUANTIZE_MEDIANCUT:
             result = quantize(
@@ -1410,13 +1411,9 @@ ImagingQuantize(Imaging im, int colors, ImagingQuantizeMethod method, int kmeans
             break;
         case IMAGING_QUANTIZE_LIBIMAGEQUANT:
 #ifdef HAVE_LIBIMAGEQUANT
-        ImagingSectionEnter(&cookie);
-        MUTEX_LOCK(&im->mutex);
             result = quantize_pngquant(
                 p, xsize, ysize, colors, &palette, &paletteLength, &newData, withAlpha
             );
-        MUTEX_UNLOCK(&im->mutex);
-        ImagingSectionLeave(&cookie);
 #else
             result = -1;
 #endif
@@ -1428,6 +1425,7 @@ ImagingQuantize(Imaging im, int colors, ImagingQuantizeMethod method, int kmeans
 
     printf("freep\n");
     free(p);
+    MUTEX_UNLOCK(&im->mutex);
     ImagingSectionLeave(&cookie);
     printf("freep2\n");
 
