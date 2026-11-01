@@ -1432,44 +1432,11 @@ ImagingQuantize(Imaging im, int colors, ImagingQuantizeMethod method, int kmeans
     if (result > 0) {
         printf("y\n");
         imOut = ImagingNewDirty(IMAGING_MODE_P, xsize, ysize);
-        if (!imOut) {
-            free(newData);
-            free(palette);
-            return NULL;
-        }
         ImagingSectionEnter(&cookie);
-
-        // restrict safe: imOut is a fresh allocation and
-        //                newData was just allocated by the quantizer.
-        for (i = y = 0; y < ysize; y++) {
-            UINT8 *restrict out = imOut->image8[y];
-            const uint32_t *restrict in = newData + i;
-            for (x = 0; x < xsize; x++) {
-                out[x] = (UINT8)in[x];
-            }
-            i += xsize;
-        }
 
         printf("y1\n");
         free(newData);
         printf("y2\n");
-
-        imOut->palette->size = (int)paletteLength;
-        pp = imOut->palette->palette;
-
-        for (i = j = 0; i < (int)paletteLength; i++) {
-            *pp++ = palette[i].c.r;
-            *pp++ = palette[i].c.g;
-            *pp++ = palette[i].c.b;
-            if (withAlpha) {
-                *pp = palette[i].c.a;
-            }
-            pp++;
-        }
-
-        if (withAlpha) {
-            imOut->palette->mode = IMAGING_MODE_RGBA;
-        }
 
         printf("y3\n");
         free(palette);
