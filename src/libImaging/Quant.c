@@ -1424,7 +1424,6 @@ ImagingQuantize(Imaging im, int colors, ImagingQuantizeMethod method, int kmeans
     }
 
     printf("freep\n");
-    free(p);
     MUTEX_UNLOCK(&im->mutex);
     ImagingSectionLeave(&cookie);
     printf("freep2\n");
