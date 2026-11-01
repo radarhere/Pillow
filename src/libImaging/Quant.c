@@ -1411,11 +1411,9 @@ ImagingQuantize(Imaging im, int colors, ImagingQuantizeMethod method, int kmeans
 #ifdef HAVE_LIBIMAGEQUANT
         ImagingSectionEnter(&cookie);
         MUTEX_LOCK(&im->mutex);
-            Py_BEGIN_CRITICAL_SECTION(p);
             result = quantize_pngquant(
                 p, xsize, ysize, colors, &palette, &paletteLength, &newData, withAlpha
             );
-            Py_END_CRITICAL_SECTION();
         MUTEX_UNLOCK(&im->mutex);
         ImagingSectionLeave(&cookie);
 #else
