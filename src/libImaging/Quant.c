@@ -1434,10 +1434,6 @@ ImagingQuantize(Imaging im, int colors, ImagingQuantizeMethod method, int kmeans
         imOut = ImagingNewDirty(IMAGING_MODE_P, xsize, ysize);
         ImagingSectionEnter(&cookie);
 
-        printf("y1\n");
-        free(newData);
-        printf("y2\n");
-
         printf("y3\n");
         ImagingSectionLeave(&cookie);
 
