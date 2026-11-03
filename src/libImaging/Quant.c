@@ -1409,10 +1409,12 @@ ImagingQuantize(Imaging im, int colors, ImagingQuantizeMethod method, int kmeans
             break;
         case IMAGING_QUANTIZE_LIBIMAGEQUANT:
 #ifdef HAVE_LIBIMAGEQUANT
+            printf("torchrun\n");
             result = quantize_pngquant(
                 p, xsize, ysize, colors, &palette, &paletteLength, &newData, withAlpha
             );
 #else
+            printf("torchelse\n");
             result = -1;
 #endif
             break;
