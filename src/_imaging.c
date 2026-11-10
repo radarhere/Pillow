@@ -709,14 +709,13 @@ getink(PyObject *color, Imaging im, char *ink) {
             return ink;
         case IMAGING_TYPE_I16:
             int bigendian = 0;
-            if (
-                im->mode == IMAGING_MODE_I_16B
 #ifdef WORDS_BIGENDIAN
-                || im->mode == IMAGING_MODE_I_16N
-#endif
+            if (
+                im->mode == IMAGING_MODE_I_16N
             ) {
                 bigendian = 1;
             }
+#endif
             ink[bigendian ? 1 : 0] = (UINT8)r;
             ink[bigendian ? 0 : 1] = (UINT8)(r >> 8);
             ink[2] = ink[3] = 0;
