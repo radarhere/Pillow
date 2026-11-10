@@ -708,8 +708,17 @@ getink(PyObject *color, Imaging im, char *ink) {
             memcpy(ink, &ftmp, sizeof(ftmp));
             return ink;
         case IMAGING_TYPE_I16:
-            ink[0] = (UINT8)r;
-            ink[1] = (UINT8)(r >> 8);
+            int bigendian = 0;
+            if (
+                im->mode == IMAGING_MODE_I_16B
+#ifdef WORDS_BIGENDIAN
+                || im->mode == IMAGING_MODE_I_16N
+#endif
+            ) {
+                bigendian = 1;
+            }
+            ink[bigendian ? 1 : 0] = (UINT8)r;
+            ink[bigendian ? 0 : 1] = (UINT8)(r >> 8);
             ink[2] = ink[3] = 0;
             return ink;
     }
