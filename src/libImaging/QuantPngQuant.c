@@ -59,7 +59,8 @@ quantize_pngquant(
         return 0;
     }
 
-    liq_quantize_image(attr, image);
+    // Do not call liq_quantize_image
+    // liq_quantize_image(attr, image);
     // End demonstration of interaction with libimagequant
 
     return 0;
