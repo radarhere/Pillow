@@ -10,23 +10,7 @@ on:
   #        │  │ │ │ │
   - cron: "42 1 * * 0,3"
   push:
-    paths: &paths
-      - ".ci/requirements-cibw.txt"
-      - ".ci/requirements-sbom.txt"
-      - ".github/compare-dist-sizes.py"
-      - ".github/dependencies.json"
-      - ".github/embed-sbom.py"
-      - ".github/generate-sbom.py"
-      - ".github/workflows/wheels*"
-      - "pyproject.toml"
-      - "setup.py"
-      - "wheels/*"
-      - "winbuild/build_prepare.py"
-      - "winbuild/fribidi.cmake"
-    tags:
-      - "*"
   pull_request:
-    paths: *paths
   workflow_dispatch:
 
 permissions:
@@ -93,3 +77,41 @@ jobs:
             os: ubuntu-24.04-arm
             cibw_arch: aarch64
             build: "*musllinux*"
+    steps:
+      - uses: actions/checkout@v7.0.1
+        with:
+          persist-credentials: false
+          submodules: true
+
+      - uses: actions/setup-python@v7.1.0
+        with:
+          python-version: "3.x"
+
+      - name: Install cibuildwheel
+        run: |
+          python3 -m pip install -r .ci/requirements-cibw.txt
+
+      - name: Build wheels
+        run: |
+          python3 -m cibuildwheel --output-dir wheelhouse
+        env:
+          CIBW_PLATFORM: ${{ matrix.platform }}
+          CIBW_ARCHS: ${{ matrix.cibw_arch }}
+          CIBW_BUILD: ${{ matrix.build }}
+          CIBW_ENABLE: cpython-prerelease pypy
+          CIBW_ENVIRONMENT_PASS_LINUX: FORCE_COLOR
+          MACOSX_DEPLOYMENT_TARGET: ${{ matrix.macosx_deployment_target }}
+
+      - name: Download SBOM
+        uses: actions/download-artifact@v8.0.2
+        with:
+          name: sbom
+          path: sbom
+
+      - name: Embed SBOM in wheels
+        run: python3 .github/embed-sbom.py wheelhouse sbom
+
+      - uses: actions/upload-artifact@v7.0.2
+        with:
+          name: dist-${{ matrix.name }}
+          path: ./wheelhouse/*.whl

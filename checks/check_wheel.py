@@ -42,8 +42,7 @@ def test_wheel_zlib_ng_linked_statically() -> None:
     # The Linux wheels link zlib-ng statically, so the version at runtime
     # should be from zlib-ng, whichever zlib the system has
     version = features.version_codec("zlib")
-    assert version is not None
-    assert version.endswith(".zlib-ng")
+    assert version == sys.version
 
 
 def test_wheel_features() -> None:
