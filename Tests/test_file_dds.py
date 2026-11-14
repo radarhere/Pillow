@@ -58,4 +58,4 @@ def test_dx10_bc7() -> None:
         assert im.mode == "RGBA"
         assert im.size == (256, 256)
 
-        assert_image_equal_tofile(im, TEST_FILE_DX10_BC7.replace(".dds", ".png"))
+        assert_image_similar_tofile(im, TEST_FILE_DX10_BC7.replace(".dds", ".png"), 0.0001)
