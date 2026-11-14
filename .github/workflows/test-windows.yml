@@ -17,10 +17,6 @@ on:
 permissions:
   contents: read
 
-concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
-
 env:
   FORCE_COLOR: 1
 
@@ -31,12 +27,6 @@ jobs:
       fail-fast: false
       matrix:
         python-version: [
-          "pypy3.12",
-          "pypy3.11",
-          "3.15t",
-          "3.15",
-          "3.14t",
-          "3.14",
           "3.13",
         ]
         architecture: ["x64"]
