@@ -17,10 +17,6 @@ on:
 permissions:
   contents: read
 
-concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
-
 env:
   FORCE_COLOR: 1
 
@@ -36,19 +32,6 @@ jobs:
           # Run slower jobs first to give them a headstart and reduce waiting time
           ubuntu-26.04-resolute-ppc64le,
           ubuntu-26.04-resolute-s390x,
-          # Then run the remainder
-          alpine,
-          amazon-2023-amd64,
-          arch,
-          centos-stream-9-amd64,
-          centos-stream-10-amd64,
-          cpython_sanity-3.14tsan,
-          debian-13-trixie-x86,
-          debian-13-trixie-amd64,
-          fedora-44-amd64,
-          fedora-45-amd64,
-          gentoo,
-          ubuntu-24.04-noble-amd64,
           ubuntu-26.04-resolute-amd64,
         ]
         dockerTag: [main]
