@@ -64,9 +64,7 @@ ImagingBlend(Imaging imIn1, Imaging imIn2, float alpha) {
                 UINT8 *restrict in2 = (UINT8 *)imIn2->image[y];
                 UINT8 *restrict out = (UINT8 *)imOut->image[y];
                 for (x = 0; x < linesize; x++) {
-                    out[x] = (UINT8)roundf(
-                        (int)in1[x] + alpha * ((int)in2[x] - (int)in1[x])
-                    );
+                    out[x] = (UINT8)((int)in1[x] + alpha * ((int)in2[x] - (int)in1[x]));
                 }
             }
         } else {
@@ -79,7 +77,7 @@ ImagingBlend(Imaging imIn1, Imaging imIn2, float alpha) {
                 UINT8 *restrict out = (UINT8 *)imOut->image[y];
                 for (x = 0; x < linesize; x++) {
                     out[x] = (UINT8)CLIP8(
-                        roundf((int)in1[x] + alpha * ((int)in2[x] - (int)in1[x]))
+                        ((int)in1[x] + alpha * ((int)in2[x] - (int)in1[x]))
                     );
                 }
             }
