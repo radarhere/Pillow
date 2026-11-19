@@ -135,9 +135,23 @@ _encode(ImagingEncoderObject *encoder, PyObject *args) {
     int bytes_consumed;
 
     Py_ssize_t bufsize = 16384;
+    int optimal_bufsize = 0;
 
-    if (!PyArg_ParseTuple(args, "|n", &bufsize)) {
+    if (!PyArg_ParseTuple(args, "|np", &bufsize, &optimal_bufsize)) {
         return NULL;
+    }
+
+    ImagingCodecState state = &encoder->state;
+    if (optimal_bufsize && encoder->encode == ImagingRawEncode) {
+        Py_ssize_t row = state->count > 0 ? state->count : state->bytes;
+        bufsize = row * state->ysize;
+
+        // Cap the size to the whole number of rows that fits in an `int`.
+        // If encoders' buffer sizes become `ssize_t`,
+        // like decoder buffer sizes did in #3791, then this will need to be updated
+        if (bufsize > INT_MAX) {
+            bufsize = INT_MAX - (INT_MAX % row);
+        }
     }
 
     PyBytesWriter *writer = PyBytesWriter_Create(bufsize);
@@ -145,9 +159,8 @@ _encode(ImagingEncoderObject *encoder, PyObject *args) {
         return NULL;
     }
 
-    bytes_consumed = encoder->encode(
-        encoder->im, &encoder->state, PyBytesWriter_GetData(writer), bufsize
-    );
+    bytes_consumed =
+        encoder->encode(encoder->im, state, PyBytesWriter_GetData(writer), bufsize);
     /* adjust string length to avoid slicing in encoder */
     buf =
         PyBytesWriter_FinishWithSize(writer, (bytes_consumed > 0) ? bytes_consumed : 0);
@@ -155,7 +168,7 @@ _encode(ImagingEncoderObject *encoder, PyObject *args) {
         return NULL;
     }
 
-    result = Py_BuildValue("iiO", bytes_consumed, encoder->state.errcode, buf);
+    result = Py_BuildValue("iiO", bytes_consumed, state->errcode, buf);
 
     Py_DECREF(buf); /* must release buffer!!! */
 

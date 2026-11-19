@@ -887,8 +887,11 @@ class Image:
             bufsize = max(ImageFile.MAXBLOCK, self.size[0] * 4)  # see RawEncode.c
 
             output = []
+            encode_args = (
+                (bufsize,) if isinstance(e, ImageFile.PyEncoder) else (bufsize, True)
+            )
             while True:
-                bytes_consumed, errcode, data = e.encode(bufsize)
+                bytes_consumed, errcode, data = e.encode(*encode_args)
                 output.append(data)
                 if errcode:
                     break
