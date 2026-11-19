@@ -116,6 +116,13 @@ Blurring I;16 images
 :py:class:`~PIL.ImageFilter.GaussianBlur` and :py:class:`~PIL.ImageFilter.BoxBlur`
 now support I;16, I;16L, I;16B and I;16N images.
 
+Rank filters for I;16 images
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+:py:class:`~PIL.ImageFilter.RankFilter`, :py:class:`~PIL.ImageFilter.MedianFilter`,
+:py:class:`~PIL.ImageFilter.MinFilter` and :py:class:`~PIL.ImageFilter.MaxFilter`
+now support I;16, I;16L, I;16B and I;16N images.
+
 Respect Python build-tree configuration
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -160,6 +167,21 @@ Pillow 13.0.0 also failed to import on systems where ``libz.so.1`` was not on th
 default library search path, such as NixOS. Linux wheels no longer require a
 system zlib, and gain the speed of zlib-ng as macOS and Windows wheels already did.
 
+Remapping palettes with too many entries
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+:py:meth:`~PIL.Image.Image.remap_palette` now raises :py:exc:`ValueError` straight
+away if ``dest_map`` has more than 256 entries. Such maps already raised
+:py:exc:`ValueError`, but only after processing every entry, which could take a long
+time for a very long list.
+
+BMP saving preserves alpha channel
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+RGBA images saved as BMP are now written with a BITMAPV4HEADER, bitfields
+compression and channel masks, so the alpha channel is preserved when the file
+is reloaded instead of being silently dropped. Other modes are unchanged.
+
 Kerning in the basic layout engine
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -195,3 +217,11 @@ Text measured with :py:meth:`~PIL.ImageFont.FreeTypeFont.getlength` may now be n
 and is no longer necessarily a whole number of pixels.
 
 1-bit text and text drawn with a bitmap font keep the grid-fitted metrics.
+
+Memory leak when merging a single band with a mismatched mode
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+:py:func:`~PIL.Image.merge` with a single band whose mode does not match the
+requested mode, such as ``Image.merge("F", [l_image])``, raised
+:py:exc:`ValueError` but leaked the memory allocated for the output image. This
+has been fixed.

@@ -2290,6 +2290,10 @@ class Image:
             msg = "illegal image mode"
             raise ValueError(msg)
 
+        if len(dest_map) > 256:
+            msg = "dest_map must not have more than 256 entries"
+            raise ValueError(msg)
+
         bands = 3
         palette_mode = "RGB"
         if source_palette is None:
@@ -2305,7 +2309,7 @@ class Image:
             bands = 4
             palette_mode = "RGBA"
 
-        palette_bytes = b""
+        palette_bytes = bytearray()
         new_positions = [0] * 256
 
         # pick only the used colors from the palette
@@ -2809,7 +2813,10 @@ class Image:
             raise EOFError(msg)
 
         if self._im is not None and (
-            self.im.size != self.size or self.im.mode != self.mode
+            self.im.size != self.size
+            or self.im.mode != self.mode
+            # If there is an unloaded tile, then drop the current read-only core image
+            or (getattr(self, "tile", None) and self.readonly)
         ):
             self._im = None
 
@@ -3100,6 +3107,10 @@ class Image:
         resample: int = Resampling.NEAREST,
         fill: bool = True,
     ) -> None:
+        if any(math.isinf(v) or math.isnan(v) for v in (*box, *data)):
+            msg = "invalid data"
+            raise ValueError(msg)
+
         w = box[2] - box[0]
         h = box[3] - box[1]
 
