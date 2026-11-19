@@ -462,7 +462,7 @@ text_layout_fallback(
         // from the font's design over longer spans.
         // Monochrome and bitmap glyphs retain grid-fitted metrics so they render
         // with suitable crispness.
-        int unfitted = !mask && glyph->format == FT_GLYPH_FORMAT_OUTLINE;
+        int unfitted = true;//!mask && glyph->format == FT_GLYPH_FORMAT_OUTLINE;
 
         if (kerning && last_index && (*glyph_info)[i].index) {
             FT_Vector delta;
