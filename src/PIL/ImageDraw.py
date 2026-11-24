@@ -242,7 +242,8 @@ class ImageDraw:
         self, xy: Sequence[Sequence[float]]
     ) -> Sequence[Sequence[float]]:
         """Restrict line coordinates to image using Liang–Barsky algorithm"""
-        if len(xy) == 1:
+        w, h = self.im.size
+        if len(xy) == 1 or all(0 <= x <= w and 0 <= y <= h for x, y in xy):
             return xy
 
         result = []
@@ -253,9 +254,9 @@ class ImageDraw:
             u1, u2 = 0, 1
             for p, q in (
                 (-dx, x0),  # left side
-                (dx, self.im.size[0] - x0),  # right side
+                (dx, w - x0),  # right side
                 (-dy, y0),  # bottom side
-                (dy, self.im.size[1] - y0),  # top side
+                (dy, h - y0),  # top side
             ):
                 if p == 0:
                     # line is parallel to the side
