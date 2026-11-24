@@ -238,6 +238,45 @@ class ImageDraw:
                 for i in range(0, len(xy), 2)
             ]
 
+    def _restrict_lines(
+        self, xy: Sequence[Sequence[float]]
+    ) -> Sequence[Sequence[float]]:
+        """Restrict line coordinates to image using Liang–Barsky algorithm"""
+        if len(xy) == 1:
+            return xy
+
+        result = []
+        for (x0, y0), (x1, y1) in zip(xy, xy[1:]):
+            dx = x1 - x0
+            dy = y1 - y0
+
+            u1, u2 = 0, 1
+            for p, q in (
+                (-dx, x0),  # left side
+                (dx, self.im.size[0] - x0),  # right side
+                (-dy, y0),  # bottom side
+                (dy, self.im.size[1] - y0),  # top side
+            ):
+                if p == 0:
+                    # line is parallel to the side
+                    if q < 0:
+                        # line is outside. Ignore
+                        break
+                else:
+                    u = q / p
+                    if p < 0:
+                        u1 = max(u1, u)
+                    else:
+                        u2 = min(u2, u)
+
+                    if u1 > u2:
+                        # line is outside. Ignore
+                        break
+            else:
+                result.append((x0 + dx * u1, y0 + dy * u1))
+                result.append((x0 + dx * u2, y0 + dy * u2))
+        return result
+
     def _validate_dash(self, dash: tuple[int, ...]) -> None:
         if len(dash) == 0 or not all(isinstance(v, int) and v > 0 for v in dash):
             msg = "dash must be a non-empty tuple of positive ints"
@@ -256,6 +295,8 @@ class ImageDraw:
         if ink is None or width == 0:
             return
 
+        if width == 1:
+            xy = self._restrict_lines(self._normalize_coords(xy))
         if dash is not None:
             self._validate_dash(dash)
             self.draw.draw_lines(xy, ink, 1, dash)
@@ -417,9 +458,10 @@ class ImageDraw:
         if dash is not None:
             self._validate_dash(dash)
             (x0, y0), (x1, y1) = self._normalize_coords(xy)
-            self.draw.draw_lines(
-                [(x0, y0), (x1, y0), (x1, y1), (x0, y1), (x0, y0)], ink, 1, dash
+            xy = self._restrict_lines(
+                [(x0, y0), (x1, y0), (x1, y1), (x0, y1), (x0, y0)]
             )
+            self.draw.draw_lines(xy, ink, 1, dash)
         else:
             self.draw.draw_rectangle(xy, ink, 0, width)
 
