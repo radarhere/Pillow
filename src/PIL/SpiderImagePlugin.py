@@ -187,6 +187,9 @@ class SpiderImageFile(ImageFile.SeekableImageFile):
         self.fp.seek(self.stkoffset)
         self._open()
         Image._decompression_bomb_check(self.size)
+        if self.tile.offset > self._get_fp_length():
+            msg = "no more images in SPIDER file"
+            raise EOFError(msg)
 
     # returns a byte image after rescaling to 0..255
     def convert2byte(self, depth: int = 255) -> Image.Image:

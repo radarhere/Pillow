@@ -308,6 +308,9 @@ class ImImageFile(ImageFile.SeekableImageFile):
         offs = self.__offset + frame * size
 
         self.fp = self._fp
+        if offs > self._get_fp_length():
+            msg = "no more images in IM file"
+            raise EOFError(msg)
 
         self.tile = [ImageFile._Tile("raw", None, offs, (self.rawmode, 0, -1))]
 
