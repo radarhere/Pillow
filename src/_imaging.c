@@ -360,13 +360,13 @@ ImagingError_MemoryError(void) {
 
 void *
 ImagingError_Mismatch(const char *message) {
-    PyErr_SetString(PyExc_ValueError, message ? message : "images do not match");
+    PyErr_SetString(PyExc_ValueError, message);
     return NULL;
 }
 
 void *
 ImagingError_ModeError(const char *message) {
-    PyErr_SetString(PyExc_ValueError, message ? message : "image has wrong mode");
+    PyErr_SetString(PyExc_ValueError, message);
     return NULL;
 }
 
@@ -378,7 +378,7 @@ void *
 ImagingError_NotSupportedError(const char *message) {
     PyErr_SetString(
         ImagingNotSupportedError ? ImagingNotSupportedError : PyExc_NotImplementedError,
-        message ? message : "operation not supported"
+        message
     );
     return NULL;
 }
